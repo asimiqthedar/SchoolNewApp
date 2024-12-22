@@ -1,0 +1,67 @@
+﻿@using System.Data;
+@using School.Models.WebModels.StudentModels;
+@model StudentFeeDetail
+
+<div class="table-responsive table-card order-tabel" style="width:100%">
+    <table class="table align-middle table-nowrap mb-0" id="tblActivityFeeData">
+        <thead class="table-light text-muted">
+            <tr>
+                <th width="5%">S.No</th>
+                <th>Academic Year</th>
+                <th>Grade</th>
+                <th>Invoice Type</th>
+                <th>Fee Amount</th>
+                @if (!Model.IsReadOnly)
+                {
+                    <th width="70px">Action</th>
+                }
+            </tr>
+        </thead>
+        <tbody class="list form-check-all">
+            @if (Model != null && Model.StudentFeeRecords.Tables.Count > 0 && Model.StudentFeeRecords.Tables[0].Rows.Count > 0)
+            {
+                int i = 0;
+                foreach (DataRow dr in Model.StudentFeeRecords.Tables[0].Rows)
+                {
+                    i++;
+                    <tr>
+                        <td>@i</td>
+                        <td>@dr["AcademicYear"]</td>
+                        <td>@dr["GradeName"]</td>
+                        <td>@dr["FeeTypeName"]</td>
+                        <td>@Convert.ToDecimal(dr["FeeAmount"]).ToTwoDecimalString()</td>
+                        @if (!Model.IsReadOnly)
+                        {
+                            <td>
+                                <div class="btn-group" role="group" aria-label="Basic outlined example">
+                                    <button type="button" class="btn btn-outline-secondary edit-btn" onclick="EditFeeDetail('@dr["StudentFeeDetailId"]')">
+                                        <i class="fa-regular fa-pen-to-square  text-success"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-outline-secondary deleterow" onclick="DeleteStudentFee('@dr["StudentFeeDetailId"]')">
+                                        <i class="fa-solid fa-trash-can text-danger"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        }
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+</div>
+<script>
+    $("#tblActivityFeeData").DataTable({
+        language: {
+            search: "<i class='ri-search-line search-icon'></i>",
+            searchPlaceholder: "Search ..."
+        },
+        pageLength: 10,
+        bSort: true
+    });
+    $('#tblActivityFeeData').DataTable().on('draw.dt', function () {
+        var info = $('#tblActivityFeeData').DataTable().page.info();
+        $('#tblActivityFeeData').DataTable().column(0, { search: 'applied', order: 'applied' }).nodes().each(function (cell, i) {
+            cell.innerHTML = i + 1;// cell.innerHTML = i + 1 + info.start;
+        });
+    });
+</script>

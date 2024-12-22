@@ -1,0 +1,406 @@
+﻿@{
+	ViewData["Title"] = "Invoice";
+}
+
+<div class="row">
+	<div class="col-12">
+		<div class="page-title-box d-sm-flex align-items-center justify-content-between">
+			<div class="page-title d-flex align-items-center justify-content-between">
+				<ol class="breadcrumb m-0">
+					<li class="breadcrumb-item">Invoice</li>
+					<li class="breadcrumb-item active">Invoice List</li>
+				</ol>
+				<div>
+					<button type="button" class="btn btn-dark btn-set-task w-sm-100" onclick="Create()">
+						<i class="fa-solid fa-plus"></i> Add
+					</button>
+
+					<button type="button" class="btn btn-secondary" onclick="ExportCSVStatement()">
+						<i class="fa-solid fa-file-excel"></i> Export to Excel
+					</button>
+
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="card">
+	<div class="card-body">
+		<div style="margin-bottom:10px;">
+			<button class="btn btn-dark btn-warning w-sm-100" type="button" data-bs-toggle="collapse" data-bs-target="#filterCollapse" aria-expanded="false" aria-controls="filterCollapse">
+				<i class="mx-1 fa-solid fa-filter"></i>Filter
+			</button>
+		</div>
+		<div class="collapse" id="filterCollapse">
+			@Html.Partial("_InvoiceFilterPartial")
+		</div>
+		<div class="row g-3">
+			<div class="col-lg-12 col-md-12">
+				<div class="tab-content screen-list">
+					<div class="tab-pane fade show active" id="invoice-load">
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- Email Modal -->
+<div class="modal fade" id="emailModal" tabindex="-1" aria-labelledby="emailModalLabel" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered modal-dialog-centered">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="emailModalLabel">Send Invoice via Email</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+				<form id="emailForm">
+					<div class="mb-3">
+						<label for="fatherEmail" class="form-label">Father's Email Address</label>
+						<input type="email" class="form-control" id="fatherEmail">
+					</div>
+					<div class="mb-3">
+						<label for="motherEmail" class="form-label">Mother's Email Address</label>
+						<input type="email" class="form-control" id="motherEmail">
+					</div>
+					<div class="mb-3">
+						<label for="newEmailAddress" class="form-label">New Email Address</label>
+						<input type="email" class="form-control" id="newEmailAddress" placeholder="Enter new email address">
+					</div>
+					<input type="hidden" id="hiddenInvoiceId">
+				</form>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+				<button type="button" class="btn btn-danger" onclick="ResetEmailFields()">Reset</button>
+				<button type="button" class="btn btn-primary" onclick="EmailToMutilpleEmails()">Send Email</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+@section scripts {
+	<script>
+		$(function () {
+			$('.datepicker').datepicker({
+				format: "dd/mm/yyyy",
+				autoclose: true
+			});
+
+			var lastMonthDate = new Date();
+			lastMonthDate.setMonth(lastMonthDate.getMonth() - 3);
+
+			$('#InvoiceDateStart').datepicker('update', lastMonthDate);
+			$('#InvoiceDateEnd').datepicker('update', new Date());
+			loadCurrentAcademicYear();
+	
+
+			if ("@ViewBag.PrintInvoiceno" > 0) {
+				Print("@ViewBag.PrintInvoiceno");
+			}
+		});
+
+		function loadCurrentAcademicYear() {
+			var urlToCall = baseUrl + 'Report/GetCurrentAcademicYear';
+			$app.post(urlToCall).then(function (response) {
+				if (response && response.periodFrom) {
+					const periodFromDate = new Date(response.periodFrom);
+					const formattedDate = periodFromDate.toLocaleDateString('en-GB'); // "dd/MM/yyyy" format
+					document.getElementById('InvoiceDateStart').value = formattedDate;
+					loadInvoiceByFilter();
+				}
+			});
+		}
+
+		function RefreshSearch() {
+			$("#InvoiceNo").val('');
+			$("#InvoiceType").val('');
+			$("#ParentCode").val('');
+			$("#ParentName").val('');
+			$("#InvoiceDateStart").val();
+			$("#InvoiceDateEnd").val();
+			$("FatherMobile").val('');
+			$("#Status").val('');
+			$("#FatherIqama").val('');
+			loadInvoiceByFilter();
+		}
+		function loadInvoiceByFilter() {
+			var filterDataObj = {
+				InvoiceNo: $("#InvoiceNo").val(),
+				InvoiceType: $("#InvoiceType").val(),
+				ParentCode: $("#ParentCode").val(),
+				ParentName: $("#ParentName").val(),
+				FatherMobile: $("#FatherMobile").val(),
+				InvoiceDateStart: GetDateFormat_MMMDDYYYY($("#InvoiceDateStart").val()),
+				InvoiceDateEnd: GetDateFormat_MMMDDYYYY($("#InvoiceDateEnd").val()),
+				Status: $("#Status").val(),
+				FatherIqama: $("#FatherIqama").val(),
+			};
+			InvoiceLoad(filterDataObj);
+		}
+
+		function InvoiceLoad(filterDataObj) {
+			$('#invoice-load').empty();
+			$('#invoice-load').html('<div class="row"> <div class="col-xl-12"><div class="card order-card"><span class="text-center no-text" style="color:#212529;"><img src="@Url.Content("~/images/loding.gif")"  /></span></div></div></div>');
+			var urlToCall = baseUrl + 'InvoiceSetup/InvoiceDataPartial';
+			$app.post(urlToCall, filterDataObj).then(function (response) {
+				$('#invoice-load').html(response);
+			});
+		}
+
+		function Create() {
+			var op = { title: 'Add Invoice' }
+			var url = '@Url.Action("AddEditInvoice", "InvoiceSetup")';
+			window.location.href = url;
+		}
+
+		function Edit(InvoiceNo, InvoiceType, invoiceRefundRefNo) {
+
+			if (InvoiceType == 'Return') {
+				var op = { title: 'Update Invoice' }
+				var url = '@Url.Action("AddEditInvoiceRefund", "InvoiceSetup")';
+				url = url + '?invoiceNo=' + InvoiceNo + '&invoiceRefundRefNo=' + invoiceRefundRefNo;
+				window.location.href = url;
+			} else {
+				var op = { title: 'Update Invoice' }
+				var url = '@Url.Action("AddEditInvoice", "InvoiceSetup")';
+				url = url + '?invoiceNo=' + InvoiceNo;
+				window.location.href = url;
+			}
+		}
+
+		function ReturnInvoice(InvoiceNo, InvoiceRefNo) {
+
+			var op = { title: 'Return Invoice' }
+			var url = '@Url.Action("AddEditInvoiceRefund", "InvoiceSetup")';
+			url = url + '?invoiceRefundRefNo=' + InvoiceNo + '&invoiceNo=' + InvoiceRefNo;
+			window.location.href = url;
+		}
+
+		function Save(dataModel) {
+			var urlToCall = '@Url.Action("InvoiceSave", "Setup")';
+			$app.post(urlToCall, dataModel).then(function (response) {
+				if (response.result == 0) {
+					bootbox.hideAll();
+					$app.notify.success("Data has been saved!");
+					loadInvoiceByFilter();
+				}
+				else {
+					$app.notify.error("Error in saving!");
+				}
+			});
+		}
+
+		function Delete(invoiceId) {
+			var dlg_removePromo = bootbox.dialog({
+				message: 'Are you sure! you want to delete the record?',
+				title: 'Remove',
+				buttons: {
+					ok: {
+						label: "Yes",
+						className: 'btn-primary',
+						callback: function () {
+							var urlToCall = '@Url.Action("DeleteInvoice", "InvoiceSetup")';
+							urlToCall = urlToCall + '?invoiceId=' + invoiceId;
+
+							$app.get(urlToCall).then(function (response) {
+								if (response.result == 0) {
+									bootbox.hideAll();
+									$app.notify.success("Data has been deleted!");
+									loadInvoiceByFilter();
+								}
+								else {
+									$app.notify.error("Error in deleting!");
+								}
+							});
+						}
+					},
+					cancel: {
+						label: "No",
+						className: 'btn-danger',
+						callback: function () {
+							$(dlg_removePromo).modal('hide');
+						}
+					}
+				}
+			});
+			dlg_removePromo.find('.modal-header').css('background-color', '#dc3545').css('border-bottom', '1px solid #dc3545');
+		}
+
+
+
+		function ExportCSVStatement() {
+			var reportKey = 'InvoiceExport';
+			var reportName = 'Invoice List';
+			var filterDataObj = {
+				InvoiceNo: $("#InvoiceNo").val(),
+				InvoiceType: $("#InvoiceType").val(),
+				ParentCode: $("#ParentCode").val(),
+				ParentName: $("#ParentName").val(),
+				FatherMobile: $("#FatherMobile").val(),
+				InvoiceDateStart: GetDateFormat_MMMDDYYYY($("#InvoiceDateStart").val()),
+				InvoiceDateEnd: GetDateFormat_MMMDDYYYY($("#InvoiceDateEnd").val()),
+				Status: $("#Status").val(),
+				FatherIqama: $("#FatherIqama").val(),
+			};
+
+			var InvoiceNoParam = "InvoiceNo: " + filterDataObj.InvoiceNo;
+			var InvoiceTypeParam = "InvoiceType: " + filterDataObj.InvoiceType;
+			var ParentCodeParam = "ParentCode: " + filterDataObj.ParentCode;
+			var ParentNameParam = "ParentName: " + filterDataObj.ParentName;
+			var FatherMobileParam = "FatherMobile: " + filterDataObj.FatherMobile;
+			var InvoiceDateStartParam = "InvoiceDateStart: " + filterDataObj.InvoiceDateStart;
+			var InvoiceDateEndParam = "InvoiceDateEnd: " + filterDataObj.InvoiceDateEnd;
+			var FatherIqamaParam = "FatherIqama: " + filterDataObj.FatherIqama;
+
+			var parameters = InvoiceNoParam + '|' + InvoiceTypeParam + '|' + ParentCodeParam + '|' + ParentNameParam + '|' + FatherMobileParam + '|' + InvoiceDateStartParam + '|' + InvoiceDateEndParam + '|' + FatherIqamaParam;
+
+			this.ExportCSVWithParam(reportKey, reportName, parameters);
+		}
+
+		function openEmailModal(invoiceId) {
+			$('#hiddenInvoiceId').val(invoiceId);
+
+			var urlToCall = '@Url.Action("loadParentEmail", "InvoiceSetup")';
+			urlToCall = urlToCall + '?invoiceId=' + invoiceId;
+			$app.get(urlToCall).then(function (response) {
+				$('#emailModal').modal('show');
+				if (response.fatherEmail) {
+					$('#fatherEmail').val(response.fatherEmail);
+				} else {
+					$('#fatherEmail').val('No email available');
+				}
+
+				if (response.motherEmail) {
+					$('#motherEmail').val(response.motherEmail);
+				} else {
+					$('#motherEmail').val('No email available');
+				}
+			});
+		}
+
+		function ResetEmailFields() {
+			$('#fatherEmail').val('').attr('placeholder', 'Enter father\'s email');
+			$('#motherEmail').val('').attr('placeholder', 'Enter mother\'s email');
+			$('#newEmailAddress').val('').attr('placeholder', 'Enter new email address');
+		}
+
+		function Email() {
+			debugger;
+			var invoiceId = $('#hiddenInvoiceId').val();
+			var dlg_removePromo = bootbox.dialog({
+				message: 'Are you sure! you want to send invoice?',
+				title: 'Email',
+				buttons: {
+					ok: {
+						label: "Yes",
+						className: 'btn-primary',
+						callback: function () {
+							var urlToCall = '@Url.Action("SendInvoice", "InvoiceSetup")';
+							urlToCall = urlToCall + '?invoiceId=' + invoiceId;
+
+							$app.get(urlToCall).then(function (response) {
+								if (response.result == 0) {
+									bootbox.hideAll();
+									$app.notify.success("Email has been sent!");
+									loadInvoiceByFilter();
+								}
+								else {
+									$app.notify.error("Error in sending!");
+								}
+							});
+						}
+					},
+					cancel: {
+						label: "No",
+						className: 'btn-danger',
+						callback: function () {
+							$(dlg_removePromo).modal('hide');
+						}
+					}
+				}
+			});
+			dlg_removePromo.find('.modal-header').css('background-color', '#dc3545').css('border-bottom', '1px solid #dc3545');
+		}
+
+		function EmailToMutilpleEmails() {
+			var fatherEmail = $('#fatherEmail').val();
+			var motherEmail = $('#motherEmail').val();
+			var newEmailAddress = $('#newEmailAddress').val();
+
+			var finalEmail = "";
+			if (fatherEmail != '') {
+				finalEmail = finalEmail + fatherEmail + ","
+			}
+			if (motherEmail != '') {
+				finalEmail = finalEmail + motherEmail + ","
+			}
+			if (newEmailAddress != '') {
+				finalEmail = finalEmail + newEmailAddress
+			}
+
+			var invoiceId = $('#hiddenInvoiceId').val();
+			var dlg_removePromo = bootbox.dialog({
+				message: 'Are you sure! you want to send invoice?',
+				title: 'Email',
+				buttons: {
+					ok: {
+						label: "Yes",
+						className: 'btn-primary',
+						callback: function () {
+							var urlToCall = '@Url.Action("SendInvoiceToEmails", "InvoiceSetup")';
+							urlToCall = urlToCall + '?invoiceId=' + invoiceId;
+							urlToCall = urlToCall + '&emailids=' + finalEmail;
+
+							$app.get(urlToCall).then(function (response) {
+								if (response.result == 0) {
+									$('#emailModal').modal('hide');
+									$('#fatherEmail').val('');
+									$('#motherEmail').val('');
+									$('#newEmailAddress').val('');
+									$app.notify.success("Email has been sent!");
+								}
+								else {
+									$app.notify.error("Error in sending!");
+									$('#emailModal').modal('hide');
+									$('#fatherEmail').val('');
+									$('#motherEmail').val('');
+									$('#newEmailAddress').val('');
+								}
+							});
+						}
+					},
+					cancel: {
+						label: "No",
+						className: 'btn-danger',
+						callback: function () {
+							$(dlg_removePromo).modal('hide');
+						}
+					}
+				}
+			});
+			dlg_removePromo.find('.modal-header').css('background-color', '#dc3545').css('border-bottom', '1px solid #dc3545');
+		}
+
+		function Print(invoiceNo) {
+			var urlToCall = '@Url.Action("GetInvoicePdfPath", "InvoiceSetup")';
+			urlToCall = urlToCall + '?invoiceNo=' + invoiceNo;
+
+			$app.get(urlToCall).then(function (response) {
+				if (response.result == 0) {					
+
+					let pdfWindow = window.open("")
+					pdfWindow.document.write(
+						"<iframe width='100%' height='100%' src='data:application/pdf;base64, " +
+						encodeURI(response.invoicePdfBytes) + "'></iframe>"
+					)
+					var url = '@Url.Action("invoice", "InvoiceSetup")';
+					window.location.href = url;
+				}
+				else {
+					$app.notify.error("Error in printing invoice!");
+				}
+			});
+		}
+
+	</script>
+}

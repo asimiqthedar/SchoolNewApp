@@ -1,0 +1,126 @@
+﻿@{
+    ViewData["Title"] = "Cost Center";
+}
+
+<div class="row">
+    <div class="col-12">
+        <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+            <div class="page-title d-flex align-items-center justify-content-between">
+                <ol class="breadcrumb m-0">
+                    <li class="breadcrumb-item">Setup</li>
+                    <li class="breadcrumb-item active">Cost Center List</li>
+                </ol>
+                <div>
+                    <button type="button" class="btn btn-dark btn-set-task w-sm-100" title="Add" onclick="Create()">
+                        <i class="fa-solid fa-plus"></i> Add
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="card">
+    <div class="card-body">
+        @* @Html.Partial("_CostCenterFilterPartial") *@
+        <div class="row g-3">
+            <div class="col-lg-12 col-md-12">
+                <div class="tab-content screen-list">
+                    <div class="tab-pane fade show active" id="cost-center-load">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section scripts {
+    <script>
+        $(function () {
+            loadCostCenterByFilter();
+        });
+        function RefreshSearch() {
+            $("#filterSearch").val("");
+            $("#filterIsActive").val("true");
+            loadCostCenterByFilter();
+        }
+        function loadCostCenterByFilter() {
+            var filterDataObj = {
+                FilterSearch: $("#filterSearch").val(),
+                FilterIsActive: $("#filterIsActive").val()
+            };
+            CostCenterLoad(filterDataObj);
+        }
+        function CostCenterLoad(filterDataObj) {
+            $('#cost-center-load').empty();
+            $('#cost-center-load').html('<div class="row"> <div class="col-xl-12"><div class="card order-card"><span class="text-center no-text" style="color:#212529;"><img src="@Url.Content("~/images/loding.gif")"  /></span></div></div></div>');
+            var urlToCall = baseUrl + 'Setup/CostCenterDataPartial';
+            $app.post(urlToCall, filterDataObj).then(function (response) {
+                $('#cost-center-load').html(response);
+            });
+        }
+        function Create() {
+            var op = { title: 'Add Cost Center' }
+            var url = '@Url.Action("CostCenterEditPartial", "Setup")';
+            $app.openViewDialog(url, op);
+        }
+        function Edit(costCenterId) {
+            var op = { title: 'Update Cost Center' }
+            var url = '@Url.Action("CostCenterEditPartial", "Setup")';
+            url = url + '?costCenterId=' + costCenterId;
+            $app.openViewDialog(url, op);
+        }
+        function Save(dataModel) {
+            var urlToCall = '@Url.Action("SaveCostCenter", "Setup")';
+            $app.post(urlToCall, dataModel).then(function (response) {
+                if (response.result == 0) {
+                    bootbox.hideAll();
+                    $app.notify.success("Data has been saved!");
+                    loadCostCenterByFilter();
+                }
+                else if (response.result == -2) {
+                    $app.notify.error("Data already exists!");
+                }
+                else {
+                    $app.notify.error("Error in saving!");
+                }
+            });
+        }
+        function Delete(costCenterId) {
+            var dlg_removePromo = bootbox.dialog({
+                message: 'Are you sure! you want to delete the record?',
+                title: 'Remove',
+                buttons: {
+                    ok: {
+                        label: "Yes",
+                        className: 'btn-primary',
+                        callback: function () {
+                            var urlToCall = '@Url.Action("DeleteCostCenter", "Setup")';
+                            urlToCall = urlToCall + '?costCenterId=' + costCenterId;
+
+                            $app.get(urlToCall).then(function (response) {
+                                if (response.result == 0) {
+                                    bootbox.hideAll();
+                                    $app.notify.success("Data has been deleted!");
+                                    loadCostCenterByFilter();
+                                }
+                                else if (response.result == 547) {
+                                    $app.notify.error("Error in deleting! Record already in use.");
+                                }
+                                else {
+                                    $app.notify.error("Error in deleting!");
+                                }
+                            });
+                        }
+                    },
+                    cancel: {
+                        label: "No",
+                        className: 'btn-danger',
+                        callback: function () {
+                            $(dlg_removePromo).modal('hide');
+                        }
+                    }
+                }
+            });
+            dlg_removePromo.find('.modal-header').css('background-color', '#dc3545').css('border-bottom', '1px solid #dc3545');
+        }
+    </script>
+}

@@ -1,0 +1,139 @@
+﻿@using School.Models.WebModels.UserModels;
+@model UserModel
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="cform row gy-3">
+            <input type="hidden" id="UserId" name="UserId" asp-for="UserId" />
+            <div class="col-xxl-6 col-md-6">
+                <div>
+                    <label class="form-label">Name</label>
+                    <input type="text" class="form-control" id="UserName" name="UserName" asp-for="UserName" placeholder="Name">
+                </div>
+            </div>
+            <div class="col-xxl-6 col-md-6">
+                <div>
+                    <label class="form-label">Arabic Name</label>
+                    <input type="text" class="form-control" id="UserArabicName" name="UserArabicName" asp-for="UserArabicName" placeholder="Arabic Name">
+                </div>
+            </div>
+            <div class="col-xxl-6 col-md-6">
+                <div>
+                    <label class="form-label">Email</label>
+                    <input type="email" class="form-control" id="UserEmail" name="UserEmail" asp-for="UserEmail" placeholder="Email">
+                </div>
+            </div>
+            <div class="col-xxl-6 col-md-6">
+                <div>
+                    <label class="form-label">Phone</label>
+                    <input type="text" class="form-control" id="UserPhone" name="UserPhone" asp-for="UserPhone" placeholder="Phone">
+                </div>
+            </div>
+            <div class="col-xxl-6 col-md-6">
+                <div>
+                    <label class="form-label">Password</label>
+                    <input type="text" class="form-control" id="UserPass" name="UserPass" asp-for="UserPass" placeholder="Password">
+                </div>
+            </div>
+            <div class="col-xxl-6 col-md-6">
+                <div>
+                    <label class="form-label">Role</label>
+                    <select id="RoleId" class="form-select" asp-for="RoleId" aria-label="Role"
+                            asp-items="@(new SelectList(ViewBag.RoleDropdown,"Value", "Text"))">
+                    </select>
+                </div>
+            </div>
+            <div class="col-xxl-6 col-md-6">
+                <div>
+                    <label class="form-label">Approver</label>
+                    <select class="form-select" id="IsApprover" asp-for="IsApprover" aria-label="Approver">
+                        <option value=false>No</option>
+                        <option value=true>Yes</option>                       
+                    </select>
+                </div>
+            </div>
+            <div class="col-xxl-6 col-md-6">
+                <div>
+                    <label class="form-label">Active</label>
+                    <select class="form-select" id="IsActive" asp-for="IsActive" aria-label="Active">
+                        <option value=true>Active</option>
+                        <option value=false>In-Active</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-12 text-center">
+                <button class="btn btn-success theme-btn" type="button" onclick="BindData()">@(Model.UserId > 0 ? "Update" : "Add")</button>
+                <button class="btn btn-secondary" type="button" onclick="bootbox.hideAll();">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>  
+    function BindData() {
+        var dataObj = {
+            UserId: $("#UserId").val(),
+            UserName: $("#UserName").val(),
+            UserArabicName: $("#UserArabicName").val(),
+            UserEmail: $("#UserEmail").val(),
+            UserPhone: $("#UserPhone").val(),
+            UserPass: $("#UserPass").val(),
+            RoleId: $("#RoleId").val(),
+            IsApprover: $("#IsApprover").val(),
+            IsActive: $("#IsActive").val()
+        };
+        if (Validation(dataObj)) {
+            if (dataObj["UserId"] == "0") {
+                Save(dataObj);
+
+            }
+            else {
+                var dlg_updatePromo = bootbox.dialog({
+                    message: 'Are you sure! you want to update the record?',
+                    title: 'Confirm',
+                    buttons: {
+                        ok: {
+                            label: "Yes",
+                            className: 'btn-primary',
+                            callback: function () {
+                                Save(dataObj);
+                            }
+                        },
+                        cancel: {
+                            label: "No",
+                            className: 'btn-danger',
+                            callback: function () {
+                                $(dlg_updatePromo).modal('hide');
+                            }
+                        }
+                    }
+                });
+                dlg_updatePromo.find('.modal-header').css('background-color', '#dc3545').css('border-bottom', '1px solid #dc3545');
+            }
+        }
+    }
+    function Validation(dataObj) {
+        var isError = false;
+        if (!dataObj["UserName"] || !dataObj["UserName"].trim()) {
+            $app.notify.validate("UserName", "User name is required");
+            isError = true;
+        }
+        if (!dataObj["UserEmail"] || !dataObj["UserEmail"].trim()) {
+            $app.notify.validate("UserEmail", "User email is required");
+            isError = true;
+        }      
+        if (!dataObj["UserPass"] || !dataObj["UserPass"].trim()) {
+            $app.notify.validate("UserPass", "Password is required");
+            isError = true;
+        }
+        if (!dataObj["RoleId"] || !dataObj["RoleId"].trim() || dataObj["RoleId"].trim() == "0") {
+            $app.notify.validateDD("RoleId", "Role is required");
+            isError = true;
+        }    
+        if (isError) {
+            return false;
+        }
+        else {
+            return true;
+        }
+    }
+</script>

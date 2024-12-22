@@ -1,0 +1,130 @@
+﻿<div class="card chart-card">
+	<div class="card-header">
+		<h5>Overview</h5>
+	</div>
+	<div class="card-body">
+	</div>
+	<div class="row overview-chart d-flex justify-content-between align-items-center">
+		<div class="col-lg-6 col-md-6" id="feespieChart"></div>
+		<div class="col-lg-6 col-md-6" id="feesParentMonthwiseBarChart"></div>
+	</div>
+</div>
+
+<script>
+
+	$(document).ready(function () {
+		fetchTotalParentFeeInfo();
+		fetchParentMonthwiseFeeInfo();
+	});
+
+
+
+	function fetchTotalParentFeeInfo() {
+		var urlToCall = '@Url.Action("GetTotalParentFeeInfo", "Home")';
+
+		$app.get(urlToCall).then(function (response) {
+			console.log("response pie", response);
+			loadTotalParentFeeChart(response);
+		});
+	}
+	function loadTotalParentFeeChart(response) {
+		var totalFee = parseFloat(response.totalFee);
+		var feePaid = parseFloat(response.feePaid);
+
+		var pieChartOptions = {
+			series: [feePaid, totalFee - feePaid],
+			chart: {
+				width: 480,
+				type: 'pie',
+			},
+			labels: ['Fee Paid', 'Remaining Fee'],
+			responsive: [{
+				breakpoint: 480,
+				options: {
+					chart: {
+						width: 300
+					},
+					legend: {
+						position: 'bottom'
+					}
+				}
+			}],
+			tooltip: {
+				y: {
+					formatter: function (val) {
+						return "Total " + val;
+					}
+				}
+			}
+		};
+
+		var parentwiseFeePieChart = new ApexCharts(document.querySelector("#feespieChart"), pieChartOptions);
+		parentwiseFeePieChart.render();
+	}
+
+	function fetchParentMonthwiseFeeInfo() {
+		var urlToCall = '@Url.Action("GetParentMonthwiseFeeInfo", "Home")';
+
+		$app.get(urlToCall).then(function (response) {
+			loadParentMonthWiseFeeChart(response);
+		});
+	}
+
+	function loadParentMonthWiseFeeChart(response) {
+
+		var monthName = response.map(item => item.monthName);
+		var totalFee = response.map(item => item.totalFee);
+		var feePaid = response.map(item => item.feePaid);
+
+		var ParentMonthwiseOptionsColumn = {
+			series: [{
+				name: 'Total Fee',
+				data: totalFee
+			}, {
+				name: 'Fee Paid',
+				data: feePaid
+			}],
+			chart: {
+				type: 'bar',
+				height: 430,
+			},
+			plotOptions: {
+				bar: {
+					horizontal: false,
+					columnWidth: '55%',
+					endingShape: 'rounded'
+				},
+			},
+			dataLabels: {
+				enabled: false
+			},
+			stroke: {
+				show: true,
+				width: 2,
+				colors: ['transparent']
+			},
+			xaxis: {
+				categories: monthName,
+			},
+			yaxis: {
+				title: {
+					text: 'Number'
+				}
+			},
+			fill: {
+				opacity: 1
+			},
+			tooltip: {
+				y: {
+					formatter: function (val) {
+						return "Total " + val
+					}
+				}
+			}
+		};
+
+		var parentmonthwisefeeschart = new ApexCharts(document.querySelector("#feesParentMonthwiseBarChart"), ParentMonthwiseOptionsColumn);
+		parentmonthwisefeeschart.render();
+
+	}
+</script>

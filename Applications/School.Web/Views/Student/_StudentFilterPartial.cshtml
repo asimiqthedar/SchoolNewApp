@@ -1,0 +1,144 @@
+﻿
+<style>
+    .backlog-filter-btn button {
+        padding: 6px 10px;
+    }
+
+</style>
+<div class="row mb-3 align-items-center  label-row">
+    <div class="col-md-12 mb-5">
+        <div class="row mb-3" style="display:none;">
+            <div class="col-md-8">
+                <div class="search-box">
+                    <input type="text" id="filterSearch" class="form-control search bg-light border-light" placeholder="Search....">
+                    <i class="ri-search-line search-icon"></i>
+                </div>
+            </div>
+        </div>
+        <div class="row">          
+            <div class="col-md-12 p-3">
+                <div class="row">
+                    <div class="col">
+                        <div class="single-filter">
+                            <label>Search</label>
+                            <input type="text" class="form-control " id="FilterSearch" placeholder="Search by Mobile, Name, email, Iqama" />
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                  @*   <div class="col">
+                         <div class="single-filter">
+                            <label>Term</label>
+                            <select class="form-select" id="filterTermId" aria-label="Term"
+                                    asp-items="@(new SelectList(ViewBag.TermDropdown,"Value", "Text"))">
+                            </select>
+                        </div> 
+                    </div> *@ 
+                    <div class="col">
+                        <div class="single-filter">
+                            <label>Nationality</label>
+                            <select class="form-select" id="filterNationalityId" aria-label="Nationality"
+                                    asp-items="@(new SelectList(ViewBag.CountryDropdown,"Value", "Text"))">
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="single-filter">
+                            <label>Gender</label>
+                            <select class="form-select" id="filterGenderId" aria-label="Gender"
+                                    asp-items="@(new SelectList(ViewBag.GenderDropdown,"Value", "Text"))">
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="single-filter">
+                            <label>Grade</label>
+                            <select class="form-select" id="filterGradeId" aria-label="Grade"
+                                    asp-items="@(new SelectList(ViewBag.GradeDropdown,"Value", "Text"))">
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                   
+                    <div class="col">
+                        <div class="single-filter">
+                            <label>Cost Center</label>
+                            <select class="form-select" id="filterCostCenterId" aria-label="Cost Center"
+                                    asp-items="@(new SelectList(ViewBag.CostCenterDropdown,"Value", "Text"))">
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="single-filter">
+                            <label>Status</label>                           
+                            <select class="form-select" id="filterStatusId" aria-label="Status"
+                                    asp-items="@(new SelectList(ViewBag.AllStudentStatusDropDown,"Value", "Text"))">
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="single-filter">
+                            <label>Is Active</label>
+                            <select class="form-select" id="filterIsActive" aria-label="active">
+                                <option value=  >Active</option>
+                                <option value=false>Close</option>
+                            </select>
+                        </div>
+                    </div>
+                @*     <div class="col">
+                        <div class="single-filter">
+                            <label>Section</label>
+                            <select class="form-select" id="filterSectionId" aria-label="Section"
+                                    asp-items="@(new SelectList(ViewBag.SectionDropdown,"Value", "Text"))">
+                            </select>
+                        </div>
+                    </div> *@
+                </div>
+               @*  <div class="row">
+                    <div class="col">
+                        <div class="single-filter">
+                            <label>Mobile Number</label>
+                            <input type="text" class="form-control numeric" id="FilterMobileNumber" placeholder="Enter Mobile Number" />
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="single-filter">
+                            <label>Email</label>
+                            <input type="text" class="form-control " id="FilterEmail" placeholder="Enter Email" />
+                        </div>
+                    </div>
+                </div> *@
+                <div class="row">                   
+                    <div class="col" style="display:none">
+                        <div class="single-filter">
+                            <label>Active</label>
+                            <select class="form-select" id="filterIsActive" aria-label="Active">
+                                <option value=true>Active</option>
+                                <option value=false>In-Active</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-12 btn-col">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="d-flex backlog-btn-row">
+                    <div class="backlog-filter-btn">
+                        <button type="button" class="btn btn-primary" onclick="loadStudentByFilter();">
+                            Search
+                        </button>
+                    </div>
+                    <div class="backlog-filter-btn">
+                        <button type="button" class="btn btn-secondary" onclick="RefreshSearch();">
+                            Refresh
+                        </button>
+                    </div>                   
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

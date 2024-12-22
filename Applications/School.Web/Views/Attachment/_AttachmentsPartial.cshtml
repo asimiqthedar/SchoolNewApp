@@ -1,0 +1,102 @@
+﻿@using System.Data;
+@using System.Security.Claims;
+@model DataSet
+
+<table class="table table-borderless align-middle mb-0">
+    <thead class="table-light text-muted">
+        <tr>
+            <th scope="col">Document No</th>
+            <th scope="col">Document Type</th>
+            <th scope="col">Upload Date</th>
+            <th scope="col">Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model != null && Model.Tables.Count > 0 && Model.Tables[0].Rows.Count > 0)
+        {
+            @foreach (DataRow dr in Model.Tables[0].Rows)
+            {
+                string Fileicon = string.Empty;
+                string FileType = string.Empty;
+                string fileExtension = System.IO.Path.GetExtension(Convert.ToString(dr["DocPath"]));
+                if (fileExtension == ".pdf")
+                {
+                    Fileicon = "ri-file-pdf-fill";
+                    FileType = "PDF";
+                }
+                else if (fileExtension == ".ppt")
+                {
+                    Fileicon = "ri-file-ppt-fill";
+                    FileType = "PPT";
+                }
+                else if (fileExtension == ".xlsx" || fileExtension == ".xls")
+                {
+                    Fileicon = "ri-file-excel-fill";
+                    FileType = "EXCEL";
+                }
+                else if (fileExtension == ".doc" || fileExtension == ".docx")
+                {
+                    Fileicon = "ri-file-excel-fill";
+                    FileType = "WORD";
+                }
+                else if (fileExtension == ".zip" || fileExtension == ".rar" || fileExtension == ".7z")
+                {
+                    Fileicon = "ri-file-zip-fill";
+                    FileType = "ZIP";
+                }
+                else if (fileExtension == ".png" || fileExtension == ".jpeg" || fileExtension == ".jpg" || fileExtension == ".webp")
+                {
+                    Fileicon = "ri-image-2-fill";
+                    FileType = "IMAGE";
+                }
+                else
+                {
+                    Fileicon = "ri-file-download-fill";
+                    FileType = "OTHER";
+                }
+                <tr>
+                    <td>
+                        <div class="d-flex align-items-center">
+                            <div class="avatar-sm" style="width:30px;height:30px;">
+                                <div class="avatar-title bg-soft-primary text-primary rounded fs-20">
+                                    <i class="@Fileicon"></i>
+                                </div>
+                            </div>
+                            <div class="ms-3 flex-grow-1">
+                                <h6 class="fs-15 mb-0"><a href="@Url.Content(Convert.ToString(dr["DocPath"]))" target="_blank">@Convert.ToString(dr["DocNo"])</a></h6>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        @Convert.ToString(dr["DocumentTypeName"])
+                    </td>
+                    <td>@Convert.ToDateTime(dr["UpdateDate"]).ToString("dd/MM/yyyy")</td>
+                    <td>
+                        <div class="dropdown">
+                            <a href="javascript:void(0);" class="btn btn-light btn-icon" id="dropdownMenuLink1" data-bs-toggle="dropdown" aria-expanded="true">
+                                <i class="ri-equalizer-fill"></i>
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuLink1" data-popper-placement="bottom-end" style="position: absolute; inset: 0px 0px auto auto; margin: 0px; transform: translate(0px, 23px);">
+                                <li><a class="dropdown-item" href="@Url.Content(Convert.ToString(dr["DocPath"]))" target="_blank"><i class="ri-eye-fill me-2 align-middle text-muted"></i>View</a></li>
+                                <li><a class="dropdown-item" href="@Url.Content(Convert.ToString(dr["DocPath"]))" download="download"><i class="ri-download-2-fill me-2 align-middle text-muted"></i>Download</a></li>
+                                <li class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" style="cursor:pointer;" onclick="DeleteDocument('@dr["UploadedDocId"]','@dr["DocForId"]','@dr["DocFor"]')"><i class="ri-delete-bin-5-line me-2 align-middle text-muted"></i>Delete</a></li>
+
+                            </ul>
+                        </div>
+                    </td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td></td>
+                <td>No document</td>
+                <td></td>
+                <td></td>
+            </tr>
+        }
+    </tbody>
+</table>
+<input type="hidden" id="hdnAttachmentsCount" value="@Model.Tables[0].Rows.Count" />

@@ -1,0 +1,306 @@
+﻿{
+   "CodeGenerationMode": 3,
+   "ContextClassName": "ALSContext",
+   "ContextNamespace": null,
+   "FilterSchemas": false,
+   "IncludeConnectionString": false,
+   "ModelNamespace": null,
+   "OutputContextPath": null,
+   "OutputPath": "Entities",
+   "PreserveCasingWithRegex": true,
+   "ProjectRootNamespace": "School.Services",
+   "Schemas": null,
+   "SelectedHandlebarsLanguage": 2,
+   "SelectedToBeGenerated": 0,
+   "T4TemplatePath": null,
+   "Tables": [
+      {
+         "Name": "[dbo].[AdvancePayment]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[FeeTypeDetail]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[INT_GLSourceTable]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[INT_SalesDistributionSourceTable]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[INT_SalesInvoiceSourceTable]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[INT_SalesPaymentSourceTable]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[INV_InvoiceDetail]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[INV_InvoicePayment]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[INV_InvoiceSummary]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[OpenApplyParents]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[OpenApplyStudentParentMap]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[OpenApplyStudents]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[tblBranchMaster]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[tblContactInformation]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[tblCostCenterMaster]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[tblCountryMaster]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[tblDiscountMaster]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[tblDiscountRuleMapping]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[tblDiscountRules]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[tblDocumentTypeMaster]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[tblEmailConfig]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[tblFeeGenerate]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[tblFeeGenerateDetail]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[tblFeeGradewise]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[tblFeePaymentPlan]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[tblFeeStatement]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[tblFeeStructure]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[tblFeeTypeDetail]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[tblFeeTypeMaster]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[tblGenderTypeMaster]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[tblGradeMaster]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[tblInvoiceTypeMaster]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[tblMenu]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[tblNotification]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[tblNotificationGroup]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[tblNotificationGroupDetail]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[tblNotificationTypeMaster]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[tblOpenApplyMaster]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[tblParent]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[tblParentAccount]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[tblParentOpenApplyProcessed]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[tblPaymentMethod]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[tblPaymentMethodCategory]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[tblRole]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[tblRoleMenuMapping]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[tblSchoolAcademic]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[tblSchoolAccountInfo]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[tblSchoolLogo]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[tblSchoolMaster]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[tblSchoolTermAcademic]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[tblSection]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[tblSiblingDiscount]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[tblSiblingDiscountDetail]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[tblSiblingDiscountMaster]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[tblStudent]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[tblStudentFeeDetail]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[tblStudentOpenApplyProcessed]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[tblStudentOtherDiscountDetail]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[tblStudentSiblingDiscountDetail]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[tblStudentStatus]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[tblTermMaster]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[tblUploadDocument]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[tblUser]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[tblVatCountryExclusionMap]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[tblVatMaster]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Transactions]",
+         "ObjectType": 0
+      }
+   ],
+   "UiHint": null,
+   "UncountableWords": null,
+   "UseAsyncStoredProcedureCalls": true,
+   "UseBoolPropertiesWithoutDefaultSql": false,
+   "UseDatabaseNames": false,
+   "UseDateOnlyTimeOnly": false,
+   "UseDbContextSplitting": false,
+   "UseDecimalDataAnnotationForSprocResult": true,
+   "UseFluentApiOnly": true,
+   "UseHandleBars": false,
+   "UseHierarchyId": false,
+   "UseInflector": true,
+   "UseLegacyPluralizer": false,
+   "UseManyToManyEntity": false,
+   "UseNoDefaultConstructor": false,
+   "UseNoNavigations": false,
+   "UseNoObjectFilter": false,
+   "UseNodaTime": false,
+   "UseNullableReferences": false,
+   "UsePrefixNavigationNaming": false,
+   "UseSchemaFolders": false,
+   "UseSchemaNamespaces": false,
+   "UseSpatial": false,
+   "UseT4": false
+}

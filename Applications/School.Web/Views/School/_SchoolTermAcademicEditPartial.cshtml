@@ -1,0 +1,89 @@
+﻿@model School.Models.WebModels.SchoolTermAcademicModels.SchoolTermAcademicModel
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="cform row gy-3">
+            <input type="hidden" id="SchoolTermAcademicId" name="SchoolTermAcademicId" asp-for="SchoolTermAcademicId" />
+            <div class="col-xxl-6 col-md-6">
+                <div>
+                    <label class="form-label">Academic Year</label>
+                    <select id="TSchoolAcademicId" class="form-select" asp-for="SchoolAcademicId"
+                            asp-items="@(new SelectList(ViewBag.AcadmicYearDropdown,"Value", "Text"))">
+                    </select>
+                </div>
+            </div>
+           @*  <div class="col-xxl-6 col-md-6">
+                <div>
+                    <label class="form-label">Term</label>
+                    <select id="TermId" class="form-select" asp-for="TermId"
+                            asp-items="@(new SelectList(ViewBag.TermDropdown,"Value", "Text"))">
+                    </select>
+                </div>
+            </div> *@
+            <div class="col-xxl-6 col-md-6">
+                <div>
+                    <label class="form-label">Start Date</label>
+                    <input id="StartDate" class="form-control datepicker"
+                           value="@(!string.IsNullOrEmpty(Convert.ToString(Model.StartDate))?Convert.ToDateTime(Model.StartDate).ToString("dd/MM/yyyy"):"")"
+                           placeholder="dd/MM/yyyy" />
+                </div>
+            </div>  
+            <div class="col-xxl-6 col-md-6">
+                <div>
+                    <label class="form-label">End Date</label>
+                    <input id="EndDate" class="form-control datepicker"
+                           value="@(!string.IsNullOrEmpty(Convert.ToString(Model.EndDate))?Convert.ToDateTime(Model.EndDate).ToString("dd/MM/yyyy"):"")"
+                           placeholder="dd/MM/yyyy" />
+                </div>
+            </div>            
+            <div class="col-md-12 text-center">
+                <button class="btn btn-success theme-btn" type="button" onclick="BindTermAcademicData()">@(Model.SchoolTermAcademicId > 0 ? "Update" : "Add")</button>
+                <button class="btn btn-secondary" type="button" onclick="bootbox.hideAll();">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $('.datepicker').datepicker({
+        format: "dd/mm/yyyy",
+        autoclose: "true"
+    });
+    function BindTermAcademicData() {
+        var dataObj = {
+            SchoolTermAcademicId: $("#SchoolTermAcademicId").val(),
+            SchoolAcademicId: $("#TSchoolAcademicId").val(),
+            TermId: $("#TermId").val(),
+            SchoolId: $("#SchoolId").val(),          
+            StartDate: $("#StartDate").val(),
+            EndDate: $("#EndDate").val(),
+        };
+        if (ValidationTermAcademic(dataObj)) {
+            SaveTermAcademic(dataObj);
+        }
+    }
+    function ValidationTermAcademic(dataObj) {
+        var isError = false;
+        if (!dataObj["SchoolAcademicId"] || !dataObj["SchoolAcademicId"].trim() || dataObj["SchoolAcademicId"]=="0") {
+            $app.notify.validateDD("TSchoolAcademicId", "Academic year is required");
+            isError = true;
+        } 
+        if (!dataObj["TermId"] || !dataObj["TermId"].trim() || dataObj["TermId"] == "0") {
+            $app.notify.validateDD("TermId", "Term is required");
+            isError = true;
+        }
+        if (!dataObj["StartDate"] || !dataObj["StartDate"].trim()) {
+            $app.notify.validateDD("StartDate", "Start Date is required");
+            isError = true;
+        }
+        if (!dataObj["EndDate"] || !dataObj["EndDate"].trim()) {
+            $app.notify.validateDD("EndDate", "End Date is required");
+            isError = true;
+        }
+        if (isError) {
+            return false;
+        }
+        else {
+            return true;
+        }
+    }
+</script>

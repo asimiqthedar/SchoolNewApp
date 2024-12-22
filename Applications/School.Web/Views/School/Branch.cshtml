@@ -1,0 +1,127 @@
+﻿@{
+    ViewData["Title"] = "Branch";
+}
+
+<div class="row">
+    <div class="col-12">
+        <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+            <div class="page-title d-flex align-items-center justify-content-between">
+                <ol class="breadcrumb m-0">
+                    <li class="breadcrumb-item">Branch</li>
+                    <li class="breadcrumb-item active">Branch List</li>
+                </ol>
+                <div>
+                    <button type="button" class="btn btn-dark btn-set-task w-sm-100" onclick="Create()">
+                        <i class="fa-solid fa-plus"></i> Add
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="card">
+    <div class="card-body">
+        @*@Html.Partial("_BranchFilterPartial")*@
+        <div class="row g-3">
+            <div class="col-lg-12 col-md-12">
+                <div class="tab-content screen-list">
+                    <div class="tab-pane fade show active" id="branch-load">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section scripts {
+    <script>
+        $(function () {
+            loadBranchByFilter();
+        });
+        function RefreshSearch() {
+            $("#filterSearch").val("");
+            $("#filterIsActive").val("true");
+            loadBranchByFilter();
+        }
+        function loadBranchByFilter() {
+            var filterDataObj = {
+                FilterSearch: $("#filterSearch").val(),
+                FilterIsActive: $("#filterIsActive").val()
+            };
+            BranchLoad(filterDataObj);
+        }
+        function BranchLoad(filterDataObj) {
+            $('#branch-load').empty();
+            $('#branch-load').html('<div class="row"> <div class="col-xl-12"><div class="card order-card"><span class="text-center no-text" style="color:#212529;"><img src="@Url.Content("~/images/loding.gif")"  /></span></div></div></div>');
+            // var url = '@Url.Action("BranchDataPartial", "Branch")';
+            // $('#user-load').load(url);
+            var urlToCall = baseUrl + 'School/BranchDataPartial';
+            $app.post(urlToCall, filterDataObj).then(function (response) {
+                $('#branch-load').html(response);
+            });
+        }
+        function Create() {
+            var op = { title: 'Add Branch' }
+            var url = '@Url.Action("BranchEditPartial", "School")';
+            $app.openViewDialog(url, op);
+        }
+        function Edit(branchId) {
+            var op = { title: 'Update Branch' }
+            var url = '@Url.Action("BranchEditPartial", "School")';
+            url = url + '?branchId=' + branchId;
+            $app.openViewDialog(url, op);
+        }
+        function Save(dataModel) {
+            var urlToCall = '@Url.Action("SaveBranch", "School")';
+            $app.post(urlToCall, dataModel).then(function (response) {
+                if (response.result == 0) {
+                    bootbox.hideAll();
+                    $app.notify.success("Data has been saved!");
+                    loadBranchByFilter();
+                }
+                else if (response.result == -2) {
+                    $app.notify.error("Data already exists!");
+                }
+                else {
+                    $app.notify.error("Error in saving!");
+                }
+            });
+        }
+        function Delete(branchId) {
+            var dlg_removePromo = bootbox.dialog({
+                message: 'Are you sure you want to remove this?',
+                title: 'Remove',
+                buttons: {
+                    ok: {
+                        label: "Yes",
+                        className: 'btn-primary',
+                        callback: function () {
+                            var urlToCall = '@Url.Action("DeleteBranch", "School")';
+                            urlToCall = urlToCall + '?branchId=' + branchId;
+
+                            $app.get(urlToCall).then(function (response) {
+                                if (response.result == 0) {
+                                    bootbox.hideAll();
+                                    $app.notify.success("Data has been deleted!");
+                                    loadBranchByFilter();
+                                }
+                                else if (response.result == 547) {
+                                    $app.notify.error("Error in deleting! Record already in use.");
+                                }
+                                else {
+                                    $app.notify.error("Error in deleting!");
+                                }
+                            });
+                        }
+                    },
+                    cancel: {
+                        label: "No",
+                        className: 'btn-danger',
+                        callback: function () {
+                            $(dlg_removePromo).modal('hide');
+                        }
+                    }
+                }
+            });
+        }
+    </script>
+}

@@ -1,0 +1,83 @@
+﻿@using System.Data;
+@model DataSet;
+<div class="table-responsive">
+	<table class="table align-middle table-nowrap mb-0" id="tblMonthlyUniformStatementByParentStudent">
+		<thead class="table-light text-muted">
+			<tr>
+				<th class="text-center" style="width: 5%">S.No</th>
+				<th>Item Code</th>
+				<th>Item Name</th>
+				<th>Invoice Type</th>
+				<th>Invoice No</th>
+				<th>Date</th>
+				<th>Parent Name</th>
+				<th>Mobile</th>
+				<th>Quantity</th>
+				<th>Payment Method</th>
+				<th>Reference No</th>
+				<th class="text-end">Unit Price</th>
+				<th class="text-end">Taxable Amount</th>
+				<th class="text-end">Total Amount</th>
+				<th class="text-end">VAT Amount</th>
+			</tr>
+		</thead>
+		<tbody class="list form-check-all">
+			@if (Model != null && Model.Tables.Count > 0 && Model.Tables[0].Rows.Count > 0)
+			{
+				int i = 0;
+				foreach (DataRow dr in Model.Tables[0].Rows)
+				{
+					i++;
+					<tr class="@(!string.IsNullOrEmpty(Convert.ToString(dr["ItemCode"]).Trim()) ? "" : "total")">
+						<td class="text-center">@(!string.IsNullOrEmpty(Convert.ToString(dr["ItemCode"]).Trim()) ? (i - 1) : "")</td>
+						<td>@dr["ItemCode"]</td>
+						<td>@dr["Description"]</td>
+						<td>@dr["InvoiceType"]</td>
+						<td>@dr["InvoiceNo"]</td>
+						<td>@dr["InvoiceDate"]</td>
+						<td>@dr["ParentName"]</td>
+						<td>@dr["FatherMobile"]</td>
+						<td>@dr["Quantity"]</td>
+						<td>@dr["PaymentMethod"]</td>
+						<td>@dr["PaymentReferenceNumber"]</td>
+						<td class="text-end">@dr["UnitPrice"]</td>
+						<td class="text-end">@dr["TaxableAmount"]</td>
+						<td class="text-end">@dr["ItemSubtotal"]</td>
+						<td class="text-end">@dr["TaxAmount"]</td>
+					</tr>
+				}
+			}
+		</tbody>
+		@*  <tfoot>
+		<tr>
+		<th colspan="8" class="text-end">Total Balance:</th>
+		<th class="text-end" id="totalBalanceAmount"></th>
+		</tr>
+		</tfoot> *@
+	</table>
+</div>
+
+<script>
+	$(document).ready(function () {
+		 $("#tblMonthlyUniformStatementByParentStudent").DataTable({
+			language: {
+				search: "<i class='ri-search-line search-icon'></i>",
+				searchPlaceholder: "Search ...",
+				info: "", // Hide the "Showing x to y of z entries" message
+                infoEmpty: "", // Hide message when no entries are present
+                infoFiltered: "", // Hide the filtering message
+			},
+			pageLength: 50,
+			// searching: true,
+			// info: false,
+			// dom: 'rtip',
+			// scrollX: true,
+			// bFilter: true,
+			bSort: false,
+			// bPaginate: true,
+			// destroy: true,
+			// orderCellsTop: true,
+			// fixedHeader: true
+		});
+	});
+</script>

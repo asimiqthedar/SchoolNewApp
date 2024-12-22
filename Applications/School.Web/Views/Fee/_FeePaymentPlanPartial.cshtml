@@ -1,0 +1,202 @@
+﻿@using School.Models.WebModels.FeetypeModels;
+@model FeeTermDetailModel
+<style type="text/css">
+/*     .datepicker td, th {
+        text-align: center;
+        padding: 4px 4px;
+        font-size: 10px;
+    } */
+</style>
+<div class="row mb-4 readonly">
+    <div class="col-xxl-2 col-md-2">
+        <b>Academic Year</b>
+    </div>
+    <div class="col-xxl-4 col-md-4">
+        @Model.AcademicYear
+    </div>
+    <div class="col-xxl-2 col-md-2">
+        <b>Invoice Type</b>
+    </div>
+    <div class="col-xxl-4 col-md-4">
+        @Model.FeeTypeName
+    </div>
+    <div class="clear"></div>
+    <div class="col-xxl-2 col-md-2">
+        <b>Invoice Amount</b>
+    </div>
+    <div class="col-xxl-4 col-md-4">
+        @Model.TermFeeAmount.ToTwoDecimalString()
+    </div>
+    <div class="col-xxl-2 col-md-2">
+        <b>Grade</b>
+    </div>
+    <div class="col-xxl-4 col-md-4">
+        @Model.GradeName
+    </div>
+</div>
+<div class="row mb-2">
+    <input type="hidden" id="PaymentPlanAmount_FeePaymentPlanId" value="0" />
+    <input type="hidden" id="PaymentPlanAmount_FeeTypeDetailId" value="@Model.FeeTypeDetailId" />
+    <div class="col-xxl-2 col-md-2">
+        Invoice Amount
+    </div>
+    <div class="col-xxl-4 col-md-4">
+        <input type="number" class="form-control" id="PaymentPlanAmount" />
+    </div>
+    <div class="col-xxl-2 col-md-2">
+        Due Date
+    </div>
+    <div class="col-xxl-4 col-md-4">
+        <input type="text" class="form-control datepicker" id="PaymentPlanDueDate" />
+    </div>
+    <div class="col-md-12 text-center mb-2 mt-2">
+        <button class="btn btn-success theme-btn" id="btnPaymentPlanSave" onclick="" type="button">Add</button>
+        <button class="btn btn-secondary" type="button" onclick="bootbox.hideAll();">Cancel</button>
+    </div>
+</div>
+<div class="row mt-2">
+    <div class="col-xxl-12 col-md-12">
+        <div class="tab-content screen-list">
+            <div class="tab-pane fade show active" id="payment-plan-load">
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        $('.datepicker').datepicker({
+            format: "dd/mm/yyyy",
+            autoclose: "true"
+        });
+        loadPaymentPlan($("#PaymentPlanAmount_FeeTypeDetailId").val());
+        $("#btnPaymentPlanSave").click(function () {
+            var dataObj = {
+                FeePaymentPlanId: $("#PaymentPlanAmount_FeePaymentPlanId").val(),
+                FeeTypeDetailId: $("#PaymentPlanAmount_FeeTypeDetailId").val(),
+                PaymentPlanAmount: $("#PaymentPlanAmount").val(),
+                DueDate: GetFormateDate($("#PaymentPlanDueDate").datepicker("getDate"))
+            };
+            if (ValidationPaymentPlan(dataObj)) {
+                SavePaymentPlan(dataObj);
+            }
+        })
+    });
+    function loadPaymentPlan(feeTypeDetailId) {
+        $('#payment-plan-load').empty();
+        $('#payment-plan-load').html('<div class="row"> <div class="col-xl-12"><div class="card order-card"><span class="text-center no-text" style="color:#212529;"><img src="@Url.Content("~/images/loding.gif")"  /></span></div></div></div>');
+        var urlToCall = baseUrl + 'Fee/FeePaymentPlanDataPartial';
+        urlToCall = urlToCall + '?feeTypeDetailId=' + feeTypeDetailId;
+        $app.post(urlToCall).then(function (response) {
+            $('#payment-plan-load').html(response);
+        });
+        LoadNotificationGroup();
+    }
+    function SavePaymentPlan(dataObj) {
+        var urlToCall = '@Url.Action("SaveFeePaymentPlan", "Fee")';
+        $app.post(urlToCall, dataObj).then(function (response) {
+            if (response.result == 0) {
+                $app.notify.success("Data has been saved!");
+                ClearFiled();
+                loadPaymentPlan($("#PaymentPlanAmount_FeeTypeDetailId").val());
+            }
+            else if (response.result == -2) {
+                $app.notify.error("Amount is greater then Fee amount!");
+            }
+            else if (response.result == -3) {
+                $app.notify.error("Date should be greater of previous date!");
+            }
+            else {
+                $app.notify.error("Error in saving!");
+            }
+        });
+    }
+    function ValidationPaymentPlan(dataObj) {
+        var isError = false;
+        if (!dataObj["PaymentPlanAmount"] || !dataObj["PaymentPlanAmount"].trim()) {
+            $app.notify.validate("PaymentPlanAmount", "Amount is required");
+            isError = true;
+        }
+        if (!dataObj["DueDate"] || !dataObj["DueDate"].trim()) {
+            $app.notify.validate("PaymentPlanDueDate", "Due Date is required");
+            isError = true;
+        }
+        if (isError) {
+            return false;
+        }
+        else {
+            return true;
+        }
+    }
+    function DeletePaymentPlan(feePaymentPlanId) {
+        var dlg_removePromo = bootbox.dialog({
+            message: 'Are you sure! you want to delete the record?',
+            title: 'Remove',
+            buttons: {
+                ok: {
+                    label: "Yes",
+                    className: 'btn-primary',
+                    callback: function () {
+                        var urlToCall = '@Url.Action("DeleteFeePaymentPlan", "Fee")';
+                        urlToCall = urlToCall + '?feePaymentPlanId=' + feePaymentPlanId;
+
+                        $app.get(urlToCall).then(function (response) {
+                            if (response.result == 0) {
+                                $app.notify.success("Record sent for approval!");
+                                loadPaymentPlan($("#PaymentPlanAmount_FeeTypeDetailId").val());
+                            }
+                            else {
+                                $app.notify.error("Error in deleting!");
+                            }
+                        });
+                    }
+                },
+                cancel: {
+                    label: "No",
+                    className: 'btn-danger',
+                    callback: function () {
+                        $(dlg_removePromo).modal('hide');
+                    }
+                }
+            }
+        });
+        dlg_removePromo.find('.modal-header').css('background-color', '#dc3545').css('border-bottom', '1px solid #dc3545');
+    }
+    function EditPaymentPlan(feePaymentPlanId) {
+        var urlToCall = baseUrl + 'Fee/GetFeePaymentPlan?feePaymentPlanId=' + feePaymentPlanId + '&feeTypeDetailId=' + $("#PaymentPlanAmount_FeeTypeDetailId").val();
+        $app.get(urlToCall).then(function (response) {
+            $("#PaymentPlanAmount_FeePaymentPlanId").val(response.feePaymentPlanId);
+            $("#PaymentPlanAmount").val(response.paymentPlanAmount);
+            $("#PaymentPlanDueDate").datepicker("setDate", response.dueDate);
+        });
+    }
+    function ClearFiled()
+    {
+        $("#PaymentPlanAmount_FeePaymentPlanId").val('0');
+        $("#PaymentPlanAmount").val('');
+        $("#PaymentPlanDueDate").datepicker("setDate", '');
+    }
+    function GetDateFormat_MMMDDYYYY(date) {
+        return date.toLocaleDateString('en-GB', {
+            day: 'numeric', month: 'short', year: 'numeric'
+        }).replace(/ /g, '-');
+    }
+    function GetFormateDate(dateObject) {
+        var monthArray = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+        var d = new Date(dateObject);
+        // var f = Date.parse(d).toString('yyyy-MMM-dd')
+
+        var day = d.getDate();
+        var month = monthArray[d.getMonth()]; //+1
+        //var month = date.toLocaleDateString('en-GB', { month: 'long' })
+        var year = d.getFullYear();
+        if (day < 10) {
+            day = "0" + day;
+        }
+        // if (month < 10) {
+        //     month = "0" + month;
+        // }
+        var date = day + "-" + month + "-" + year;
+
+        return date;
+    }
+</script>

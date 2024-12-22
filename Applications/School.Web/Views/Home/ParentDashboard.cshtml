@@ -1,0 +1,171 @@
+﻿@{
+	ViewData["Title"] = "Parent";
+	Layout = "~/Views/Shared/_ParentLayout.cshtml";
+}
+<div class="row">
+	<div class="col-lg-4 col-md-4">
+		<div class="table-responsive" id="parent-dashboard-StudentInfo">
+		</div>
+	</div>
+	<div class="col-lg-4 col-md-4">
+		<div class="table-responsive" id="parent-dashboard-FatherInfo">
+		</div>
+	</div>
+	<div class="col-lg-4 col-md-4">
+		<div class="table-responsive" id="parent-dashboard-MotherInfo">
+		</div>
+	</div>
+</div>
+
+<div class="row">
+	<div class="col-lg-12 col-md-12">
+		<div  id="parent-dashboard-total-monthly-charts">
+		</div>
+	</div>
+</div>
+<div class="row">
+	<div class="col-lg-12">	
+		<div class="table-responsive" id="parent-dashboard-Charts">
+		</div>
+	</div>
+</div>
+
+<div class="row">
+	<div class="col-lg-12 col-md-12">
+		<div class="card chart-card">
+			<div class="card-header">
+				<h5>Fee Statement</h5>
+			</div>
+			<div class="card-body">
+		<div class="table-responsive" id="parent-dashboard-FeeStatement">
+		</div>
+	</div>
+		</div>
+</div>
+</div>
+<div class="row">
+	<div class="col-lg-12 col-md-12">
+		<div class="card chart-card">
+		<div class="card-header">
+			<h5>Invoice Statement</h5>
+		</div>
+			<div class="card-body">
+		<div class="table-responsive" id="parent-dashboard-invoicedetails">
+		</div>
+			</div>
+		</div>
+	</div>
+</div>
+@section scripts {
+	<script>
+		$(document).ready(function () {
+			ParentDashboardChartsLoad();
+			ParentDashboardStudentInfoLoad();
+			ParentDashboardFatherInfoLoad();
+			ParentDashboardMotherInfoLoad();
+			ParentDashboardNotificationsLoad();
+			ParentDashboardFeeDetailsLoad();
+			ParentDashboardInvoiceDetailsLoad();
+			ParentDashboardFeeStatementLoad();
+			ParentDashboardTotalAndMonthlyChartLoad();
+		});
+
+		function ParentDashboardChartsLoad() {
+			
+			$('#parent-dashboard-Charts').empty();
+			$('#parent-dashboard-Charts').html('<div class="row"> <div class="col-xl-12"><div class="card order-card"><span class="text-center no-text" style="color:#212529;"><img src="@Url.Content("~/images/loding.gif")"  /></span></div></div></div>');
+			var urlToCall = baseUrl + 'Home/ParentDashboardChartsPartial';
+
+			$app.post(urlToCall).then(function (response) {
+				$('#parent-dashboard-Charts').html(response);
+			});
+		}
+
+		function ParentDashboardStudentInfoLoad() {
+
+			$('#parent-dashboard-StudentInfo').empty();
+			$('#parent-dashboard-StudentInfo').html('<div class="row"> <div class="col-xl-12"><div class="card order-card"><span class="text-center no-text" style="color:#212529;"><img src="@Url.Content("~/images/loding.gif")"  /></span></div></div></div>');
+			var urlToCall = baseUrl + 'Home/ParentDashboardStudentInfoPartial';
+
+			$app.post(urlToCall).then(function (response) {
+				$('#parent-dashboard-StudentInfo').html(response);
+			});
+		}
+
+		function ParentDashboardFatherInfoLoad() {
+	
+			$('#parent-dashboard-FatherInfo').empty();
+			$('#parent-dashboard-FatherInfo').html('<div class="row"> <div class="col-xl-12"><div class="card order-card"><span class="text-center no-text" style="color:#212529;"><img src="@Url.Content("~/images/loding.gif")"  /></span></div></div></div>');
+			var urlToCall = baseUrl + 'Home/ParentDashboardFatherInfoPartial';
+
+			$app.post(urlToCall).then(function (response) {
+				$('#parent-dashboard-FatherInfo').html(response);
+			});
+		}
+
+		function ParentDashboardMotherInfoLoad() {
+
+			$('#parent-dashboard-MotherInfo').empty();
+			$('#parent-dashboard-MotherInfo').html('<div class="row"> <div class="col-xl-12"><div class="card order-card"><span class="text-center no-text" style="color:#212529;"><img src="@Url.Content("~/images/loding.gif")"  /></span></div></div></div>');
+			var urlToCall = baseUrl + 'Home/ParentDashboardMotherInfoPartial';
+
+			$app.post(urlToCall).then(function (response) {
+				$('#parent-dashboard-MotherInfo').html(response);
+			});
+		}
+
+		function ParentDashboardNotificationsLoad() {
+			
+			$('#parent-dashboard-Notifications').empty();
+			$('#parent-dashboard-Notifications').html('<div class="row"> <div class="col-xl-12"><div class="card order-card"><span class="text-center no-text" style="color:#212529;"><img src="@Url.Content("~/images/loding.gif")"  /></span></div></div></div>');
+			var urlToCall = baseUrl + 'Home/ParentDashboardNotificationsPartial';
+
+			$app.post(urlToCall).then(function (response) {
+				$('#parent-dashboard-Notifications').html(response);
+			});
+		}
+
+		function ParentDashboardFeeDetailsLoad() {
+			
+			$('#parent-dashboard-FeeDetails').empty();
+			$('#parent-dashboard-FeeDetails').html('<div class="row"> <div class="col-xl-12"><div class="card order-card"><span class="text-center no-text" style="color:#212529;"><img src="@Url.Content("~/images/loding.gif")"  /></span></div></div></div>');
+			var urlToCall = baseUrl + 'Home/ParentDashboardFeeDetailsPartial';
+
+			$app.post(urlToCall).then(function (response) {
+				$('#parent-dashboard-FeeDetails').html(response);
+			});
+		}
+
+		function ParentDashboardInvoiceDetailsLoad() {
+			
+			$('#parent-dashboard-invoicedetails').empty();
+			$('#parent-dashboard-invoicedetails').html('<div class="row"> <div class="col-xl-12"><div class="card order-card"><span class="text-center no-text" style="color:#212529;"><img src="@Url.Content("~/images/loding.gif")"  /></span></div></div></div>');
+			var urlToCall = baseUrl + 'Home/ParentDashboardInvoiceDetailsPartial';
+
+			$app.post(urlToCall).then(function (response) {
+				$('#parent-dashboard-invoicedetails').html(response);
+			});
+		}
+
+		function ParentDashboardFeeStatementLoad() {
+		$('#parent-dashboard-FeeStatement').empty();
+		$('#parent-dashboard-FeeStatement').html('<div class="row"> <div class="col-xl-12"><div class="card order-card"><span class="text-center no-text" style="color:#212529;"><img src="@Url.Content("~/images/loding.gif")"  /></span></div></div></div>');
+		var urlToCall = baseUrl + 'Home/ParentDashboardFeeStatementDataPartial';
+
+		$app.post(urlToCall).then(function (response) {
+			$('#parent-dashboard-FeeStatement').html(response);
+		});
+	}
+
+		function ParentDashboardTotalAndMonthlyChartLoad() {
+
+			$('#parent-dashboard-total-monthly-charts').empty();
+			$('#parent-dashboard-total-monthly-charts').html('<div class="row"> <div class="col-xl-12"><div class="card order-card"><span class="text-center no-text" style="color:#212529;"><img src="@Url.Content("~/images/loding.gif")"  /></span></div></div></div>');
+			var urlToCall = baseUrl + 'Home/ParentDashboardTotalAndMonthlyChartPartial';
+
+			$app.post(urlToCall).then(function (response) {
+				$('#parent-dashboard-total-monthly-charts').html(response);
+			});
+		}
+	</script>
+}

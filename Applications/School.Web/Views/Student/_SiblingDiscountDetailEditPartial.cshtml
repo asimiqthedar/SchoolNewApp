@@ -1,0 +1,58 @@
+﻿@using School.Models.WebModels.StudentModels;
+@model SiblingDiscountDetailModel
+<div class="row">
+    <div class="col-md-12">
+        <div class="cform row gy-3">
+            <input type="hidden" id="StudentId" name="StudentId" asp-for="StudentId" />
+            <input type="hidden" id="StudentSiblingDiscountDetailId" name="StudentSiblingDiscountDetailId" asp-for="StudentSiblingDiscountDetailId" />
+            <div class="col-xxl-6 col-md-6">
+                <div>
+                    <label class="form-label">Academic Year</label>
+                    <select id="SiblingDiscountAcademicId" class="form-select" asp-for="AcademicYearId" aria-label="Type"
+                            asp-items="@(new SelectList(ViewBag.AcademicYearDropDown,"Value", "Text")) ">
+                    </select>
+                </div>
+            </div>
+            <div class="col-xxl-6 col-md-6">
+                <div>
+                    <label class="form-label">Discount Percent</label>
+                    <input type="text" class="form-control" id="DiscountPercent" name="DiscountPercent" asp-for="DiscountPercent" placeholder="Discount Percent">
+                </div>
+            </div>
+            <div class="col-md-12 text-center">
+                <button class="btn btn-success theme-btn" type="button" onclick="BindSiblingDiscountDetailData()">@(Model.StudentSiblingDiscountDetailId > 0 ? "Update" : "Add")</button>
+                <button class="btn btn-secondary" type="button" onclick="bootbox.hideAll();">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    function BindSiblingDiscountDetailData() {
+        var dataObj = {
+            StudentId: $("#StudentId").val(),
+            StudentSiblingDiscountDetailId: $("#StudentSiblingDiscountDetailId").val(),
+            AcademicYearId: $("#SiblingDiscountAcademicId").val(),
+            DiscountPercent: $("#DiscountPercent").val(),
+        };
+        if (ValidationSiblingDiscountDetail(dataObj)) {
+            SaveSiblingDiscountDetailDetail(dataObj);
+        }
+    }
+    function ValidationSiblingDiscountDetail(dataObj) {
+        var isError = false;
+        if (dataObj["AcademicYearId"] == 0) {
+            $app.notify.validate("SiblingDiscountAcademicId", "Academic is required");
+            isError = true;
+        }
+        if (dataObj["DiscountPercent"] == 0) {
+            $app.notify.validate("DiscountPercent", "Discount Percent is required");
+            isError = true;
+        }
+        if (isError) {
+            return false;
+        }
+        else {
+            return true;
+        }
+    }
+</script>

@@ -1,0 +1,45 @@
+﻿@{
+    ViewData["Title"] = "Invoice Detail";
+}
+
+<div class="row">
+    <div class="col-12">
+        <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+            <div class="page-title d-flex align-items-center justify-content-between">
+                <ol class="breadcrumb m-0">
+                    <li class="breadcrumb-item">Home</li>
+                    <li class="breadcrumb-item active">Invoice Detail List</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="card">
+    <div class="card-body">
+        <div class="row g-3">
+            <div class="col-lg-12 col-md-12">
+                <div class="tab-content screen-list">
+                    <div class="tab-pane fade show active" id="invoicedetail-load">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section scripts {
+    <script>
+        $(function () {
+            InvoiceDetailLoad();
+        });
+
+        function InvoiceDetailLoad() {
+            $('#invoicedetail-load').empty();
+            $('#invoicedetail-load').html('<div class="row"> <div class="col-xl-12"><div class="card order-card"><span class="text-center no-text" style="color:#212529;"><img src="@Url.Content("~/images/loding.gif")"  /></span></div></div></div>');
+            var urlToCall = baseUrl + 'Home/ParentDashboardInvoiceDetailsPartial';
+            $app.post(urlToCall).then(function (response) {
+                $('#invoicedetail-load').html(response);
+            });
+        }
+
+    </script>
+}

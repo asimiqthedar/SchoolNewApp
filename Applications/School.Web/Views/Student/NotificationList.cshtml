@@ -1,0 +1,122 @@
+﻿@{
+    ViewData["Title"] = "Student List";
+}
+
+<div class="row">
+    <div class="col-12">
+        <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+            <div class="page-title d-flex align-items-center justify-content-between">
+                <ol class="breadcrumb m-0">
+                    <li class="breadcrumb-item">Notification</li>
+                    <li class="breadcrumb-item active">Notification List</li>
+                </ol>
+                <div>
+                    <button type="button" class="btn btn-dark btn-set-task w-sm-100" onclick="ApproveNotification()">
+                         Approve
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="card">
+    <div class="card-body">
+        <div class="row g-3">
+            <div class="col-lg-12 col-md-12">
+                <div class="tab-content screen-list">
+                    <div class="tab-pane fade show active" id="Notification-load">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section scripts {
+    <script>
+        $(function () {
+            NotificationLoad();
+        });        
+        function NotificationLoad() {
+            $('#Notification-load').empty();
+            $('#Notification-load').html('<div class="row"> <div class="col-xl-12"><div class="card order-card"><span class="text-center no-text" style="color:#212529;"><img src="@Url.Content("~/images/loding.gif")"  /></span></div></div></div>');
+            var urlToCall = baseUrl + 'Student/NotificationPartial';
+            $app.post(urlToCall).then(function (response) {
+                $('#Notification-load').html(response);
+            });
+        }
+        function getSelectedRowIds() {
+            var selectedIds = [];
+            $('#tblActivityData tbody input[type="checkbox"]:checked').each(function () {
+                var row = $(this).closest('tr');
+                var id = row.find('td:eq(1)').text();
+                selectedIds.push(id);
+            });
+            return selectedIds;
+        }        
+        function ApproveNotification() {
+            var selectedIds = getSelectedRowIds();
+            //console.log(selectedIds);
+            if (selectedIds.length === 0) {
+                $app.notify.error("Please select atleast one record to approve!");
+            }
+            else {
+                
+                var notificationIds = selectedIds.join(',');
+                var dataModel = {
+                    NotificationIds: notificationIds
+                };
+                var urlToCall = '@Url.Action("ApproveNotification", "Student")';
+                $.post({
+                    url: urlToCall,
+                    data: dataModel,
+                    //processData: false,
+                    //contentType: false,
+                    success: function (response) {
+                        if (response.result == 0) {
+                            $app.notify.success("Data has been saved!");
+                            NotificationLoad();
+                        }
+                        else if (response.result == -2) {
+                            $app.notify.error("Data already exists!");
+                        }
+                        else {
+                            $app.notify.error("Error in saving!");
+                        }
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        $app.notify.error("Error in saving!");
+                    }
+                });
+            }
+            //var oTable = $("#tblActivityData").DataTable();
+
+            //// alert(oTable.columns().checkboxes.selected().length);
+
+            //var id = "";
+
+            //$(".check_quality:checked", oTable.fnGetNodes()).each(function () {
+            //    if (id != "") {
+            //        id = id + "," + $(this).data('id');
+            //    } else {
+            //        id = $(this).data('id');
+            //    }
+            //});
+            //alert(id);
+            //console.log(id);
+
+            // //$('#notification-load').empty();
+            // //$('#notification-load').html('<div class="row"> <div class="col-xl-12"><div class="card order-card"><span class="text-center no-text" style="color:#212529;"><img src="@Url.Content("~/images/loding.gif")"  /></span></div></div></div>');
+            // var urlToCall = baseUrl + 'Home/ApproveNotification';
+
+            // var notificationApproval = {
+            //     'notificationId': notificationId,
+            //     'recordType': recordType
+            // };
+            // $app.post(urlToCall, notificationApproval).then(function (response) {
+            //     $('#notification-load').html(response);
+            // });
+
+            // $("#notificationBox_0").remove();
+        }
+    </script>
+}

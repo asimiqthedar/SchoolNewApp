@@ -1,0 +1,65 @@
+﻿@using System.Data;
+@model DataSet
+
+<div class="table-responsive table-card order-tabel" style="width:100%">
+    <table class="table align-middle table-nowrap mb-0" id="tblActivityData">
+        <thead class="table-light text-muted">
+            <tr>
+                <th width="10%">S.No</th>
+                <th width="30%">Invoice Type</th>
+                <th>Vat %</th>
+                <th>Debit Account</th>
+                <th>Credit Account</th>
+                <th width="150px">Exempted Nation</th>
+                <th width="70px">Actions</th>
+            </tr>
+        </thead>
+        <tbody class="list form-check-all">
+            @if (Model != null && Model.Tables.Count > 0 && Model.Tables[0].Rows.Count > 0)
+            {
+                int i = 0;
+                foreach (DataRow dr in Model.Tables[0].Rows)
+                {
+                    i++;
+                    <tr>
+                        <td>@i</td>
+                        <td>@dr["FeeTypeName"]</td>
+                        <td>@dr["VatTaxPercent"]</td>
+                        <td>@dr["DebitAccount"]</td>
+                        <td>@dr["CreditAccount"]</td>
+                        <td >
+                            <button type="button" class="@((int)dr["CountryExcludeCount"] == 0 ? "btn-green-bg btn  btn-set-task w-sm-100" : "btn btn-dark btn-set-task w-sm-100")" onclick="ExemptedNation('@dr["VatId"]')">
+                                @dr["CountryExcludeCount"] Exempted Nation
+                            </button>
+                        </td>
+                        <td>
+                            <div class="btn-group" role="group" aria-label="Basic outlined example">
+                                <button type="button" class="btn btn-outline-secondary edit-btn" title="Edit" onclick="Edit('@dr["VatId"]')">
+                                    <i class="fa-regular fa-pen-to-square  text-success"></i>
+                                </button>
+                                <button type="button" class="btn btn-outline-secondary deleterow" title="Delete" onclick="Delete('@dr["VatId"]')">
+                                    <i class="fa-solid fa-trash-can text-danger"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+</div>
+<script>
+    $("#tblActivityData").DataTable({
+        language: {
+            search: "<i class='ri-search-line search-icon'></i>",
+            searchPlaceholder: "Search ..."
+        },
+        bSort: false
+    });
+    $('#tblActivityData').DataTable().on('draw.dt', function () {
+        var info = $('#tblActivityData').DataTable().page.info();
+        $('#tblActivityData').DataTable().column(0, { search: 'applied', order: 'applied' }).nodes().each(function (cell, i) {
+            cell.innerHTML = i + 1;// cell.innerHTML = i + 1 + info.start;
+        });
+    });
+</script>

@@ -1,0 +1,122 @@
+﻿@{
+    ViewData["Title"] = "Invoice";
+}
+
+<div class="row">
+    <div class="col-12">
+        <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+            <div class="page-title d-flex align-items-center justify-content-between">
+                <ol class="breadcrumb m-0">
+                    <li class="breadcrumb-item">Invoice</li>
+                    <li class="breadcrumb-item active">Invoice List</li>
+                </ol>
+                <div>
+                <button type="button" class="btn btn-dark btn-set-task w-sm-100" onclick="Create()">
+                <i class="fa-solid fa-plus"></i> Add
+                </button>
+                </div> 
+            </div>
+        </div>
+    </div>
+</div>
+<div class="card">
+    <div class="card-body">
+        @* @Html.Partial("_GenderFilterPartial") *@
+        <div class="row g-3">
+            <div class="col-lg-12 col-md-12">
+                <div class="tab-content screen-list">
+                    <div class="tab-pane fade show active" id="invoice-load">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section scripts {
+    <script>
+        $(function () {
+            loadInvoiceByFilter();
+        });
+        function RefreshSearch() {
+            $("#filterSearch").val("");
+            $("#filterIsActive").val("true");
+            loadInvoiceByFilter();
+        }
+        function loadInvoiceByFilter() {
+            var filterDataObj = {
+                FilterSearch: $("#filterSearch").val(),
+                FilterIsActive: $("#filterIsActive").val()
+            };
+            InvoiceLoad(filterDataObj);
+        }
+        function InvoiceLoad(filterDataObj) {
+            $('#invoice-load').empty();
+            $('#invoice-load').html('<div class="row"> <div class="col-xl-12"><div class="card order-card"><span class="text-center no-text" style="color:#212529;"><img src="@Url.Content("~/images/loding.gif")"  /></span></div></div></div>');
+            var urlToCall = baseUrl + 'InvoiceReturn/InvoiceDataPartial';
+            $app.post(urlToCall, filterDataObj).then(function (response) {
+                $('#invoice-load').html(response);
+            });
+        }
+        function Create() {
+            var op = { title: 'Add Invoice' }
+            var url = '@Url.Action("AddEditInvoice", "InvoiceReturn")';
+            window.location.href = url;
+        }
+        function Edit(InvoiceNo) {
+            var op = { title: 'Update Gender' }
+            var url = '@Url.Action("AddEditInvoice", "InvoiceReturn")';
+            url = url + '?invoiceNo=' + InvoiceNo;
+            window.location.href = url;
+        }
+        function Save(dataModel) {
+            var urlToCall = '@Url.Action("InvoiceSave", "Setup")';
+            $app.post(urlToCall, dataModel).then(function (response) {
+                if (response.result == 0) {
+                    bootbox.hideAll();
+                    $app.notify.success("Data has been saved!");
+                    loadInvoiceByFilter();
+                }
+                else {
+                    $app.notify.error("Error in saving!");
+                }
+            });
+        }
+
+        function Delete(invoiceId) {
+            var dlg_removePromo = bootbox.dialog({
+                message: 'Are you sure! you want to delete the record?',
+                title: 'Remove',
+                buttons: {
+                    ok: {
+                        label: "Yes",
+                        className: 'btn-primary',
+                        callback: function () {
+                            var urlToCall = '@Url.Action("DeleteInvoice", "InvoiceReturn")';
+                            urlToCall = urlToCall + '?invoiceId=' + invoiceId;
+
+                            $app.get(urlToCall).then(function (response) {
+                                if (response.result == 0) {
+                                    bootbox.hideAll();
+                                    $app.notify.success("Data has been deleted!");
+                                    loadInvoiceByFilter();
+                                }
+                                else {
+                                    $app.notify.error("Error in deleting!");
+                                }
+                            });
+                        }
+                    },
+                    cancel: {
+                        label: "No",
+                        className: 'btn-danger',
+                        callback: function () {
+                            $(dlg_removePromo).modal('hide');
+                        }
+                    }
+                }
+            });
+            dlg_removePromo.find('.modal-header').css('background-color', '#dc3545').css('border-bottom', '1px solid #dc3545');
+        }
+
+    </script>
+}

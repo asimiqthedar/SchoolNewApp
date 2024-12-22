@@ -1,0 +1,113 @@
+﻿@using System.Data;
+@model DataSet
+
+<div class="card chart-card">
+	<div class="card-header">
+		<h5>Fee Overview</h5>
+	</div>
+	<div class="card-body">
+		<div class="fee-overview-box">
+			<div class="fee-overview-chart">
+				<div id="feesBarChart"></div>
+			</div>
+			<div class="fee-overview-list">
+				@foreach (DataRow row in Model.Tables[0].Rows)
+				{
+					var totalFee = Convert.ToDecimal(row["TotalFee"]);
+					var feePaid = Convert.ToDecimal(row["FeePaid"]);
+					var discount = Convert.ToDecimal(row["Discount"]);
+					var pendingAmount = Convert.ToDecimal(row["PendingAmount"]);
+
+					<div class="single-feeoverview redoverview">
+						<h6>Total fees</h6>
+						<b>@totalFee</b>
+					</div>
+					<div class="single-feeoverview yellowoverview">
+						<h6>Fees paid</h6>
+						<b>@feePaid</b>
+					</div>
+					<div class="single-feeoverview greenovervier">
+						<h6>Discount</h6>
+						<b>@discount</b>
+					</div>
+					<div class="single-feeoverview red-overview">
+						<h6>Pending amount</h6>
+						<b>@pendingAmount</b>
+					</div>
+				}
+			</div>
+		</div>
+	</div>
+</div>
+
+<script>
+	$(document).ready(function () {
+		fetchParentYearwiseFeeInfo();
+	});
+
+	function fetchParentYearwiseFeeInfo() {
+		var urlToCall = '@Url.Action("GetParentYearwiseFeeInfo", "Home")';
+
+		$app.get(urlToCall).then(function (response) {
+            loadParentWiseFeeChart(response);
+		});
+	}
+
+    function loadParentWiseFeeChart(response) {
+
+        var yearNumber = response.map(item => item.yearNumber);
+        var totalFee = response.map(item => item.totalFee);
+        var feePaid = response.map(item => item.feePaid);
+
+        var ParentYearwiseOptionsColumn = {
+            series: [{
+                name: 'Total Fee',
+                data: totalFee
+            }, {
+                name: 'Fee Paid',
+                data: feePaid
+            }],
+            chart: {
+                type: 'bar',
+                height: 430,
+            },
+            plotOptions: {
+                bar: {
+                    horizontal: false,
+                    columnWidth: '55%',
+                    endingShape: 'rounded'
+                },
+            },
+            dataLabels: {
+                enabled: false
+            },
+            stroke: {
+                show: true,
+                width: 2,
+                colors: ['transparent']
+            },
+            xaxis: {
+                categories: yearNumber,
+            },
+            yaxis: {
+                title: {
+                    text: 'Number'
+                }
+            },
+            fill: {
+                opacity: 1
+            },
+            tooltip: {
+                y: {
+                    formatter: function (val) {
+                        return "Total " + val
+                    }
+                }
+            }
+        };
+
+        var parentwisefeeschart = new ApexCharts(document.querySelector("#feesBarChart"), ParentYearwiseOptionsColumn);
+        parentwisefeeschart.render();
+
+    }
+</script>

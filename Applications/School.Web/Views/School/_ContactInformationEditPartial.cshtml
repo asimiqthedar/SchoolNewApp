@@ -1,0 +1,89 @@
+﻿@using School.Models.WebModels.ContactInformationModels;
+@model ContactInformationModel
+
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="cform row gy-3">
+            <input type="hidden" id="ContactId" name="ContactId" asp-for="ContactId" />
+            <div class="col-xxl-6 col-md-6">
+                <div>
+                    <label class="form-label">Contact Person</label>
+                    <input type="text" class="form-control" id="ContactPerson" name="ContactPerson" asp-for="ContactPerson" placeholder="Contact Person">
+                </div>
+            </div>
+            <div class="col-xxl-6 col-md-6">
+                <div>
+                    <label class="form-label">Position</label>
+                    <input type="text" class="form-control" id="ContactPosition" name="ContactPosition" asp-for="ContactPosition" placeholder="Position">
+                </div>
+            </div>
+            <div class="col-xxl-6 col-md-6">
+                <div>
+                    <label class="form-label">Telephone</label>
+                    <input type="text" class="form-control" id="ContactTelephone" name="ContactTelephone" asp-for="ContactTelephone" placeholder="Telephone">
+                </div>
+            </div>
+            <div class="col-xxl-6 col-md-6">
+                <div>
+                    <label class="form-label">Email</label>
+                    <input type="email" class="form-control" id="ContactEmail" name="ContactEmail" asp-for="ContactEmail" placeholder="Email">
+                </div>
+            </div>
+            <div class="col-xxl-6 col-md-6">
+                <div>
+                    <label class="form-label">Active</label>
+                    <select class="form-select" name="IsActive" id="IsActive" asp-for="IsActive" aria-label="Active">
+                        <option value=true>Active</option>
+                        <option value=false>In-Active</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-12 text-center">
+                <button class="btn btn-success theme-btn" type="button" onclick="BindContactData()">@(Model.ContactId > 0 ? "Update" : "Add")</button>
+                <button class="btn btn-secondary" type="button" onclick="bootbox.hideAll();">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    function BindContactData() {
+        var dataObj = {
+            ContactId: $("#ContactId").val(),
+            SchoolId: $("#SchoolId").val(),
+            ContactPerson: $("#ContactPerson").val(),
+            ContactPosition: $("#ContactPosition").val(),
+            ContactTelephone: $("#ContactTelephone").val(),
+            ContactEmail: $("#ContactEmail").val(),
+            IsActive: $("#IsActive").val()
+        };
+        if (ValidationContact(dataObj)) {
+            SaveContact(dataObj);
+        }
+    }
+    function ValidationContact(dataObj) {
+        var isError = false;
+        if (!dataObj["ContactPerson"] || !dataObj["ContactPerson"].trim()) {
+            $app.notify.validate("ContactPerson", "Contact Person is required");
+            isError = true;
+        }
+        if (!dataObj["ContactPosition"] || !dataObj["ContactPosition"].trim()) {
+            $app.notify.validate("ContactPosition", "Position is required");
+            isError = true;
+        }
+        if (!dataObj["ContactTelephone"] || !dataObj["ContactTelephone"].trim()) {
+            $app.notify.validate("ContactTelephone", "Telephone is required");
+            isError = true;
+        }
+        if (!dataObj["ContactEmail"] || !dataObj["ContactEmail"].trim()) {
+            $app.notify.validate("ContactEmail", "Email is required");
+            isError = true;
+        }
+        if (isError) {
+            return false;
+        }
+        else {
+            return true;
+        }
+    }
+</script>

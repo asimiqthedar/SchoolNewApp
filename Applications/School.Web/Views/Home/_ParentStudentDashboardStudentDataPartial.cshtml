@@ -1,0 +1,50 @@
+﻿@model School.Models.WebModels.ParentModels.ParentModel
+
+<div class="table-responsive">
+    <table class="table ">
+        <thead class="table-light">
+            <tr>
+                <th>Student Name</th>
+                <th>Arabic Name</th>
+                <th>Student Code</th>
+                <th>Grade</th>
+                <th>Gender</th>
+                <th>ID (Iqama No)</th>
+                <th>Email</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model.StudentModelList != null && Model.StudentModelList.Count > 0)
+            {
+                foreach (var student in Model.StudentModelList)
+                {
+                    <tr>
+                        <td>@student.StudentName</td>
+                        <td>@student.StudentArabicName</td>
+                        <td>@student.StudentCode</td>
+                        <td>@student.GradeName</td>
+                        <td>@(student.GenderId == 1 ? "Male" : "Female")</td>
+                        <td>@student.IqamaNo</td>
+                        <td>@student.StudentEmail</td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="7" class="text-center">No student data available.</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $('.table').DataTable({
+            bSort: false,
+            searching: false,
+            paging: false,
+        });
+    });
+</script>

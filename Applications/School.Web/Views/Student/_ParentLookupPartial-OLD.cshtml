@@ -1,0 +1,74 @@
+﻿<link href="@Url.Content("~/css/select2.min.css")" rel="stylesheet" />
+<div class="row">
+    <div class="col-lg-6">
+        <div class="mb-3">
+            <label for="LookupParentId" class="form-label">Parent Id</label>
+            <div class="input-group">
+                <select id="LookupParentId" class="form-select select2 lookupfield" name="LookupParentId"
+                        asp-items="@(new SelectList(ViewBag.ParentDropdown,"Value", "Text"))">
+                </select>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-6">
+        <div class="mb-3">
+            <label for="LookupFatherParentId" class="form-label">Father Name</label>
+            <div class="input-group">
+                <select id="LookupFatherParentId" class="form-select select2 lookupfield" name="LookupFatherParentId"
+                        asp-items="@(new SelectList(ViewBag.FatherDropdown,"Value", "Text"))">
+                </select>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-6">
+        <div class="mb-3">
+            <label for="LookupFatherArabicParentId" class="form-label">Father Arabic Name</label>
+            <div class="input-group">
+                <select id="LookupFatherArabicParentId" class="form-select select2 lookupfield" name="LookupFatherArabicParentId"
+                        asp-items="@(new SelectList(ViewBag.FatherArabicDropdown,"Value", "Text"))">
+                </select>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-6">
+        <div class="mb-3">
+            <label for="LookupMotherParentId" class="form-label">Mother Name</label>
+            <div class="input-group">
+                <select id="LookupMotherParentId" class="form-select select2 lookupfield" name="LookupMotherParentId"
+                        asp-items="@(new SelectList(ViewBag.MotherDropdown,"Value", "Text"))">
+                </select>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-6">
+        <div class="mb-3">
+            <label for="LookupMotherArabicParentId" class="form-label">Mother Arabic Name</label>
+            <div class="input-group">
+                <select id="LookupMotherArabicParentId" class="form-select select2 lookupfield" name="LookupMotherArabicParentId"
+                        asp-items="@(new SelectList(ViewBag.MotherArabicDropdown,"Value", "Text"))">
+                </select>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-12 text-center">
+        <button class="btn btn-success theme-btn" type="button" id="btnLookupOk">OK</button>
+        <button class="btn btn-secondary" type="button" onclick="bootbox.hideAll();">Cancel</button>
+    </div>
+</div>
+<script src="@Url.Content("~/js/jquery.min.js")"></script>
+<script src="@Url.Content("~/js/select2.min.js")"></script>
+<script>
+    $(document).ready(function () {
+        $('.select2').select2();
+        $('.lookupfield').change(function () {
+            var parentId = $(this).val();
+            $('.lookupfield').not(this).val(parentId).trigger('change.select2');
+        });
+        $("#btnLookupOk").click(function () {
+            var parentId = $("#LookupParentId").val();
+            bootbox.hideAll();
+            BindParent(parentId);
+        });
+    });
+   
+</script>

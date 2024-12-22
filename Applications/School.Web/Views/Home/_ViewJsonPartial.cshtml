@@ -1,0 +1,81 @@
+﻿@using System.Data;
+@using Newtonsoft.Json.Linq
+@model DataSet
+@{
+    string xmlData = Convert.ToString(ViewBag.XmlData);
+    var xml = new System.Xml.XmlDocument();
+    xml.LoadXml(xmlData);
+}
+<div class="row">
+    <div class="col-md-6">
+        <div class="row">
+            <div class="card" style="background-color:#dbdbdb">
+                <div class="card-body">
+                    <h5 class="card-title mb-3">Old Values</h5>
+                    <div class="table-responsive">
+                        <table class="table table-borderless mb-0">
+                            <tbody>
+                                @{
+                                    if (!string.IsNullOrEmpty(Convert.ToString(Model.Tables[0].Rows[0]["OldValueJson"])))
+                                    {
+                                        JObject jsonData = JObject.Parse(Model.Tables[0].Rows[0]["OldValueJson"].ToString());
+                                        foreach (JProperty property in jsonData.Properties())
+                                        {
+                                            string xmlKey = property.Name;
+                                            string replacedKey = xml.SelectSingleNode($"//{xmlKey}")?.InnerText ?? xmlKey;
+
+                                            <tr>
+                                                <th class="ps-0" scope="row" width="30%">@replacedKey</th>
+                                                <td class="text-muted">@property.Value</td>
+                                            </tr>
+                                            // <tr>
+                                            //     <th class="ps-0" scope="row" width="30%">@property.Name.Replace("PaymentPlanAmount", "Amount").Replace("DueDate", "Due Date")</th>
+                                            //     <td class="text-muted">@property.Value</td>
+                                            // </tr>
+                                        }
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="row">
+            <div class="card" style="background-color:#dbdbdb;margin-left:2px">
+                <div class="card-body">
+                    <h5 class="card-title mb-3">New Values</h5>
+                    <div class="table-responsive">
+                        <table class="table table-borderless mb-0">
+                            <tbody>
+                                @{
+                                    if (!string.IsNullOrEmpty(Convert.ToString(Model.Tables[0].Rows[0]["NewValueJson"])))
+                                    {
+
+                                        JObject jsonData1 = JObject.Parse(Model.Tables[0].Rows[0]["NewValueJson"].ToString());
+                                        foreach (JProperty property in jsonData1.Properties())
+                                        {
+                                            string xmlKey = property.Name;
+                                            string replacedKey = xml.SelectSingleNode($"//{xmlKey}")?.InnerText ?? xmlKey;
+
+                                            <tr>
+                                                <th class="ps-0" scope="row" width="30%">@replacedKey</th>
+                                                <td class="text-muted">@property.Value</td>
+                                            </tr>
+                                            // <tr>
+                                            //     <th class="ps-0" scope="row" width="30%">@property.Name.Replace("PaymentPlanAmount", "Amount").Replace("DueDate", "Due Date")</th>
+                                            //     <td class="text-muted">@property.Value</td>
+                                            // </tr>
+                                        }
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

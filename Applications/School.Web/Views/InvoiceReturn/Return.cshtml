@@ -1,0 +1,464 @@
+﻿@using School.Models.WebModels.InvoiceSetupModels;
+@model InvInvoiceSummaryModel
+<div id="app">
+    <div class="row">
+        <div class="col-12">
+            <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+                <div class="page-title d-flex align-items-center justify-content-between">
+                    <ol class="breadcrumb m-0">
+                        <li class="breadcrumb-item">Invoice</li>
+                        <li class="breadcrumb-item active">Add/Edit Invoice</li>
+                    </ol>
+                    <div>
+                        <a class="breadcrumb-item FeeTypeAction btn btn-dark btn-set-task w-sm-100" href="@Url.Action("Invoice","InvoiceReturn")">Back To List</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--Start: Invoice Line Item-->
+    <div class="row">
+        <div class="card">
+            <div class="card-body">
+                <div class="row">
+                    <input type="type" hidden asp-for="InvoiceNo" name="name" value="@Model.InvoiceNo" />
+                    <input type="type" hidden asp-for="InvoiceSessionKey" name="name" value="@Model.InvoiceSessionKey" />
+                    <input type="type" hidden asp-for="InvInvoicePaymentModel.SessionKey" name="name" value="@Model.InvInvoicePaymentModel.SessionKey" />
+                    <input type="type" hidden asp-for="InvInvoicePaymentModel.InvoicePaymentId" name="name" value="@Model.InvInvoicePaymentModel.InvoicePaymentId" />
+                    <div class="col-md-4" style="text-align:center">
+                        <div class="mb-3">
+                            <button class="btn btn-primary" onclick="CreateEntranceExam()">Add Entrance Exam Fee</button>
+                        </div>
+                    </div>
+                    <div class="col-md-4" style="text-align:center">
+                        <div class="mb-3">
+                            <button class="btn btn-primary" onclick="CreateUniform()">Add Uniform Fee</button>
+                        </div>
+                    </div>
+                    <div class="col-md-4" style="text-align:center">
+                        <div class="mb-3">
+                            <button class="btn btn-primary" onclick="CreateTution()">Add Tutiton Fee</button>
+                        </div>
+                    </div>
+                </div>
+
+                @*  @Html.Partial("_GradeFilterPartial") *@
+                <div class="row g-3">
+                    <div class="col-lg-12 col-md-12">
+                        <div class="tab-content screen-list">
+                            <div class="tab-pane fade show active" id="invoiceDetail-load">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--Start: Payment section-->
+            <div class="row">
+                <div class="card">
+                    <div class="card-body">
+                        @* <h5 class="card-title mb-3">Details</h5> *@
+                        <div class="row">
+                            <div class="col-lg-4">
+                                <div class="mb-3">
+                                    <label for="PaymentMethod" class="form-label">Payment Method</label>
+                                    <div class="input-group">
+                                        <select class="form-select" id="PaymentMethod" asp-for="InvInvoicePaymentModel.PaymentMethod">
+                                            <option>--Select--</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4">
+                                <div class="mb-3">
+                                    <label for="PaymentReferenceNumber" class="form-label">Payment Reference No.</label>
+                                    <input type="text" class="form-control" id="PaymentReferenceNumber" asp-for="InvInvoicePaymentModel.PaymentReferenceNumber" name="PaymentReferenceNumber" placeholder="Payment Reference Number">
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="PayableAmount" class="form-label">Payment Amount</label>
+                                <input type="number" class="form-control" id="PaymentAmount" name="PaymentAmount" asp-for="InvInvoicePaymentModel.PaymentAmount" placeholder="Payment Amount">
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-12" style="text-align:center">
+                                <div class="mb-3">
+                                    <button class="btn btn-primary" onclick="BindPaymentData()">Add Payment</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row g-3">
+                            <div class="col-lg-12 col-md-12">
+                                <div class="tab-content screen-list">
+                                    <div class="tab-pane fade show active" id="invoicepayment-load">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <!--Start: Invoice Summery-->
+            <div class="row">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row mt-4">
+                            <div class="col-md-3">
+                                <div class="mb-3">
+                                    <label class="form-label">Invoice No.</label>
+                                    <input type="text" class="form-control" v-model="Model.Model.InvoiceSummaryModel.InvoiceNo" disabled="disabled" placeholder="Invoice No.">
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="mb-3">
+                                    <label class="form-label">Invoice Date</label>
+                                    <input type="date" class="form-control datepicker" placeholder="Invoice Date">
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="mb-3">
+                                    <label class="form-label">Status</label>
+                                    <div class="input-group">
+                                        <select id="Status" class="form-select">
+                                            <option>--Select--</option>
+                                            <option>New</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <label for="TotalInvoiceAmountWithVat" class="form-label">Total Paid</label>
+                                <input type="number" class="form-control" disabled="disabled" placeholder="Total Paid Amount">
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-3">
+                                <label for="TotalInvoicePrice" class="form-label">Total Price</label>
+                                <input type="text" class="form-control" disabled="disabled" id="TotalInvoicePrice" placeholder="Total Price">
+                            </div>
+                            <div class="col-md-3">
+                                <label for="TotalDiscount" class="form-label">Discount Value</label>
+                                <input type="number" class="form-control" disabled="disabled" placeholder="Discount">
+                            </div>
+                            <div class="col-md-3">
+                                <label for="TotalInvoicePriceAfterDiscount" class="form-label">Total Price After Discount</label>
+                                <input type="number" class="form-control" disabled="disabled" placeholder="Total Price After Discount">
+                            </div>
+                            <div class="col-md-3">
+                                <label for="TotalInvoiceAmountWithVat" class="form-label">Total Invoice With Tax</label>
+                                <input type="number" class="form-control" disabled="disabled" placeholder="Total Invoice With Tax">
+                            </div>
+
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-12" style="text-align:center">
+                                <div class="mb-3">
+                                    <button class="btn btn-primary" onclick="SaveInvoice()">Save Invoice</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+            <!--End: Invoice Summery-->
+        </div>
+
+
+    </div>
+</div>
+@section scripts {
+    <script>
+        // $(function () {
+      
+        // });
+
+        function loadPaymentMethodOptions(){
+            var data = ["Bank Transfer", "Check", "Cash", "Visa"];
+            var paymentMethod = $('#PaymentMethod'); 
+            paymentMethod.empty();
+            paymentMethod.append('<option>--Select--</option>');
+
+            data.forEach(function (record) {
+                paymentMethod.append('<option value="' + record + '">' + record + '</option>');
+            });
+        }
+
+        $(document).ready(function () {
+            $('#filterCostCenterId').change(function () {
+                loadInvoiceDetailByFilter()
+            });
+            $('#filterGenderTypeId').change(function () {
+                loadInvoiceDetailByFilter()
+            });
+
+            loadInvoiceDetailByFilter();
+            loadInvoicePaymentByFilter();
+            loadPaymentMethodOptions();
+        });
+        function RefreshSearch() {
+            $("#filterSearch").val("");
+            $("#filterCostCenterId").val("0");
+            $("#filterGenderTypeId").val("0");
+            $("#filterIsActive").val("true");
+            loadInvoiceDetailByFilter();
+        }
+        function loadInvoiceDetailByFilter() {
+            // var filterDataObj = {
+            //     FilterSearch: $("#filterSearch").val(),
+            //     FilterCostCenterId: $("#filterCostCenterId").val(),
+            //     FilterGenderTypeId: $("#filterGenderTypeId").val(),
+            //     FilterIsActive: $("#filterIsActive").val()
+            // };
+            // GradeLoad(filterDataObj);
+
+            InvoiceDetailLoad(null);
+        }
+
+        function loadInvoicePaymentByFilter() {
+            // var filterDataObj = {
+            //     FilterSearch: $("#filterSearch").val(),
+            //     FilterCostCenterId: $("#filterCostCenterId").val(),
+            //     FilterGenderTypeId: $("#filterGenderTypeId").val(),
+            //     FilterIsActive: $("#filterIsActive").val()
+            // };
+            // GradeLoad(filterDataObj);
+
+            InvoicePaymentLoad(null);
+        }
+        function InvoiceDetailLoad(filterDataObj) {
+            var invoiceNo = "@Model.InvoiceNo"
+            var invoiceSessionKey = "@Model.InvoiceSessionKey"
+            //$('#grade-load').empty();
+            //$('#grade-load').html('<div class="row"> <div class="col-xl-12"><div class="card order-card"><span class="text-center no-text" style="color:#212529;"><img src="@Url.Content("~/images/loding.gif")"  /></span></div></div></div>');
+            var urlToCall = baseUrl + 'InvoiceReturn/InvoiceDetailDataPartial';
+            urlToCall = urlToCall + `?invoiceNo=${invoiceNo}&invoiceSessionKey=${invoiceSessionKey}`
+            $app.post(urlToCall, filterDataObj).then(function (response) {
+                $('#invoiceDetail-load').html(response);
+            });
+        }
+        function InvoicePaymentLoad(filterDataObj) {
+            var invoiceNo = "@Model.InvoiceNo"
+            var invoiceSessionKey = "@Model.InvoiceSessionKey"
+            //$('#grade-load').empty();
+            //$('#grade-load').html('<div class="row"> <div class="col-xl-12"><div class="card order-card"><span class="text-center no-text" style="color:#212529;"><img src="@Url.Content("~/images/loding.gif")"  /></span></div></div></div>');
+            var urlToCall = baseUrl + 'InvoiceReturn/InvoicePaymentDataPartial';
+            urlToCall = urlToCall + `?invoiceNo=${invoiceNo}&invoiceSessionKey=${invoiceSessionKey}`
+            $app.post(urlToCall, filterDataObj).then(function (response) {
+                $('#invoicepayment-load').html(response);
+            });
+        }
+       
+
+        // Add Payment
+
+        function BindPaymentData() {
+            var dataObj = {
+                InvoiceSessionKey: "@Model.InvoiceSessionKey",
+                InvoiceNo: "@Model.InvoiceNo",
+                InvoicePaymentId: $("#InvoicePaymentId").val(),
+                SessionKey:"@Model.InvInvoicePaymentModel.SessionKey" ,
+                PaymentMethod: $("#PaymentMethod").val(),
+                PaymentReferenceNumber: $("#PaymentReferenceNumber").val(),
+                PaymentAmount: $("#PaymentAmount").val(),
+            };
+            if (ValidationPayment(dataObj)) {
+                    SavePayment(dataObj);
+            }
+        }
+        function ValidationPayment(dataObj) {
+            var isError = false;
+            if (!dataObj["PaymentReferenceNumber"] || !dataObj["PaymentReferenceNumber"].trim()) {
+                $app.notify.validate("PaymentReferenceNumber", "PaymentReferenceNumber is required");
+                isError = true;
+            }
+            if (isError) {
+                return false;
+            }
+            else {
+                return true;
+            }
+        }
+
+
+        function SavePayment(dataModel) {
+            var urlToCall = '@Url.Action("InvoicePaymentAddEdit", "InvoiceReturn")';
+            $app.post(urlToCall, dataModel).then(function (response) {
+                if (response.result == 0) {
+                    bootbox.hideAll();
+                    loadInvoicePaymentByFilter();
+                    $app.notify.success("Data has been saved!");
+                }
+                else {
+                    $app.notify.error("Error in saving!");
+                }
+            })
+        }
+
+
+        //End Payment
+
+        function Edit(gradeId) {
+            var op = { title: 'Update Grade' }
+            var url = '@Url.Action("GradeEditPartial", "Setup")';
+            url = url + '?gradeId=' + gradeId;
+            $app.openViewDialog(url, op);
+        }
+        function Save(dataModel) {
+            var urlToCall = '@Url.Action("SaveGrade", "Setup")';
+            $app.post(urlToCall, dataModel).then(function (response) {
+                if (response.result == 0) {
+                    bootbox.hideAll();
+                    $app.notify.success("Data has been saved!");
+                    loadGradeByFilter();
+                }
+                else if (response.result == -2) {
+                    $app.notify.error("Data already exists!");
+                }
+                else if (response.result == -3) {
+                    $app.notify.error("Grade already exist in another Cost Center!");
+                }
+                else {
+                    $app.notify.error("Error in saving!");
+                }
+            });
+        }
+        function Delete(gradeId) {
+            var dlg_removePromo = bootbox.dialog({
+                message: 'Are you sure! you want to delete the record?',
+                title: 'Remove',
+                buttons: {
+                    ok: {
+                        label: "Yes",
+                        className: 'btn-primary',
+                        callback: function () {
+                            var urlToCall = '@Url.Action("DeleteGrade", "Setup")';
+                            urlToCall = urlToCall + '?gradeId=' + gradeId;
+
+                            $app.get(urlToCall).then(function (response) {
+                                if (response.result == 0) {
+                                    bootbox.hideAll();
+                                    $app.notify.success("Data has been deleted!");
+                                    loadGradeByFilter();
+                                }
+                                else if (response.result == 547) {
+                                    $app.notify.error("Error in deleting! Record already in use.");
+                                }
+                                else {
+                                    $app.notify.error("Error in deleting!");
+                                }
+                            });
+                        }
+                    },
+                    cancel: {
+                        label: "No",
+                        className: 'btn-danger',
+                        callback: function () {
+                            $(dlg_removePromo).modal('hide');
+                        }
+                    }
+                }
+            });
+            dlg_removePromo.find('.modal-header').css('background-color', '#dc3545').css('border-bottom', '1px solid #dc3545');
+        }
+
+
+        function CreateEntranceExam() {
+            var op = { title: 'Add Entrance Fee' }
+            var invoiceNo = "@Model.InvoiceNo"
+            var invoiceSessionKey = "@Model.InvoiceSessionKey"
+            var url = '@Url.Action("InvoiceDetailEntranceFeeEditPartial", "InvoiceReturn")';
+            url = url + `?invoiceNo=${invoiceNo}&invoiceSessionKey=${invoiceSessionKey}`
+            $app.openViewDialog(url, op);
+        }
+
+        function CreateUniform() {
+            var op = { title: 'Add Uniform Fee' }
+            var invoiceNo = "@Model.InvoiceNo"
+            var invoiceSessionKey = "@Model.InvoiceSessionKey"
+            var url = '@Url.Action("InvoiceDetailUniformFeeEditPartial", "InvoiceReturn")';
+            url = url + `?invoiceNo=${invoiceNo}&invoiceSessionKey=${invoiceSessionKey}`
+            $app.openViewDialog(url, op);
+        }
+
+        function CreateTution() {
+            var op = { title: 'Add Tuition Fee' }
+            var invoiceNo = "@Model.InvoiceNo"
+            var invoiceSessionKey = "@Model.InvoiceSessionKey"
+            var url = '@Url.Action("InvoiceDetailTuitionFeeEditPartial", "InvoiceReturn")';
+            url = url + `?invoiceNo=${invoiceNo}&invoiceSessionKey=${invoiceSessionKey}`
+            $app.openViewDialog(url, op);
+        }
+
+        function SaveEntranceFee(dataModel) {
+            dataModel.InvoiceSessionKey = "@Model.InvoiceSessionKey";
+            dataModel.InvoiceNo = "@Model.InvoiceNo";
+            var urlToCall = '@Url.Action("InvoiceDetailEntranceFeeEditPartial", "InvoiceReturn")';
+            $app.post(urlToCall, dataModel).then(function (response) {
+                if (response.result == 0) {
+                    bootbox.hideAll();
+                    loadInvoiceDetailByFilter();
+                    $app.notify.success("Data has been saved!");
+                }
+                else {
+                    $app.notify.error("Error in saving!");
+                }
+            })
+        }
+        function SaveUniformFee(dataModel) {
+            dataModel.InvoiceSessionKey = "@Model.InvoiceSessionKey";
+            dataModel.InvoiceNo = "@Model.InvoiceNo";
+            var urlToCall = '@Url.Action("InvoiceDetailUniformFeeEditPartial", "InvoiceReturn")';
+            $app.post(urlToCall, dataModel).then(function (response) {
+                if (response.result == 0) {
+                    bootbox.hideAll();
+                    loadInvoiceDetailByFilter();
+                    $app.notify.success("Data has been saved!");
+                }
+                else {
+                    $app.notify.error("Error in saving!");
+                }
+            })
+        }
+        function SaveTuitionFee(dataModel) {
+            dataModel.InvoiceSessionKey = "@Model.InvoiceSessionKey";
+            dataModel.InvoiceNo = "@Model.InvoiceNo";
+            var urlToCall = '@Url.Action("InvoiceDetailTuitionFeeEditPartial", "InvoiceReturn")';
+            $app.post(urlToCall, dataModel).then(function (response) {
+                if (response.result == 0) {
+                    bootbox.hideAll();
+                    loadInvoiceDetailByFilter();
+                    $app.notify.success("Data has been saved!");
+                }
+                else {
+                    $app.notify.error("Error in saving!");
+                }
+            })
+        }
+
+        function SaveInvoice(){
+            var dataModel = {
+                InvoiceSessionKey : "@Model.InvoiceSessionKey",
+                InvoiceNo : "@Model.InvoiceNo"
+            };
+
+            var urlToCall = '@Url.Action("InvoiceSave", "InvoiceReturn")';
+            $app.post(urlToCall, dataModel).then(function (response) {
+                if (response.result == 0) {
+                    $app.notify.success("Invoice is saved successfully!");
+
+                    var url = '@Url.Action("invoice", "InvoiceReturn")';
+                    window.location.href = url;
+                }
+                else {
+                    $app.notify.error("Error in saving!");
+                }
+            })
+        }
+    </script>
+}

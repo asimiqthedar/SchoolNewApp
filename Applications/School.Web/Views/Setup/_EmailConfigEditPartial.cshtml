@@ -1,0 +1,136 @@
+﻿@using School.Models.WebModels.ConfigModel;
+@model EmailConfigModel
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="cform row gy-3">
+            <input type="hidden" id="EmailConfigId" name="EmailConfigId" asp-for="EmailConfigId" />
+            <div class="col-xxl-12 col-md-12">
+                <div>
+                    <label class="form-label">Host</label>
+                    <input type="text" class="form-control" id="Host" name="Host" asp-for="Host" placeholder="Host">
+                </div>
+            </div>
+            <div class="col-xxl-12 col-md-12">
+                <div>
+                    <label class="form-label">Port</label>
+                    <input type="text" class="form-control" id="Port" name="Port" asp-for="Port" placeholder="Port">
+                </div>
+            </div>
+            <div class="col-xxl-12 col-md-12">
+                <div>
+                    <label class="form-label">Username</label>
+                    <input type="text" class="form-control" id="Username" name="Username" asp-for="Username" placeholder="Username">
+                </div>
+            </div>
+            <div class="col-xxl-12 col-md-12">
+                <div>
+                    <label class="form-label">Password</label>
+                    <input type="text" class="form-control" id="Password" name="Password" asp-for="Password" placeholder="Password">
+                </div>
+            </div>
+            <div class="col-xxl-12 col-md-12">
+                <div>
+                    <label class="form-label">Enable SSL</label>
+                    <select class="form-select" id="EnableSSL" asp-for="EnableSSL">
+                        <option value="">Select</option>
+                        <option value="true">Yes</option>
+                        <option value="false">No</option>
+                   </select>
+                </div>
+            </div>
+            <div class="col-xxl-12 col-md-12">
+                <div>
+                    <label class="form-label">From Email</label>
+                    <input type="text" class="form-control" id="FromEmail" name="FromEmail" asp-for="FromEmail" placeholder="FromEmail">
+                </div>
+            </div>
+            <div class="col-md-12 text-center">
+                <button class="btn btn-success theme-btn" type="button" onclick="BindData()">@(Model.EmailConfigId > 0 ? "Update" : "Add")</button>
+                <button class="btn btn-secondary" type="button" onclick="bootbox.hideAll();">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        $('.textCapital').keyup(function () {
+            $(this).val($(this).val().toUpperCase());
+        });
+    });
+    function BindData() {
+        var dataObj = {
+            EmailConfigId: $("#EmailConfigId").val(),
+            Host: $("#Host").val(),
+            Port: $("#Port").val(),
+            Username: $("#Username").val(),
+            Password: $("#Password").val(),
+            EnableSSL: $("#EnableSSL").val(),
+            FromEmail: $("#FromEmail").val()
+                
+        };
+        if (Validation(dataObj)) {
+            if (dataObj["SmtpEmailId"] == "0") {
+                Save(dataObj);
+
+            }
+            else {
+                var dlg_updatePromo = bootbox.dialog({
+                    message: 'Are you sure! you want to update the record?',
+                    title: 'Confirm',
+                    buttons: {
+                        ok: {
+                            label: "Yes",
+                            className: 'btn-primary',
+                            callback: function () {
+                                Save(dataObj);
+                            }
+                        },
+                        cancel: {
+                            label: "No",
+                            className: 'btn-danger',
+                            callback: function () {
+                                $(dlg_updatePromo).modal('hide');
+                            }
+                        }
+                    }
+                });
+                dlg_updatePromo.find('.modal-header').css('background-color', '#dc3545').css('border-bottom', '1px solid #dc3545');
+            }
+        }
+    }
+    function Validation(dataObj) {
+        var isError = false;
+        if (!dataObj["Host"] || !dataObj["Host"].trim()) {
+            $app.notify.validate("Host", "Host Id is required");
+            isError = true;
+        }
+        if (!dataObj["Port"] || !dataObj["Port"].trim()) {
+            $app.notify.validate("Port", "Port is required");
+            isError = true;
+        }
+        if (!dataObj["Username"] || !dataObj["Username"].trim()) {
+            $app.notify.validate("Username", "Username is required");
+            isError = true;
+        }
+        if (!dataObj["Password"] || !dataObj["Password"].trim()) {
+            $app.notify.validate("Password", "Password is required");
+            isError = true;
+        }
+        if (!dataObj["EnableSSL"] || !dataObj["EnableSSL"].trim()) {
+            $app.notify.validate("EnableSSL", "EnableSSL  is required");
+            isError = true;
+        }
+        if (!dataObj["FromEmail"] || !dataObj["FromEmail"].trim()) {
+            $app.notify.validate("FromEmail", "FromEmail  is required");
+            isError = true;
+        }
+        if (isError) {
+            return false;
+        }
+        else {
+            return true;
+        }
+    }
+
+</script>

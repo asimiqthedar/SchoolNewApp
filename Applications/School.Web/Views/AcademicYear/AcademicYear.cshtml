@@ -1,0 +1,139 @@
+﻿@model School.Models.WebModels.SchoolAcademicModels.SchoolAcademicModel
+@{
+    ViewData["Title"] = "Academic Year";
+}
+
+<div class="row">
+    <div class="col-12">
+        <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+            <div class="page-title d-flex align-items-center justify-content-between">
+                <ol class="breadcrumb m-0">
+                    <li class="breadcrumb-item">Academic Year</li>
+                    <li class="breadcrumb-item active">Academic Year List</li>
+                </ol>
+                <div>
+                    <button type="button" class="btn btn-dark btn-set-task w-sm-100" onclick="CreateAcademic()">
+                        <i class="fa-solid fa-plus"></i> Add
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="card">
+    <div class="card-body">
+        @* @Html.Partial("_SectionFilterPartial") *@
+        <div class="row g-3">
+            <div class="col-lg-12 col-md-12">
+                <div class="tab-content screen-list">
+                    <div class="tab-pane fade show active" id="academic-info-load">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section scripts {
+    <script src="~/js/working/document.js" asp-append-version="true"></script>
+    <script>
+
+        $(document).ready(function () {
+            $('.numeric').keyup(function () {
+                this.value = this.value.replace(/[^0-9.]/g, '');
+            });
+            $('.datepicker').datepicker({
+                format: "dd/mm/yyyy",
+                autoclose: "true"
+            }); 
+            AcademicLoad();           
+        });
+
+
+        function AcademicLoad() {
+            $('#academic-info-load').empty();
+            $('#academic-info-load').html('<div class="row"> <div class="col-xl-12"><div class="card order-card"><span class="text-center no-text" style="color:#212529;"><img src="@Url.Content("~/images/loding.gif")"  /></span></div></div></div>');
+            var urlToCall = baseUrl + 'AcademicYear/SchoolAcademicDataPartial';
+            $app.post(urlToCall).then(function (response) {
+                $('#academic-info-load').html(response);
+            });
+        }
+
+        function EditAcademic(SchoolAcademicId) {
+            var op = { title: 'Update Academic Year' }
+            var url = '@Url.Action("SchoolAcademicEditPartial", "AcademicYear")';
+            url = url + '?schoolAcademicId=' + SchoolAcademicId;
+            $app.openViewDialog(url, op);
+        }
+
+        function CreateAcademic() {
+            var op = { title: 'Add Academic Year' }
+            var url = '@Url.Action("SchoolAcademicEditPartial", "AcademicYear")';
+            $app.openViewDialog(url, op);
+        }
+        function SaveAcademic(dataModel) {
+            var urlToCall = '@Url.Action("SaveSchoolAcademic", "AcademicYear")';
+            $app.post(urlToCall, dataModel).then(function (response) {
+                if (response.result == 0) {
+                    bootbox.hideAll();
+                    $app.notify.success("Data has been saved!");
+                    AcademicLoad();
+                }
+                else if (response.result == -2) {
+                    $app.notify.error("Data already exists!");
+                }
+                else if (response.result == -3) {
+                    $app.notify.error("Academic Period From date cannot be greater than Period To date ");
+                }
+                else if (response.result == -4) {
+                    $app.notify.error("Period date already belong to other academic year.");
+                }
+                else if (response.result == -5) {
+                    $app.notify.error("Current year is already selected!");
+                }
+                else {
+                    $app.notify.error("Error in saving!");
+                }
+            });
+        }
+        function DeleteAcademic(schoolAcademicId) {
+            var dlg_removePromo = bootbox.dialog({
+                message: 'Are you sure you want to remove this?',
+                title: 'Remove',
+                buttons: {
+                    ok: {
+                        label: "Yes",
+                        className: 'btn-primary',
+                        callback: function () {
+                            var urlToCall = '@Url.Action("DeleteSchoolAcademic", "AcademicYear")';
+                            urlToCall = urlToCall + '?schoolAcademicId=' + schoolAcademicId;
+
+                            $app.get(urlToCall).then(function (response) {
+                                if (response.result == 0) {
+                                    bootbox.hideAll();
+                                    $app.notify.success("Data has been deleted!");
+                                    AcademicLoad();
+                                }
+                                else if (response.result == 547) {
+                                    $app.notify.error("Error in deleting! Record already in use.");
+                                }
+                                else {
+                                    $app.notify.error("Error in deleting!");
+                                }
+                            });
+                        }
+                    },
+                    cancel: {
+                        label: "No",
+                        className: 'btn-danger',
+                        callback: function () {
+                            $(dlg_removePromo).modal('hide');
+                        }
+                    }
+                }
+            });
+        }
+
+    </script>
+}

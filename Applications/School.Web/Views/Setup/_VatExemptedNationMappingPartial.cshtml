@@ -1,0 +1,79 @@
+﻿@using System.Data;
+@model DataSet
+
+<div class="row">
+    <input type="hidden" id="VatId" name="VatId" value="@Model.Tables[0].Rows[0]["VatId"]" />
+    <div class="col-sm-5">
+        <label class="form-label">Nations</label>
+        <select name="from" id="multiselect_left" class="form-select multiselect" multiple="multiple">
+            @foreach (DataRow dr in Model.Tables[2].Rows)
+            {
+                <option value=@dr["CountryId"]>@dr["CountryName"]</option>
+            }
+        </select>
+    </div>
+    <div class="col-sm-2">
+        <label class="form-label">&nbsp;</label>
+        <button type="button" id="btn_rightAll" class="btn btn-block"><i class="fa fa-angle-double-right" aria-hidden="true"></i></button>
+        <button type="button" id="btn_rightSelected" class="btn btn-block"><i class="fa fa-chevron-right" aria-hidden="true"></i></button>
+        <button type="button" id="btn_leftSelected" class="btn btn-block"><i class="fa fa-chevron-left" aria-hidden="true"></i></button>
+        <button type="button" id="btn_leftAll" class="btn btn-block"><i class="fa fa-angle-double-left" aria-hidden="true"></i></button>
+    </div>
+    <div class="col-sm-5">
+        <label class="form-label">Exempted Nation</label>
+        <select name="from" id="multiselect_right" class="form-select multiselect" multiple="multiple">
+            @foreach (DataRow dr1 in Model.Tables[1].Rows)
+            {
+                <option value=@dr1["CountryId"]>@dr1["CountryName"]</option>
+            }
+        </select>
+    </div>
+    <div class="col-md-12 text-center">
+        <button class="btn btn-success theme-btn" type="button" onclick="BindData()">Save</button>
+    </div>
+</div>
+
+<script>
+    $(document).ready(
+        function () {
+            $('#btn_rightSelected').click(
+                function (e) {
+                    $('#multiselect_left > option:selected').appendTo('#multiselect_right');
+                    e.preventDefault();
+                });
+
+            $('#btn_rightAll').click(
+                function (e) {
+                    $('#multiselect_left > option').appendTo('#multiselect_right');
+                    e.preventDefault();
+                });
+
+            $('#btn_leftSelected').click(
+                function (e) {
+                    $('#multiselect_right > option:selected').appendTo('#multiselect_left');
+                    e.preventDefault();
+                });
+
+            $('#btn_leftAll').click(
+                function (e) {
+                    $('#multiselect_right > option').appendTo('#multiselect_left');
+                    e.preventDefault();
+                });
+        });
+    function BindData() {
+        var jqueryArrayLeft = [];
+         $('#multiselect_left option').each(function () {
+            jqueryArrayLeft.push($(this).val());
+        });
+        var jqueryArrayRight = [];
+        $('#multiselect_right option').each(function () {
+            jqueryArrayRight.push($(this).val());
+        });
+        var dataObj = {
+            VatId: $("#VatId").val(),
+            MultiSelectLeft: jqueryArrayLeft.join(','),
+            MultiSelectRight: jqueryArrayRight.join(','),
+        };
+        SaveVatExemptedNationMapping(dataObj);
+    }
+</script>

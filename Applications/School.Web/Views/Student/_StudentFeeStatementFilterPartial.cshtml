@@ -1,0 +1,58 @@
+﻿
+<style>
+    .backlog-filter-btn button {
+        padding: 6px 10px;
+    }
+
+</style>
+<div class="row mb-3 align-items-center  label-row">
+    <div class="col-md-12 mb-5">
+        <div class="row mb-3" style="display:none;">
+            <div class="col-md-8">
+                <div class="search-box">
+                    <input type="text" id="filterStatementSearch" class="form-control search bg-light border-light" placeholder="Search....">
+                    <i class="ri-search-line search-icon"></i>
+                </div>
+            </div>
+        </div>
+        <div class="row">          
+            <div class="col-md-12 p-3">                
+                <div class="row">               
+                    <div class="col">
+                        <div class="single-filter">
+                            <label for="AcademicYear" class="form-label">Academic Year</label>
+                            <div class="input-group">
+                                <select id="filterStatementAcadmicYear" class="form-select" aria-label="Academic Year"
+                                        asp-items="@(new SelectList(ViewBag.AcademicYearDropDown,"Value", "Text"))">
+                                </select>
+                            </div>
+                        </div>
+                    </div>                  
+                </div>              
+            </div>
+        </div>
+    </div>
+    <div class="col-md-12 btn-col">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="d-flex backlog-btn-row">
+                    <div class="backlog-filter-btn">
+                        <button type="button" class="btn btn-primary" onclick="StudentFeeStatementLoad();">
+                            Search
+                        </button>
+                    </div>
+                    <div class="backlog-filter-btn">
+                        <button type="button" class="btn btn-secondary" onclick="SchoolFeeStatementRefreshLoad();">
+                            Refresh
+                        </button>
+                    </div>
+                    <div class="backlog-filter-btn">
+                        <button type="button" class="btn btn-secondary" onclick="ExportCSVStatement('StudentStatement','Student Statement Report')">
+                            Export to Excel
+                        </button>                      
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

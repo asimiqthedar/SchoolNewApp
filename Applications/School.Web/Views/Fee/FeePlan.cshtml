@@ -1,0 +1,218 @@
+﻿@using School.Models.WebModels.FeetypeModels;
+@model FeeTypeModel
+@{
+    ViewData["Title"] = "Fee Plan";
+}
+
+<div class="row">
+    <div class="col-12">
+        <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+            <div class="page-title d-flex align-items-center justify-content-between">
+                <ol class="breadcrumb m-0">
+                    <li class="breadcrumb-item">Fee</li>
+                    <li class="breadcrumb-item active">Fee Plan</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</div>
+<input type="hidden" id="hdFeeTypeId" value="@Model.FeeTypeId" />
+
+<input type="hidden" id="hdFeeStructureId" value="0" />
+<div class="card">
+    <div class="card-body">
+        <div class="cform row gy-3 align-items-center">
+            <div class="col-lg-4">
+                <label for="AcademicYear" class="form-label">Academic Year</label>
+                <div class="input-group">
+                    <select id="AcademicYear" class="form-select" aria-label="Academic Year"
+                            asp-items="@(new SelectList(ViewBag.TermYear,"Value", "Text"))">
+                    </select>
+                </div>
+            </div>
+           
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <script>
+        $(document).ready(function () {
+            $('.datepicker').datepicker({
+                format: "dd/mm/yyyy",
+                autoclose: "true"
+            });
+            if ($("#hdIsGradeWise").val() == "False") {
+                LoadFeePlanWithoutGradewise();
+            }
+            else {
+                $('#AcademicYear').on('change', function () {
+                    if (this.value != 0) {
+                        $("#gradewisefee").css("display", "block");
+                        LoadFeePlanWithGradewise(this.value);
+                    }
+                    else {
+                        $("#gradewisefee").css("display", "none");
+                        $('#feePlanwithGradewise').html("");
+                    }
+                });
+                $("#btnSaveFeePlanWithGradewise").click(function () {
+                    var gwObjList = [];
+                    var feeGradewiseIdsArray = $('#fee-gradewise-ids').val().split(',');
+                    $.each(feeGradewiseIdsArray, function (index, value) {
+                        var gwObj = {};
+                        gwObj.FeeGradewiseId = value;
+                        gwObj.FirstAmount = $('#FirstAmount_' + value).val();
+                        gwObj.FirstDueDate = $('#FirstDueDate_' + value).val();
+                        gwObj.SecondAmount = $('#SecondAmount_' + value).val();
+                        gwObj.SecondDueDate = $('#SecondDueDate_' + value).val();
+                        gwObj.ThirdAmount = $('#ThirdAmount_' + value).val();
+                        gwObj.ThirdDueDate = $('#ThirdDueDate_' + value).val();
+                        gwObjList.push(gwObj);
+                    });
+                    SaveFeePlanWithGradewise(gwObjList);
+                });
+            }
+        });
+        function LoadFeePlanWithoutGradewise() {
+            var urlToCall = baseUrl + 'Fee/GetFeePlanWithoutGradewiseDataPartial?feeTypeId=' + $("#hdFeeTypeId").val();
+            $app.get(urlToCall).then(function (response) {
+                $('#feePlan').html(response);
+            });
+        }
+        function Edit(feeStructureId) {
+            var urlToCall = baseUrl + 'Fee/FeePlanWithoutGradewiseEdit?feeTypeId=' + $("#hdFeeTypeId").val() + '&feeStructureId=' + feeStructureId;
+            $app.get(urlToCall).then(function (response) {
+                $("#FeeAmount").val(response.feeAmount);
+                $("#AcademicYear").val("" + response.academicYear.toString());
+                $("#hdFeeStructureId").val("" + feeStructureId.toString());
+            });
+        }
+        function Delete(feeStructureId) {
+            var dlg_removePromo = bootbox.dialog({
+                message: 'Are you sure! you want to delete the record?',
+                title: 'Remove',
+                buttons: {
+                    ok: {
+                        label: "Yes",
+                        className: 'btn-primary',
+                        callback: function () {
+                            var urlToCall = '@Url.Action("DeleteFeePlanWithoutGradewise", "Fee")';
+                            urlToCall = urlToCall + '?feeStructureId=' + feeStructureId;
+
+                            $app.get(urlToCall).then(function (response) {
+                                if (response.result == 0) {
+                                    bootbox.hideAll();
+                                    $app.notify.success("Data has been deleted!");
+                                    LoadFeePlanWithoutGradewise();
+                                }
+                                else {
+                                    $app.notify.error("Error in deleting!");
+                                }
+                            });
+                        }
+                    },
+                    cancel: {
+                        label: "No",
+                        className: 'btn-danger',
+                        callback: function () {
+                            $(dlg_removePromo).modal('hide');
+                        }
+                    }
+                }
+            });
+            dlg_removePromo.find('.modal-header').css('background-color', '#dc3545').css('border-bottom', '1px solid #dc3545');
+        }
+        function SaveFeePlanWithoutGradewise() {
+            var dataModel = {
+                FeeStructureId: $("#hdFeeStructureId").val(),
+                AcademicYear: $("#AcademicYear").val(),
+                FeeTypeId: $("#hdFeeTypeId").val(),
+                FeeAmount: $("#FeeAmount").val(),
+                IsGradeWise: $("#hdIsGradeWise").val()
+            };
+            if (ValidateFeePlanWithoutGradewise(dataModel)) {
+                var urlToCall = '@Url.Action("SaveFeePlanWithoutGradeWise", "Fee")';
+                $app.post(urlToCall, dataModel).then(function (response) {
+                    if (response.result == 0) {
+                        bootbox.hideAll();
+                        $app.notify.success("Data has been saved!");
+                        $("#AcademicYear").val("0");
+                        $("#hdFeeStructureId").val(0);
+                        $("#FeeAmount").val('');
+                        LoadFeePlanWithoutGradewise();
+                    }
+                    else if (response.result == -2) {
+                        $app.notify.error("Data already exists!");
+                    }
+                    else {
+                        $app.notify.error("Error in saving!");
+                    }
+                });
+            }
+        }
+        function ValidateFeePlanWithoutGradewise(dataObj) {
+            var isError = false;
+            if (!dataObj["AcademicYear"] || dataObj["AcademicYear"] == "0") {
+                $app.notify.validateDD("AcademicYear", "Select AcademicYear");
+                isError = true;
+            }
+            if (!dataObj["FeeAmount"] || !dataObj["FeeAmount"].trim()) {
+                $app.notify.validate("FeeAmount", "Fee Amount required");
+                isError = true;
+            }
+            if (isError) {
+                return false;
+            }
+            else {
+                return true;
+            }
+        }
+
+        function LoadFeePlanWithGradewise(academicYear) {
+            var urlToCall = baseUrl + 'Fee/GetFeePlanWithGradewiseDataPartial?feeTypeId=' + $("#hdFeeTypeId").val() + '&academicYear=' + academicYear;
+            $app.get(urlToCall).then(function (response) {
+                $('#feePlanwithGradewise').html(response);
+            });
+        }
+        function CalculateTotal(feeGradewiseId) {
+            if (feeGradewiseId != null && feeGradewiseId != '' && feeGradewiseId != 0) {
+                var totalAmount = 0;
+                if ($('#FirstAmount_' + feeGradewiseId).val() != null && $('#FirstAmount_' + feeGradewiseId).val() != '') {
+                    totalAmount = totalAmount + parseFloat($('#FirstAmount_' + feeGradewiseId).val());
+                }
+                if ($('#SecondAmount_' + feeGradewiseId).val() != null && $('#SecondAmount_' + feeGradewiseId).val() != '') {
+                    totalAmount = totalAmount + parseFloat($('#SecondAmount_' + feeGradewiseId).val());
+                }
+                if ($('#ThirdAmount_' + feeGradewiseId).val() != null && $('#ThirdAmount_' + feeGradewiseId).val() != '') {
+                    totalAmount = totalAmount + parseFloat($('#ThirdAmount_' + feeGradewiseId).val());
+                }
+            }
+            $('#Total_' + feeGradewiseId).text(parseFloat(totalAmount).toFixed(2));
+            $('#TermAmount_' + feeGradewiseId).text(parseFloat(totalAmount / 3).toFixed(2));
+        }
+        function SaveFeePlanWithGradewise(gwObjList) {
+            var formData = new FormData();
+            formData.append('FeeStructureWithGradwiseList', JSON.stringify(gwObjList));
+            var urlToCall = '@Url.Action("SaveFeePlanWithGradewise", "Fee")';
+            $.post({
+                url: urlToCall,
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function (response) {
+                    if (response.result == 0) {
+                        $app.notify.success("Data has been saved!");
+                    }
+                    else {
+                        $app.notify.error("Error in saving!");
+                    }
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    $app.notify.error("Error in saving!");
+                }
+            });
+        }
+
+    </script>
+}

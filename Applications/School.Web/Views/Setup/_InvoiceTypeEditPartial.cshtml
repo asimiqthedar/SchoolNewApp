@@ -1,0 +1,113 @@
+﻿@using School.Models.WebModels.InvoiceTypeModels;
+@model InvoiceTypeModel
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="cform row gy-3">
+            <input type="hidden" id="InvoiceTypeId" name="InvoiceTypeId" asp-for="InvoiceTypeId" />
+            <div class="col-xxl-6 col-md-6">
+                <div>
+                    <label class="form-label">Invoice Type</label>
+                    <input type="text" class="form-control textCapital" id="InvoiceTypeName" name="InvoiceTypeName" asp-for="InvoiceTypeName" placeholder="Invoice Type">
+                </div>
+            </div>
+            <div class="col-xxl-6 col-md-6">
+                <div>
+                    <label class="form-label">Receivable Account</label>
+                    <input type="text" class="form-control" id="ReceivableAccount" name="ReceivableAccount" asp-for="ReceivableAccount" placeholder="Receivable Account">
+                </div>
+            </div>
+            <div class="col-xxl-6 col-md-6">
+                <div>
+                    <label class="form-label">Advance Account</label>
+                    <input type="text" class="form-control" id="AdvanceAccount" name="AdvanceAccount" asp-for="AdvanceAccount" placeholder="Advance Account">
+                </div>
+            </div>
+            <div class="col-xxl-6 col-md-6">
+                <div>
+                    <label class="form-label">Receivable Account Description</label>
+                    <input type="text" class="form-control" id="ReceivableAccountRemarks" name="ReceivableAccountRemarks" asp-for="ReceivableAccountRemarks" placeholder="Receivable Account Description">
+                </div>
+            </div>
+            <div class="col-xxl-6 col-md-6">
+                <div>
+                    <label class="form-label">Advance Account Description</label>
+                    <input type="text" class="form-control" id="AdvanceAccountRemarks" name="AdvanceAccountRemarks" asp-for="AdvanceAccountRemarks" placeholder="Advance Account Description">
+                </div>
+            </div>
+            <div class="col-xxl-6 col-md-6" style="display:none">
+                <div>
+                    <label class="form-label">Active</label>
+                    <select class="form-select" id="IsActive" asp-for="IsActive" aria-label="Active">
+                        <option value=true>Active</option>
+                        <option value=false>In-Active</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-12 text-center">
+                <button class="btn btn-success theme-btn" type="button" onclick="BindData()">@(Model.InvoiceTypeId > 0 ?"Update" : "Add")</button>
+                <button class="btn btn-secondary" type="button" onclick="bootbox.hideAll();">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        $('.textCapital').keyup(function () {
+            $(this).val($(this).val().toUpperCase());
+        });
+    });
+    function BindData() {
+        var dataObj = {
+            InvoiceTypeId: $("#InvoiceTypeId").val(),
+            InvoiceTypeName: $("#InvoiceTypeName").val(),
+            ReceivableAccount: $("#ReceivableAccount").val(),
+            AdvanceAccount: $("#AdvanceAccount").val(),
+            ReceivableAccountRemarks: $("#ReceivableAccountRemarks").val(),
+            AdvanceAccountRemarks: $("#AdvanceAccountRemarks").val(),
+            IsActive: $("#IsActive").val()
+        };
+        if (Validation(dataObj)) {
+            if (dataObj["InvoiceTypeId"] == "0") {
+                Save(dataObj);
+
+            }
+            else {
+                var dlg_updatePromo = bootbox.dialog({
+                    message: 'Are you sure! you want to update the record?',
+                    title: 'Confirm',
+                    buttons: {
+                        ok: {
+                            label: "Yes",
+                            className: 'btn-primary',
+                            callback: function () {
+                                Save(dataObj);
+                            }
+                        },
+                        cancel: {
+                            label: "No",
+                            className: 'btn-danger',
+                            callback: function () {
+                                $(dlg_updatePromo).modal('hide');
+                            }
+                        }
+                    }
+                });
+                dlg_updatePromo.find('.modal-header').css('background-color', '#dc3545').css('border-bottom', '1px solid #dc3545');
+            }
+        }
+    }
+    function Validation(dataObj) {
+        var isError = false;
+        if (!dataObj["InvoiceTypeName"] || !dataObj["InvoiceTypeName"].trim()) {
+            $app.notify.validate("InvoiceTypeName", "Name is required");
+            isError = true;
+        }
+        if (isError) {
+            return false;
+        }
+        else {
+            return true;
+        }
+    }
+</script>

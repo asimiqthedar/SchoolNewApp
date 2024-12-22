@@ -1,0 +1,125 @@
+﻿@using School.Models.WebModels.ConfigModel;
+@model WhatsappConfigModel
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="cform row gy-3">
+            <input type="hidden" id="WhatsAppConfigId" name="WhatsAppConfigId" asp-for="WhatsAppConfigId" />
+            <div class="col-xxl-12 col-md-12">
+                <div>
+                    <label class="form-label">AccountSid</label>
+                    <input type="text" class="form-control" id="AccountSid" name="AccountSid" asp-for="AccountSid" placeholder="AccountSid">
+                </div>
+            </div>
+            <div class="col-xxl-12 col-md-12">
+                <div>
+                    <label class="form-label">AuthToken</label>
+                    <input type="text" class="form-control" id="AuthToken" name="AuthToken" asp-for="AuthToken" placeholder="AuthToken">
+                </div>
+            </div>
+            <div class="col-xxl-12 col-md-12">
+                <div>
+                    <label class="form-label">Phone Number</label>
+                    <input type="text" class="form-control" id="PhoneNumber" name="PhoneNumber" asp-for="PhoneNumber" placeholder="PhoneNumber">
+                </div>
+            </div>
+            <div class="col-xxl-12 col-md-12">
+                <div>
+                    <label class="form-label">Sandbox Mode</label>
+                    <select class="form-select" id="SandboxMode" asp-for="SandboxMode">
+                        <option value="">Select</option>
+                        <option value="true">Yes</option>
+                        <option value="false">No</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-xxl-12 col-md-12">
+                <div>
+                    <label class="form-label">Status CallbackUrl</label>
+                    <input type="text" class="form-control" id="StatusCallbackUrl" name="StatusCallbackUrl" asp-for="StatusCallbackUrl" placeholder="StatusCallbackUrl">
+                </div>
+            </div>
+            <div class="col-md-12 text-center">
+                <button class="btn btn-success theme-btn" type="button" onclick="BindData()">@(Model.WhatsAppConfigId > 0 ? "Update" : "Add")</button>
+                <button class="btn btn-secondary" type="button" onclick="bootbox.hideAll();">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        $('.textCapital').keyup(function () {
+            $(this).val($(this).val().toUpperCase());
+        });
+    });
+    function BindData() {
+        var dataObj = {
+            WhatsAppConfigId: $("#WhatsAppConfigId").val(),
+            AccountSid: $("#AccountSid").val(),
+            AuthToken: $("#AuthToken").val(),
+            PhoneNumber: $("#PhoneNumber").val(),
+            SandboxMode: $("#SandboxMode").val(),
+            StatusCallbackUrl: $("#StatusCallbackUrl").val()
+
+        };
+        if (Validation(dataObj)) {
+            if (dataObj["WhatsAppConfigId"] == "0") {
+                Save(dataObj);
+
+            }
+            else {
+                var dlg_updatePromo = bootbox.dialog({
+                    message: 'Are you sure! you want to update the record?',
+                    title: 'Confirm',
+                    buttons: {
+                        ok: {
+                            label: "Yes",
+                            className: 'btn-primary',
+                            callback: function () {
+                                Save(dataObj);
+                            }
+                        },
+                        cancel: {
+                            label: "No",
+                            className: 'btn-danger',
+                            callback: function () {
+                                $(dlg_updatePromo).modal('hide');
+                            }
+                        }
+                    }
+                });
+                dlg_updatePromo.find('.modal-header').css('background-color', '#dc3545').css('border-bottom', '1px solid #dc3545');
+            }
+        }
+    }
+    function Validation(dataObj) {
+        var isError = false;
+        if (!dataObj["AccountSid"] || !dataObj["AccountSid"].trim()) {
+            $app.notify.validate("AccountSid", "AccountSid Id is required");
+            isError = true;
+        }
+        if (!dataObj["AuthToken"] || !dataObj["AuthToken"].trim()) {
+            $app.notify.validate("AuthToken", "AuthToken is required");
+            isError = true;
+        }
+        if (!dataObj["PhoneNumber"] || !dataObj["PhoneNumber"].trim()) {
+            $app.notify.validate("PhoneNumber", "PhoneNumber is required");
+            isError = true;
+        }
+        if (!dataObj["SandboxMode"] || !dataObj["SandboxMode"].trim()) {
+            $app.notify.validate("SandboxMode", "SandboxMode is required");
+                isError = true;
+        }
+        if (!dataObj["StatusCallbackUrl"] || !dataObj["StatusCallbackUrl"].trim()) {
+            $app.notify.validate("StatusCallbackUrl", "StatusCallbackUrl is required");
+            isError = true;
+        }
+        if (isError) {
+            return false;
+        }
+        else {
+            return true;
+        }
+    }
+
+</script>

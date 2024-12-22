@@ -1,0 +1,229 @@
+﻿@using School.Models.WebModels.InvoiceSetupModels;
+@model InvInvoiceDetailUniformFeeModel
+
+<div class="row">
+            <input type="hidden" id="InvoiceDetailId" name="InvoiceDetailId" asp-for="InvoiceDetailId" value="@Model.InvoiceDetailId" />
+    <input type="type" hidden asp-for="SessionKey" name="name" value="@Model.SessionKey" />
+             <div class="row">
+        <div class="col-lg-6">
+            <div class="mb-3">
+                <label for="ItemCode" class="form-label">Item Code</label>
+                <select id="ItemCode" class="form-control" asp-for="ItemCode">
+                    <option value="">Select Item Code</option>
+                </select>
+            </div>
+        </div>
+                <div class="col-lg-6">
+                    <div class="mb-3">
+                        <label for="Description" class="form-label">Description</label>
+                <input type="text" id="Description" class="form-control" asp-for="Description" placeholder="Description">
+                    </div>
+                </div>
+             </div>
+             <div class="row">
+                <div class="col-lg-6">
+                    <div class="mb-3">
+                        <label for="ItemCode" class="form-label"> Unit Price</label>
+                <input type="text" id="UnitPrice" class="form-control" readonly asp-for="UnitPrice" placeholder="Unit Price">
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="mb-3">
+                        <label for="ItemCode" class="form-label">Quantity</label>
+                <input type="text" id="Quantity" class="form-control" asp-for="Quantity" placeholder="Quantity">
+                    </div>
+                </div>
+             </div>
+             <div class="row">
+                <div class="col-lg-6">
+                    <div class="mb-3">
+                        <label for="AvailableQuantity" class="form-label">Available Quantity</label>
+                   <input type="text" id="AvailableQuantity" class="form-control"  readonly placeholder="Available Quantity">
+                 
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="mb-3">
+                        <label for="ItemCode" class="form-label">Discount</label>
+                        <input type="text" id="Discount" class="form-control" asp-for="Discount" placeholder="Discount">
+                    </div>
+                </div>
+             </div>
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="mb-3">
+                        <label for="ItemCode" class="form-label">VAT</label>
+                <input type="text" id="TaxRate" class="form-control" asp-for="TaxRate" readonly placeholder="VAT">
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="mb-3">
+                        <label for="TotalVat" class="form-label">Total Vat</label>
+                        <input type="text" id="TaxAmount" class="form-control" asp-for="TaxAmount" placeholder="Total Vat">
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-4">
+                    <div class="mb-3">
+                        <label for="Total After Discount" class="form-label">Total After Discount</label>
+                <input type="text" id="TotalAfterDiscount" class="form-control" readonly placeholder="Total After Discount">
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="mb-3">
+                        <label for="Total With Vat" class="form-label">Total With Vat</label>
+                         <input type="text" id="Totalwithvat" class="form-control" readonly placeholder="Total With Vat">
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="mb-3">
+                        <label for="Total" class="form-label">Total</label>
+                <input type="text" id="ItemSubtotal" class="form-control" asp-for="ItemSubtotal" readonly placeholder="Total">
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-12 text-center">
+                <button class="btn btn-success theme-btn" type="button" onclick="BindData()">@(Model.InvoiceDetailId > 0 ? "Update" : "Add")</button>
+                <button class="btn btn-secondary" type="button" onclick="bootbox.hideAll();">Cancel</button>
+            </div>
+</div>
+<script>
+    $(document).ready(function () {
+        $('.textCapital').keyup(function () {
+            $(this).val($(this).val().toUpperCase());
+        });
+
+        $.ajax({
+            url: '@Url.Action("GetVATDetail", "InvoiceReturn")',
+            type: 'GET',
+            data: { invoiceTypeName: "Uniform Fee" },
+            success: function (data) {
+                $("#TaxRate").val(data.vatTaxPercent);
+                calculateTotal();
+            }
+        });
+
+        $.ajax({
+            url: '@Url.Action("GetItemCodeRecords", "InvoiceReturn")',
+            type: 'GET',
+            success: function (data) {
+                var itemCodeSelect = $('#ItemCode');
+                data.forEach(function (record) {
+                    itemCodeSelect.append('<option value="' + record.ItemCode + '">' + record.ItemCode + '</option>');
+                });
+            }
+        });
+
+        $('#ItemCode').change(function () {
+            var itemCode = $(this).val();
+            if (itemCode) {
+                $.ajax({
+                    url: '@Url.Action("GetUniformByItemCode", "InvoiceReturn")',
+                    type: 'GET',
+                    data: { itemCode: itemCode },
+                    success: function (data) {
+                        console.log(data)
+                         $('#Quantity').val(1);
+                         $('#Description').val(data[0].ItemDescription);
+                         $('#UnitPrice').val(data[0].CurrentPrice);
+                         $('#AvailableQuantity').val(data[0].AvailableQuantity);
+                         $('#TaxRate').val(data[0].VatPercent);
+                        if (data[0].AvailableQuantity <= 0) {
+                            $('#Quantity').prop('disabled', true);
+                            $('#Quantity').val(0);
+                        } else {
+                            $('#Quantity').prop('disabled', false);
+                        }
+                        calculateTotal();
+                    }
+                }); 
+            } else {
+                $('#UnitPrice').val('');
+                $('#AvailableQuantity').val('');
+                $('#Quantity').val(0);
+                 $('#Description').val('');
+                 $('#TaxRate').val('');
+                calculateTotal();
+            }
+        });
+
+        $('#Quantity, #UnitPrice, #Discount').on('input', function () {
+            calculateTotal();
+        });
+
+        function calculateTotal() {
+            var quantity = parseFloat($('#Quantity').val()) || 0;
+            var unitPrice = parseFloat($('#UnitPrice').val()) || 0;
+            var discount = parseFloat($('#Discount').val()) || 0;
+            var vat = parseFloat($('#TaxRate').val()) || 0;
+            var totalvat = ((unitPrice * quantity)-discount)*vat/100;
+            var totalwithvat = ((quantity * unitPrice) - discount) + totalvat;
+            var totalAfterDiscount = (quantity * unitPrice) - discount;
+            $('#TaxAmount').val(totalvat.toFixed(2));
+            $('#TotalAfterDiscount').val(totalAfterDiscount.toFixed(2));
+            $('#Totalwithvat').val(totalwithvat.toFixed(2));
+            $('#ItemSubtotal').val(totalwithvat.toFixed(2));
+        }
+    });
+
+
+    function BindData() {
+        var dataObj = {
+            InvoiceType :"Uniform Fee ",
+            InvoiceDetailId: $("#InvoiceDetailId").val(),
+            ItemCode: $("#ItemCode").val(),
+            Description: $("#Description").val(),
+            UnitPrice: $("#UnitPrice").val(),
+            Quantity: $("#Quantity").val(),
+            Discount: $("#Discount").val() || 0,
+            TaxAmount: $("#TaxAmount").val(),
+            TaxableAmount: 0,
+            TaxRate: $("#TaxRate").val(),
+            ItemSubtotal: $("#ItemSubtotal").val(),
+            SessionKey: $("#SessionKey").val(),
+        };
+        if (Validation(dataObj)) {
+            if (dataObj["InvoiceDetailId"] == "0") {
+                SaveUniformFee(dataObj);
+
+            }
+            else {
+                var dlg_updatePromo = bootbox.dialog({
+                    message: 'Are you sure! you want to update the record?',
+                    title: 'Confirm',
+                    buttons: {
+                        ok: {
+                            label: "Yes",
+                            className: 'btn-primary',
+                            callback: function () {
+                                SaveUniformFee(dataObj);
+                            }
+                        },
+                        cancel: {
+                            label: "No",
+                            className: 'btn-danger',
+                            callback: function () {
+                                $(dlg_updatePromo).modal('hide');
+                            }
+                        }
+                    }
+                });
+                dlg_updatePromo.find('.modal-header').css('background-color', '#dc3545').css('border-bottom', '1px solid #dc3545');
+            }
+        }
+    }
+    function Validation(dataObj) {
+        var isError = false;
+        if (!dataObj["ItemCode"] || !dataObj["ItemCode"].trim()) {
+            $app.notify.validate("ItemCode", "ItemCode is required");
+            isError = true;
+        }
+        if (isError) {
+            return false;
+        }
+        else {
+            return true;
+        }
+    }
+</script>

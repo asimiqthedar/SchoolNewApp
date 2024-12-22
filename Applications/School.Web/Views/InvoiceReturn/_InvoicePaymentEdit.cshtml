@@ -1,0 +1,100 @@
+﻿@using School.Models.WebModels.GenderModels;
+@model GenderModel
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="cform row gy-3">
+            <input type="hidden" id="GenderTypeId" name="GenderTypeId" asp-for="GenderTypeId" />
+            <div class="col-xxl-12 col-md-12">
+                <div>
+                    <label class="form-label">Gender</label>
+                    <input type="text" class="form-control textCapital" id="GenderTypeName" name="GenderTypeName" asp-for="GenderTypeName" placeholder="Gender">
+                </div>
+            </div>
+            <div class="col-xxl-6 col-md-6">
+                <div>
+                    <label class="form-label"> Debit Account</label>
+                    <input id="DebitAccount" name="DebitAccount" class="form-control" asp-for="DebitAccount" placeholder="Debit Account" />
+                </div>
+            </div>
+            <div class="col-xxl-6 col-md-6">
+                <div>
+                    <label class="form-label"> Credit Account</label>
+                    <input id="CreditAccount" name="CreditAccount" class="form-control" asp-for="CreditAccount" placeholder="Credit Account" />
+                </div>
+            </div>
+            <div class="col-xxl-6 col-md-6" style="display:none">
+                <div>
+                    <label class="form-label">Active</label>
+                    <select class="form-select" id="IsActive" asp-for="IsActive" aria-label="Active">
+                        <option value=true>Active</option>
+                        <option value=false>In-Active</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-12 text-center">
+                <button class="btn btn-success theme-btn" type="button" onclick="BindData()">@(Model.GenderTypeId > 0 ? "Update" : "Add")</button>
+                <button class="btn btn-secondary" type="button" onclick="bootbox.hideAll();">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        $('.textCapital').keyup(function () {
+            $(this).val($(this).val().toUpperCase());
+        });
+    });
+    function BindData() {
+        var dataObj = {
+            GenderTypeId: $("#GenderTypeId").val(),
+            GenderTypeName: $("#GenderTypeName").val(),
+            DebitAccount: $("#DebitAccount").val(),
+            CreditAccount: $("#CreditAccount").val(),
+            Remarks: $("#Remarks").val(),
+            IsActive: $("#IsActive").val()
+        };
+        if (Validation(dataObj)) {
+            if (dataObj["GenderTypeId"] == "0") {
+                Save(dataObj);
+
+            }
+            else {
+                var dlg_updatePromo = bootbox.dialog({
+                    message: 'Are you sure! you want to update the record?',
+                    title: 'Confirm',
+                    buttons: {
+                        ok: {
+                            label: "Yes",
+                            className: 'btn-primary',
+                            callback: function () {
+                                Save(dataObj);
+                            }
+                        },
+                        cancel: {
+                            label: "No",
+                            className: 'btn-danger',
+                            callback: function () {
+                                $(dlg_updatePromo).modal('hide');
+                            }
+                        }
+                    }
+                });
+                dlg_updatePromo.find('.modal-header').css('background-color', '#dc3545').css('border-bottom', '1px solid #dc3545');
+            }
+        }
+    }
+    function Validation(dataObj) {
+        var isError = false;
+        if (!dataObj["GenderTypeName"] || !dataObj["GenderTypeName"].trim()) {
+            $app.notify.validate("GenderTypeName", "Name is required");
+            isError = true;
+        }
+        if (isError) {
+            return false;
+        }
+        else {
+            return true;
+        }
+    }
+</script>

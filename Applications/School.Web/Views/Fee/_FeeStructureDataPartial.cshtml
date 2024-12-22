@@ -1,0 +1,118 @@
+﻿@using System.Data;
+@model DataSet
+@{
+    string _FeeStrucureIds = string.Empty;
+    _FeeStrucureIds = string.Join(",", Model.Tables[0].AsEnumerable().Where(w => w.Field<bool>("IsGradeWiseFeeStructure") == false).Select(s => s.Field<long>("FeeStructureId")));
+    string _FeeGradewiseIds = string.Empty;
+    _FeeGradewiseIds = string.Join(",", Model.Tables[1].AsEnumerable().Select(s => s.Field<long>("FeeGradewiseId")));
+}
+<div class="save-btn">
+    <button class="btn btn-primary" id="btnSaveFeeStructure">Save</button>
+</div>
+<div class="cform row gy-3">
+    <input type="hidden" id="fee-strucure-ids" value="@_FeeStrucureIds" />
+    <input type="hidden" id="fee-gradewise-ids" value="@_FeeGradewiseIds" />
+    @foreach (DataRow dr in Model.Tables[0].Rows)
+    {
+        if (!Convert.ToBoolean(dr["IsGradeWiseFeeType"]))
+        {
+            <div class="col-lg-4">
+                <label for="FeeStructureId_@dr["FeeStructureId"]" class="form-label">@dr["FeeTypeName"]</label>
+                <div class="input-group">
+                    <input type="number" class="form-control" id="FeeAmount_@dr["FeeStructureId"]" placeholder="Enter @dr["FeeTypeName"]" value="@(!string.IsNullOrEmpty(Convert.ToString(dr["FeeAmount"]))?Convert.ToDecimal(dr["FeeAmount"]).ToDecimalPoints():"")" />
+                </div>
+            </div>
+        }
+        else
+        {
+            var feeGradewise = Model.Tables[1].AsEnumerable().Where(w => w.Field<long>("FeeStructureId") == Convert.ToInt64(dr["FeeStructureId"]));
+            <div class="col-lg-12">
+                <label class="form-label">@dr["FeeTypeName"]</label>
+                <div class="table-responsive table-card order-tabel" style="width:100%">
+                    <table class="table align-middle table-nowrap mb-0" id="tblActivityData">
+                        <thead class="table-light text-muted">
+                            <tr>
+                                <th width="100px">GRADE</th>
+                                <th width="100px">FIRST</th>
+                                <th width="100px">DUE DATE</th>
+                                <th width="100px">SECOND</th>
+                                <th width="100px">DUE DATE</th>
+                                <th width="100px">THIRD</th>
+                                <th width="100px">DUE DATE</th>
+                                <th width="100px">TOTAL</th>
+                                <th width="100px">TERM</th>
+                            </tr>
+                        </thead>
+                        <tbody class="list form-check-all">
+                            @foreach (DataRow gdr in feeGradewise)
+                            {
+                                <tr>
+                                    <td>@gdr["GradeName"]</td>
+                                    <td><input type="number" class="form-control" id="FirstAmount_@gdr["FeeGradewiseId"]" onchange="CalculateTotal('@gdr["FeeGradewiseId"]')" value="@(!string.IsNullOrEmpty(Convert.ToString(gdr["FirstAmount"]))?Convert.ToDecimal(gdr["FirstAmount"]).ToDecimalPoints():"")" /></td>
+                                    <td><input type="text" class="form-control datepicker" id="FirstDueDate_@gdr["FeeGradewiseId"]" value="@(!string.IsNullOrEmpty(Convert.ToString(gdr["FirstDueDate"]))?Convert.ToDateTime(gdr["FirstDueDate"]).ToString("dd/MM/yyyy"):"")" /></td>
+                                    <td><input type="number" class="form-control" id="SecondAmount_@gdr["FeeGradewiseId"]" onchange="CalculateTotal('@gdr["FeeGradewiseId"]')" value="@(!string.IsNullOrEmpty(Convert.ToString(gdr["SecondAmount"]))?Convert.ToDecimal(gdr["SecondAmount"]).ToDecimalPoints():"")" /></td>
+                                    <td><input type="text" class="form-control datepicker" id="SecondDueDate_@gdr["FeeGradewiseId"]" value="@(!string.IsNullOrEmpty(Convert.ToString(gdr["SecondDueDate"]))?@Convert.ToDateTime(gdr["SecondDueDate"]).ToString("dd/MM/yyyy"):"")" /></td>
+                                    <td><input type="number" class="form-control" id="ThirdAmount_@gdr["FeeGradewiseId"]" onchange="CalculateTotal('@gdr["FeeGradewiseId"]')" value="@(!string.IsNullOrEmpty(Convert.ToString(gdr["ThirdAmount"]))?Convert.ToDecimal(gdr["ThirdAmount"]).ToDecimalPoints():"")" /></td>
+                                    <td><input type="text" class="form-control datepicker" id="ThirdDueDate_@gdr["FeeGradewiseId"]" value="@(!string.IsNullOrEmpty(Convert.ToString(gdr["ThirdDueDate"]))?Convert.ToDateTime(gdr["ThirdDueDate"]).ToString("dd/MM/yyyy"):"")" /></td>
+                                    <td><span id="Total_@gdr["FeeGradewiseId"]">@(!string.IsNullOrEmpty(Convert.ToString(gdr["Total"])) ? Convert.ToDecimal(gdr["Total"]).ToDecimalPoints() : "")</span></td>
+                                    <td><span id="TermAmount_@gdr["FeeGradewiseId"]">@(!string.IsNullOrEmpty(Convert.ToString(gdr["TermAmount"])) ? Convert.ToDecimal(gdr["TermAmount"]).ToDecimalPoints() : "")</span></td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        }
+    }
+</div>
+<script>
+    $(document).ready(function () {
+        $('.datepicker').datepicker({
+            format: "dd/mm/yyyy",
+            autoclose: "true"
+        });
+    });
+
+    $("#btnSaveFeeStructure").click(function () {
+        var feeObjList = [];
+        var gwObjList = [];
+        var feeStrucureIdsArray = $('#fee-strucure-ids').val().split(',');
+        $.each(feeStrucureIdsArray, function (index, value) {
+            var feeObj = {};
+            feeObj.FeeStructureId = value;
+            feeObj.FeeAmount = $('#FeeAmount_' + value).val();
+            feeObjList.push(feeObj);
+        });
+
+        var feeGradewiseIdsArray = $('#fee-gradewise-ids').val().split(',');
+        $.each(feeGradewiseIdsArray, function (index, value) {
+            var gwObj = {};
+            gwObj.FeeGradewiseId = value;
+            gwObj.FirstAmount = $('#FirstAmount_' + value).val();
+            gwObj.FirstDueDate = $('#FirstDueDate_' + value).val();
+            gwObj.SecondAmount = $('#SecondAmount_' + value).val();
+            gwObj.SecondDueDate = $('#SecondDueDate_' + value).val();
+            gwObj.ThirdAmount = $('#ThirdAmount_' + value).val();
+            gwObj.ThirdDueDate = $('#ThirdDueDate_' + value).val();
+            gwObjList.push(gwObj);
+        });
+        SaveFeeStructure(feeObjList, gwObjList);
+    });
+
+    function CalculateTotal(feeGradewiseId) {
+        if (feeGradewiseId != null && feeGradewiseId != '' && feeGradewiseId != 0) {
+            var totalAmount = 0;
+            if ($('#FirstAmount_' + feeGradewiseId).val() != null && $('#FirstAmount_' + feeGradewiseId).val() != '') {
+                totalAmount = totalAmount + parseFloat($('#FirstAmount_' + feeGradewiseId).val());
+            }
+            if ($('#SecondAmount_' + feeGradewiseId).val() != null && $('#SecondAmount_' + feeGradewiseId).val() != '') {
+                totalAmount = totalAmount + parseFloat($('#SecondAmount_' + feeGradewiseId).val());
+            }
+            if ($('#ThirdAmount_' + feeGradewiseId).val() != null && $('#ThirdAmount_' + feeGradewiseId).val() != '') {
+                totalAmount = totalAmount + parseFloat($('#ThirdAmount_' + feeGradewiseId).val());
+            }
+        }
+        $('#Total_' + feeGradewiseId).text(parseFloat(totalAmount).toFixed(2));
+        $('#TermAmount_' + feeGradewiseId).text(parseFloat(totalAmount / 3).toFixed(2));
+    }
+</script>

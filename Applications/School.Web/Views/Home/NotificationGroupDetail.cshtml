@@ -1,0 +1,191 @@
+﻿@using System.Security.Claims;
+@{
+    ViewData["Title"] = "Notification";
+    string userName = Context?.User.FindFirstValue("UserName");
+    string IsApprover = Context?.User.FindFirstValue("IsApprover");
+}
+
+<div class="row">
+    <div class="col-12">
+        <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+            <div class="page-title d-flex align-items-center justify-content-between">
+                <ol class="breadcrumb m-0">
+                    <li class="breadcrumb-item">Notification</li>
+                    <li class="breadcrumb-item active">Notification List</li>
+                </ol>
+                <div>
+                    @if (!string.IsNullOrEmpty(IsApprover) && IsApprover.ToLower().Equals("true"))
+                    {
+                        <button type="button" class="btn btn-dark btn-set-task w-sm-100" onclick="ApproveNotification()">
+                            Approve
+                        </button>
+                    }
+                </div>
+                @* <div>
+                <button type="button" class="btn btn-dark btn-set-task w-sm-100" onclick="Create()">
+                <i class="fa-solid fa-plus"></i> Add
+                </button>
+                </div> *@
+            </div>
+        </div>
+    </div>
+</div>
+<input type="hidden" id="NotificationGroupId" value="@ViewBag.NotificationGroupId" />
+<input type="hidden" id="NotificationTypeId" value="@ViewBag.NotificationTypeId" />
+<div class="card">
+    <div class="card-body">
+        <div class="row g-3">
+            <div class="col-lg-12 col-md-12">
+                <div class="tab-content screen-list">
+                    <div class="tab-pane fade show active" id="notification-load">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section scripts {
+    <script>
+        $(document).ready(function () {
+            NotificationLoad();
+        });
+        function NotificationLoad() {
+            $('#notification-load').empty();
+            $('#notification-load').html('<div class="row"> <div class="col-xl-12"><div class="card order-card"><span class="text-center no-text" style="color:#212529;"><img src="@Url.Content("~/images/loding.gif")"  /></span></div></div></div>');
+            var urlToCall = baseUrl + 'Home/GetNotificationGroupDetailPartial';
+            urlToCall = urlToCall + '?NotificationGroupId=' + $("#NotificationGroupId").val() + '&NotificationTypeId=' + $("#NotificationTypeId").val()
+            $app.post(urlToCall).then(function (response) {
+                $('#notification-load').html(response);
+            });
+            LoadNotificationGroup();
+        }
+        function Approve(notificationGroupDetailId) {
+            debugger;
+            var dlg_removePromo = bootbox.dialog({
+                message: 'Are you sure! you want to approve the record?',
+                title: 'Remove',
+                buttons: {
+                    ok: {
+                        label: "Yes",
+                        className: 'btn-primary',
+                        callback: function () {
+                            var urlToCall = '@Url.Action("ApproveNotification", "Home")';
+                            urlToCall = urlToCall + '?notificationGroupDetailId=' + notificationGroupDetailId;
+
+                            $app.get(urlToCall).then(function (response) {
+                                if (response.result == 0) {
+                                    bootbox.hideAll();
+                                    $app.notify.success("Data has been approved!");
+                                    NotificationLoad();
+                                }
+                                else {
+                                    $app.notify.error("Error in approving!");
+                                }
+                            });
+                        }
+                    },
+                    cancel: {
+                        label: "No",
+                        className: 'btn-danger',
+                        callback: function () {
+                            $(dlg_removePromo).modal('hide');
+                        }
+                    }
+                }
+            });
+            dlg_removePromo.find('.modal-header').css('background-color', '#dc3545').css('border-bottom', '1px solid #dc3545');
+        }
+        function Reject(notificationGroupDetailId) {
+            var dlg_removePromo = bootbox.dialog({
+                message: 'Are you sure! you want to reject the record?',
+                title: 'Remove',
+                buttons: {
+                    ok: {
+                        label: "Yes",
+                        className: 'btn-primary',
+                        callback: function () {
+                            var urlToCall = '@Url.Action("RejectNotification", "Home")';
+                            urlToCall = urlToCall + '?notificationGroupDetailId=' + notificationGroupDetailId;
+
+                            $app.get(urlToCall).then(function (response) {
+                                if (response.result == 0) {
+                                    bootbox.hideAll();
+                                    $app.notify.success("Data has been rejected!");
+                                    NotificationLoad();
+                                }
+                                else {
+                                    $app.notify.error("Error in rejecting!");
+                                }
+                            });
+                        }
+                    },
+                    cancel: {
+                        label: "No",
+                        className: 'btn-danger',
+                        callback: function () {
+                            $(dlg_removePromo).modal('hide');
+                        }
+                    }
+                }
+            });
+            dlg_removePromo.find('.modal-header').css('background-color', '#dc3545').css('border-bottom', '1px solid #dc3545');
+        }
+
+        function getSelectedRowIds() {
+            var selectedIds = [];
+            // $('#tblActivityData tbody input[type="checkbox"]:checked').each(function () {
+            //     var row = $(this).closest('tr');
+            //     var id = row.find('td:eq(1)').text();
+            //     selectedIds.push(id);
+            // });
+            $('#tblActivityData tbody input[type="checkbox"]:checked').each(function () {
+                var id = $(this).data('id');
+                selectedIds.push(parseInt(id));
+            });
+            return selectedIds;
+        }
+        function ApproveNotification() {
+            var selectedIds = getSelectedRowIds();
+            //console.log(selectedIds);
+            if (selectedIds.length === 0) {
+                $app.notify.error("Please select atleast one record to approve!");
+            }
+            else {
+
+                var notificationIds = selectedIds.join(',');
+                var dataModel = {
+                    NotificationIds: notificationIds
+                };
+                var urlToCall = '@Url.Action("ApproveMultiNotification", "Home")';
+                urlToCall = urlToCall + "?notificationIds=" + notificationIds + location.search.replace('?', '&');
+                $.post({
+                    url: urlToCall,
+                    data: dataModel,
+                    //processData: false,
+                    //contentType: false,
+                    success: function (response) {
+                        if (response.result == 0) {
+                            $app.notify.success("Data has been saved!");
+                            NotificationLoad();
+                        }
+                        else if (response.result == -2) {
+                            $app.notify.error("Data already exists!");
+                        }
+                        else {
+                            $app.notify.error("Error in saving!");
+                        }
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        $app.notify.error("Error in saving!");
+                    }
+                });
+            }
+        }
+        function ViewJson(notificationGroupDetailId) {
+            var op = { title: 'View Data' }
+            var url = '@Url.Action("ViewJsonPartial", "Home")';
+            url = url + '?notificationGroupDetailId=' + notificationGroupDetailId;
+            $app.openViewDialog(url, op);
+        }
+    </script>
+}

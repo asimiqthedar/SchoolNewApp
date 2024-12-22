@@ -1,0 +1,67 @@
+﻿@using System.Data;
+@model DataSet;
+<div class="table-responsive">
+    <table class="table align-middle table-nowrap mb-0" id="tblAllRevenue">
+        <thead class="table-light text-muted">
+            <tr>
+                <th class="text-center" style="width: 5%">S.No</th>
+                <th>Academic Year</th>
+                <th>Cost Center</th>
+                <th>Grade</th>
+                <th>Gender</th>
+                <th>FeeApplied</th>
+                <th>Discount Applied</th>
+                <th>Amount Paid</th>
+                @* <th>Vat Paid</th> *@
+                <th>Balance</th>            
+            </tr>
+        </thead>
+        <tbody class="list form-check-all">
+            @if (Model != null && Model.Tables.Count > 0 && Model.Tables[0].Rows.Count > 0)
+            {
+                int i = 0;
+                foreach (DataRow dr in Model.Tables[0].Rows)
+                {
+                    i++;
+                    <tr class="@(!string.IsNullOrEmpty(Convert.ToString(dr["AcademicYear"]).Trim()) ? "" : "total")">
+                        <td class="text-center">@(!string.IsNullOrEmpty(Convert.ToString(dr["AcademicYear"]).Trim()) ? (i - 1) : "")</td>
+                        <td>@dr["AcademicYear"]</td>
+                        <td>@dr["CostCenter"]</td>
+                        <td>@dr["Grade"]</td>
+                        <td>@dr["Gender"]</td>
+                        <td class="text-end">@Convert.ToDecimal(dr["FeeApplied"]).ToTwoDecimalString()</td>
+                        <td class="text-end">@Convert.ToDecimal(dr["DiscountApplied"]).ToTwoDecimalString()</td>
+                        <td class="text-end">@Convert.ToDecimal(dr["AmountPaid"]).ToTwoDecimalString()</td>
+                        @* <td class="text-end">@Convert.ToDecimal(dr["VatPaid"]).ToTwoDecimalString()</td> *@
+                        <td class="text-end">@Convert.ToDecimal(dr["Balance"]).ToTwoDecimalString()</td>
+                    </tr>
+                }
+            }
+        </tbody>    
+    </table>
+</div>
+
+<script>
+	$(document).ready(function () {
+		 $("#tblAllRevenue").DataTable({
+			language: {
+				search: "<i class='ri-search-line search-icon'></i>",
+				searchPlaceholder: "Search ...",
+				info: "", // Hide the "Showing x to y of z entries" message
+                infoEmpty: "", // Hide message when no entries are present
+                infoFiltered: "", // Hide the filtering message
+			},
+			pageLength: 50,
+			// searching: true,
+			// info: false,
+			// dom: 'rtip',
+			// scrollX: true,
+			// bFilter: true,
+			bSort: false,
+			// bPaginate: true,
+			// destroy: true,
+			// orderCellsTop: true,
+			// fixedHeader: true
+		});
+	});
+</script>

@@ -1,0 +1,62 @@
+﻿@model School.Models.WebModels.SchoolAccountInfoModels.SchoolAccountInfoModel
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="form row gy-3">
+            <input type="hidden" id="SchoolAccountIId" name="SchoolAccountIId" asp-for="SchoolAccountIId" />
+            <div class="col-xxl-6 col-md-6">
+                <div>
+                    <label class="form-label">Receivable Account</label>
+                    <input type="text" class="form-control" id="ReceivableAccount" name="ReceivableAccount" asp-for="ReceivableAccount" placeholder="Receivable Account">
+                </div>
+            </div>
+            <div class="col-xxl-6 col-md-6">
+                <div>
+                    <label class="form-label">Advance Account</label>
+                    <input type="text" class="form-control" id="AdvanceAccount" name="AdvanceAccount" asp-for="AdvanceAccount" placeholder="Advance Account">
+                </div>
+            </div>
+            <div class="col-xxl-12 col-md-12">
+                <div>
+                    <label class="form-label">Code Description</label>
+                    <input type="text" class="form-control" id="CodeDescription" name="CodeDescription" asp-for="CodeDescription" placeholder="Code Description">
+                </div>
+            </div>           
+            <div class="col-md-12 text-center">
+                <button class="btn btn-success theme-btn" type="button" onclick="BindSchoolAccountInfoData()">@(Model.SchoolAccountIId > 0 ? "Update" : "Add")</button>
+                <button class="btn btn-secondary" type="button" onclick="bootbox.hideAll();">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    function BindSchoolAccountInfoData() {
+        var dataObj = {
+            SchoolAccountIId: $("#SchoolAccountIId").val(),
+            SchoolId: $("#SchoolId").val(),
+            ReceivableAccount: $("#ReceivableAccount").val(),
+            AdvanceAccount: $("#AdvanceAccount").val(),
+            CodeDescription: $("#CodeDescription").val(),
+        };
+        if (ValidationAcademic(dataObj)) {
+            SaveSchoolAccountInfo(dataObj);
+        }
+    }
+    function ValidationAcademic(dataObj) {
+        var isError = false;
+        if (!dataObj["ReceivableAccount"] || !dataObj["ReceivableAccount"].trim()) {
+            $app.notify.validate("ReceivableAccount", "Receivable Account is required");
+            isError = true;
+        }
+        if (!dataObj["AdvanceAccount"] || !dataObj["AdvanceAccount"].trim()) {
+            $app.notify.validate("AdvanceAccount", "Advance Account is required");
+            isError = true;
+        }
+        if (isError) {
+            return false;
+        }
+        else {
+            return true;
+        }
+    }
+</script>

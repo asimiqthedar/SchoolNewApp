@@ -1,0 +1,142 @@
+﻿@{
+	ViewData["Title"] = "Report";
+}
+
+<div class="row">
+	<div class="col-12">
+		<div class="page-title-box d-sm-flex align-items-center justify-content-between">
+			<div class="page-title d-flex align-items-center justify-content-between">
+				<ol class="breadcrumb m-0">
+					<li class="breadcrumb-item">Report</li>
+					<li class="breadcrumb-item active">Monthly Uniform Revenue List</li>
+				</ol>
+				<div>
+					<button type="button" class="btn btn-secondary" onclick="ExportCSVStatement()">
+						<i class="fa-solid fa-file-excel"></i> Export to Excel
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="card">
+	<div class="card-body">
+		<div style="margin-bottom:10px;">
+			<button class="btn btn-dark btn-warning w-sm-100" type="button" data-bs-toggle="collapse" data-bs-target="#filterCollapse" aria-expanded="false" aria-controls="filterCollapse">
+				<i class="mx-1 fa-solid fa-filter"></i>Filter
+			</button>
+		</div>
+		<div class="collapse" id="filterCollapse">
+			@Html.Partial("_MonthlyStatementFilterParital")
+		</div>
+		<div class="row g-3">
+			<div class="col-lg-12 col-md-12">
+				<div class="tab-content screen-list">
+					<div class="tab-pane fade show active" id="monthly-uniform-revenue-report-load">
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+@section scripts {
+	<script>
+		$(function () {
+			$('.datepicker').datepicker({
+				format: "dd/mm/yyyy",
+				autoclose: true
+			});
+			
+			loadCurrentAcademicYear();
+		});
+
+
+		function loadCurrentAcademicYear() {
+			var urlToCall = baseUrl + 'Report/GetCurrentAcademicYear';
+			$app.post(urlToCall).then(function (response) {
+				if (response && response.periodFrom) {
+					const periodFromDate = new Date(response.periodFrom);
+					const formattedDate = periodFromDate.toLocaleDateString('en-GB'); // "dd/MM/yyyy" format
+					document.getElementById('filterStartDate').value = formattedDate;
+
+					loadMonthlyRevenueReportByFilter();
+				}
+			});
+		}
+
+		function RefreshSearch() {
+			$("#filterItemCode").val(),
+				$("#filterInvoiceNo").val(),
+				$("#filterParentName").val(),
+				$("#filterParentMobile").val(),
+				$("#filterPaymentMethod").val(),
+				$("#filterReferenceNo").val(),
+				$("#filterStartDate").val(),
+				$("#filterEndDate").val(),
+				loadMonthlyRevenueReportByFilter();
+		}
+
+		function loadMonthlyRevenueReportByFilter() {
+			var filterDataObj = {
+				ItemCode: $("#filterItemCode").val(),
+				InvoiceNo: $("#filterInvoiceNo").val(),
+				ParentName: $("#filterParentName").val(),
+				FatherMobile: $("#filterParentMobile").val(),
+				PaymentMethod: $("#filterPaymentMethod").val(),
+				PaymentReferenceNumber: $("#filterReferenceNo").val(),
+				StartDate: GetDateFormat_MMMDDYYYY($("#filterStartDate").val()),
+				EndDate: GetDateFormat_MMMDDYYYY($("#filterEndDate").val()),
+
+			};
+			MonthlyUniformRevenueReportLoad(filterDataObj);
+		}
+		function MonthlyUniformRevenueReportLoad(filterDataObj) {
+			$('#monthly-uniform-revenue-report-load').empty();
+			$('#monthly-uniform-revenue-report-load').html('<div class="row"> <div class="col-xl-12"><div class="card order-card"><span class="text-center no-text" style="color:#212529;"><img src="@Url.Content("~/images/loding.gif")"  /></span></div></div></div>');
+			var urlToCall = baseUrl + 'Report/GetMonthlyStatementUniformByParentStudents';
+			$app.post(urlToCall, filterDataObj).then(function (response) {
+				$('#monthly-uniform-revenue-report-load').html(response);
+			});
+		}
+
+		function ExportCSVStatement() {
+			var reportKey = 'uniformrevenueexport';
+			var reportName = 'Uniform Revenue List';
+			var filterDataObj = {
+				ItemCode: $("#filterItemCode").val(),
+				InvoiceNo: $("#filterInvoiceNo").val(),
+				ParentName: $("#filterParentName").val(),
+				FatherMobile: $("#filterParentMobile").val(),
+				PaymentMethod: $("#filterPaymentMethod").val(),
+				PaymentReferenceNumber: $("#filterReferenceNo").val(),
+				StartDate: GetDateFormat_MMMDDYYYY($("#filterStartDate").val()),
+				EndDate: GetDateFormat_MMMDDYYYY($("#filterEndDate").val()),
+			};
+
+			// if (filterDataObj.StartDate == '') {
+			// 	filterDataObj.StartDate = GetDateFormat_MMMDDYYYY(new Date());
+			// } else {
+			// 	filterDataObj.StartDate = GetDateFormat_MMMDDYYYY(new Date($("#filterStartDate").datepicker('getDate')));
+			// }
+			// if (filterDataObj.EndDate == '') {
+			// 	filterDataObj.EndDate = GetDateFormat_MMMDDYYYY(new Date());
+			// } else {
+			// 	filterDataObj.EndDate = GetDateFormat_MMMDDYYYY(new Date($("#filterEndDate").datepicker('getDate')));
+			// }
+
+			var ItemCodeParam = "ItemCode: " + filterDataObj.ItemCode
+			var InvoiceNoParam = "InvoiceNo: " + Number(filterDataObj.InvoiceNo);
+			var ParentNameParam = "ParentName: " + filterDataObj.ParentName;
+			var FatherMobileParam = "FatherMobile: " + filterDataObj.FatherMobile;
+			var PaymentMethodParam = "PaymentMethod: " + filterDataObj.PaymentMethod;
+			var PaymentReferenceNumberParam = "PaymentReferenceNumber: " + filterDataObj.PaymentReferenceNumber;
+			var StartDateParam = "StartDate: " + filterDataObj.StartDate;
+			var EndDateParam = "EndDate: " + filterDataObj.EndDate;
+
+
+			var parameters = ItemCodeParam + '|' + InvoiceNoParam + '|' + ParentNameParam + '|' + FatherMobileParam + '|' + PaymentMethodParam + '|' + PaymentReferenceNumberParam + '|' + StartDateParam + '|' + EndDateParam;
+
+			this.ExportCSVWithParam(reportKey, reportName, parameters);
+		}
+	</script>
+}

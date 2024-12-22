@@ -1,0 +1,104 @@
+﻿
+<style>
+    .backlog-filter-btn button {
+        padding: 6px 10px;
+    }
+
+</style>
+<div class="row mb-3 align-items-center  label-row">
+    <div class="col-md-12 mb-5">
+        <div class="row">
+            <div class="col-md-12 p-3">
+                <div class="row">
+                    <div class="col-lg-4">
+                        <div class="single-filter">
+                            <label>Invoice No</label>
+                            <input type="text" class="form-control" id="InvoiceNo" placeholder="Search by Invoice No." />
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="single-filter">
+                            <label>Invoice Type</label>
+                            <select class="form-select" id="InvoiceType" aria-label="InvoiceType">
+                                <option value="">Select Invoice</option>
+                                <option value="Invoice">Invoice</option>
+                                <option value="Return">Return</option>
+                            </select>
+                        </div>
+                    </div>
+                   
+                    <div class="col-lg-4">
+                        <div class="single-filter">
+                            <label>Status</label>
+                            <select class="form-select" id="Status" aria-label="Status">
+                                <option value="">Select Status</option>
+                                <option value="Saved">Saved</option>
+                                <option value="Posted">Posted</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-4">
+                        <div class="single-filter">
+                            <label>Parent Name</label>
+                            <input type="text" class="form-control" id="ParentName" placeholder="Search by Parent Name" />
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="single-filter">
+                            <label>Parent Code</label>
+                            <input type="text" class="form-control" id="ParentCode" placeholder="Search by Parent Code" />
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="single-filter">
+                            <label>Parent Mobile</label>
+                            <input type="text" class="form-control" id="FatherMobile" placeholder="Search by Parent Mobile" />
+                        </div>
+                    </div>
+                   
+                   
+                </div>
+                <div class="row">
+                    <div class="col-lg-4">
+                        <div class="single-filter">
+                            <label>Iqama</label>
+                            <input type="text" class="form-control" id="FatherIqama" placeholder="Search by Iqama" />
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="single-filter">
+                            <label>Start Date</label>
+                            <input class="form-control datepicker" id="InvoiceDateStart" value="@DateTime.Now.AddMonths(-1).ToString("dd/MM/yyyy")" />
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="single-filter">
+                            <label>End Date</label>
+                            <input class="form-control datepicker" id="InvoiceDateEnd" value="@DateTime.Now.ToString("dd/MM/yyyy")" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-12 btn-col">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="d-flex backlog-btn-row">
+                    <div class="backlog-filter-btn">
+                        <button type="button" class="btn btn-primary" onclick="loadInvoiceByFilter();">
+                            Search
+                        </button>
+                    </div>
+                    <div class="backlog-filter-btn">
+                        <button type="button" class="btn btn-secondary" onclick="RefreshSearch();">
+                            Refresh
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,166 @@
+<?xml version="1.0"?>
+<Invoice xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <invoiceTypeCode>
+    <id>388</id>
+    <Name>0200000</Name>
+  </invoiceTypeCode>
+  <orderReference />
+  <billingReference>
+    <invoiceDocumentReferences />
+  </billingReference>
+  <contractDocumentReference />
+  <AdditionalDocumentReferenceICV>
+    <UUID>6490</UUID>
+  </AdditionalDocumentReferenceICV>
+  <AdditionalDocumentReferencePIH>
+    <UUID>0</UUID>
+    <EmbeddedDocumentBinaryObject>NWZlY2ViNjZmZmM4NmYzOGQ5NTI3ODZjNmQ2OTZjNzljMmRiYzIzOWRkNGU5MWI0NjcyOWQ3M2EyN2ZiNTdlOQ==</EmbeddedDocumentBinaryObject>
+  </AdditionalDocumentReferencePIH>
+  <AdditionalDocumentReferenceQR>
+    <UUID>0</UUID>
+  </AdditionalDocumentReferenceQR>
+  <SupplierParty>
+    <partyIdentification>
+      <ID>CRN</ID>
+      <schemeID>1010208833</schemeID>
+    </partyIdentification>
+    <postalAddress>
+      <country>
+        <IdentificationCode>SA</IdentificationCode>
+      </country>
+      <StreetName>Nakheel District</StreetName>
+      <BuildingNumber>6708</BuildingNumber>
+      <CityName>Riyadh</CityName>
+      <PostalZone>11311</PostalZone>
+      <CitySubdivisionName>Riyadh</CitySubdivisionName>
+    </postalAddress>
+    <partyLegalEntity>
+      <RegistrationName>شركه التعليم المتطور المحدوده</RegistrationName>
+    </partyLegalEntity>
+    <partyTaxScheme>
+      <taxScheme>
+        <ID>VAT</ID>
+      </taxScheme>
+      <CompanyID>300056967800003</CompanyID>
+    </partyTaxScheme>
+  </SupplierParty>
+  <CustomerParty>
+    <partyIdentification>
+      <ID />
+      <schemeID>IQA</schemeID>
+    </partyIdentification>
+    <postalAddress>
+      <country>
+        <IdentificationCode>SA</IdentificationCode>
+      </country>
+      <BuildingNumber />
+      <PlotIdentification />
+      <CityName> RIYADH, SAUDI ARABIA</CityName>
+      <PostalZone />
+      <CitySubdivisionName />
+    </postalAddress>
+    <partyLegalEntity>
+      <RegistrationName />
+    </partyLegalEntity>
+    <partyTaxScheme>
+      <taxScheme>
+        <ID>VAT</ID>
+      </taxScheme>
+      <CompanyID />
+    </partyTaxScheme>
+    <contact />
+  </CustomerParty>
+  <delivery />
+  <paymentmeans>
+    <PaymentMeans>
+      <payeefinancialaccount />
+      <PaymentMeansCode>42</PaymentMeansCode>
+    </PaymentMeans>
+  </paymentmeans>
+  <TaxTotal>
+    <TaxSubtotal>
+      <taxCategory>
+        <taxScheme>
+          <ID>VAT</ID>
+        </taxScheme>
+        <Percent>0</Percent>
+      </taxCategory>
+      <TaxableAmount>0</TaxableAmount>
+      <TaxAmount>0</TaxAmount>
+    </TaxSubtotal>
+    <TaxAmount>0</TaxAmount>
+    <RoundingAmount>0</RoundingAmount>
+  </TaxTotal>
+  <allowanceCharges />
+  <legalMonetaryTotal>
+    <LineExtensionAmount>0</LineExtensionAmount>
+    <TaxExclusiveAmount>0</TaxExclusiveAmount>
+    <TaxInclusiveAmount>0</TaxInclusiveAmount>
+    <AllowanceTotalAmount>0</AllowanceTotalAmount>
+    <ChargeTotalAmount>0</ChargeTotalAmount>
+    <PayableAmount>0.00</PayableAmount>
+    <PrepaidAmount>0</PrepaidAmount>
+    <PayableRoundingAmount>0</PayableRoundingAmount>
+  </legalMonetaryTotal>
+  <InvoiceLines>
+    <InvoiceLine>
+      <allowanceCharges />
+      <taxTotal>
+        <TaxSubtotal>
+          <taxCategory>
+            <taxScheme>
+              <ID>VAT</ID>
+            </taxScheme>
+            <ID>S</ID>
+            <Percent>15.00</Percent>
+          </taxCategory>
+          <TaxableAmount>0</TaxableAmount>
+          <TaxAmount>0</TaxAmount>
+        </TaxSubtotal>
+        <TaxAmount>0</TaxAmount>
+        <RoundingAmount>0</RoundingAmount>
+      </taxTotal>
+      <item>
+        <classifiedTaxCategory>
+          <taxScheme>
+            <ID>VAT</ID>
+          </taxScheme>
+          <ID>S</ID>
+          <Percent>15.00</Percent>
+        </classifiedTaxCategory>
+        <Name>Entrance Fee</Name>
+      </item>
+      <price>
+        <allowanceCharge>
+          <taxCategory>
+            <taxScheme>
+              <ID>VAT</ID>
+            </taxScheme>
+            <Percent>0</Percent>
+          </taxCategory>
+          <ChargeIndicator>false</ChargeIndicator>
+          <MultiplierFactorNumeric>0</MultiplierFactorNumeric>
+          <Amount>0</Amount>
+          <BaseAmount>0</BaseAmount>
+        </allowanceCharge>
+        <PriceAmount>0.00</PriceAmount>
+        <BaseQuantity>1</BaseQuantity>
+        <EncludingVat>false</EncludingVat>
+      </price>
+      <documentReferences />
+      <InvoiceQuantity>1</InvoiceQuantity>
+      <LineExtensionAmount>0</LineExtensionAmount>
+    </InvoiceLine>
+  </InvoiceLines>
+  <cSIDInfo>
+    <CertPem>MIIFBDCCBKqgAwIBAgITEwAARdvVqnOjmZHtWAABAABF2zAKBggqhkjOPQQDAjBiMRUwEwYKCZImiZPyLGQBGRYFbG9jYWwxEzARBgoJkiaJk/IsZAEZFgNnb3YxFzAVBgoJkiaJk/IsZAEZFgdleHRnYXp0MRswGQYDVQQDExJQRVpFSU5WT0lDRVNDQTItQ0EwHhcNMjQwNjA2MDQ0ODU2WhcNMjYwNjA2MDQ1ODU2WjB7MQswCQYDVQQGEwJTQTFAMD4GA1UECgw32LTYsdmD2Ycg2KfZhNiq2LnZhNmK2YUg2KfZhNmF2KrYt9mI2LEg2KfZhNmF2K3Yr9mI2K/ZhzETMBEGA1UECxMKMzAwMDU2OTY3ODEVMBMGA1UEAxMMQUxTIFNvZnR3YXJlMFYwEAYHKoZIzj0CAQYFK4EEAAoDQgAELvpyXBV8TSHJuUBhjpRwLR0zjJmMkz7be3keMdzKVdqMIoIj9AmvsfI5x76qJ+78LV83BdgEl5Fx7b3erPQI6KOCAycwggMjMIGRBgNVHREEgYkwgYakgYMwgYAxKTAnBgNVBAQMIDEtTEVOT1ZPfDItIEwxNC0xMDB8My0yMUMyUzBTTTAwMR8wHQYKCZImiZPyLGQBAQwPMzAwMDU2OTY3ODAwMDAzMQ0wCwYDVQQMDAQwMTAwMQ8wDQYDVQQaDAZSaXlhZGgxEjAQBgNVBA8MCUVkdWNhdGlvbjAdBgNVHQ4EFgQU5UwDi2JIuc6hUpFC7lMq9yMZ+bowHwYDVR0jBBgwFoAUgfKje3J7vVCjap/x6NON1nuccLUwgeUGA1UdHwSB3TCB2jCB16CB1KCB0YaBzmxkYXA6Ly8vQ049UEVaRUlOVk9JQ0VTQ0EyLUNBKDEpLENOPVBSWkVJTlZPSUNFUEtJMixDTj1DRFAsQ049UHVibGljJTIwS2V5JTIwU2VydmljZXMsQ049U2VydmljZXMsQ049Q29uZmlndXJhdGlvbixEQz1leHR6YXRjYSxEQz1nb3YsREM9bG9jYWw/Y2VydGlmaWNhdGVSZXZvY2F0aW9uTGlzdD9iYXNlP29iamVjdENsYXNzPWNSTERpc3RyaWJ1dGlvblBvaW50MIHOBggrBgEFBQcBAQSBwTCBvjCBuwYIKwYBBQUHMAKGga5sZGFwOi8vL0NOPVBFWkVJTlZPSUNFU0NBMi1DQSxDTj1BSUEsQ049UHVibGljJTIwS2V5JTIwU2VydmljZXMsQ049U2VydmljZXMsQ049Q29uZmlndXJhdGlvbixEQz1leHR6YXRjYSxEQz1nb3YsREM9bG9jYWw/Y0FDZXJ0aWZpY2F0ZT9iYXNlP29iamVjdENsYXNzPWNlcnRpZmljYXRpb25BdXRob3JpdHkwDgYDVR0PAQH/BAQDAgeAMDwGCSsGAQQBgjcVBwQvMC0GJSsGAQQBgjcVCIGGqB2E0PsShu2dJIfO+xnTwFVmgZzYLYPlxV0CAWQCARAwHQYDVR0lBBYwFAYIKwYBBQUHAwIGCCsGAQUFBwMDMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwIwCgYIKwYBBQUHAwMwCgYIKoZIzj0EAwIDSAAwRQIhALjt5ZDo+tV/3gBrNhJPgO1kehnUxRr2697LRLYTbO1xAiBmaggjkKl8Mw/kMDBEBKVRm/UV8TnQhVpBHMsUFrrYDg==</CertPem>
+    <PrivateKey>MHQCAQEEIK8vD70d7SnTp7fVuvYlKvwbPJo+3imSAwD3Zip2BBQ5oAcGBSuBBAAKoUQDQgAELvpyXBV8TSHJuUBhjpRwLR0zjJmMkz7be3keMdzKVdqMIoIj9AmvsfI5x76qJ+78LV83BdgEl5Fx7b3erPQI6A==</PrivateKey>
+  </cSIDInfo>
+  <ID>6490</ID>
+  <IssueDate>2024-07-06</IssueDate>
+  <IssueTime>20:25:20</IssueTime>
+  <DocumentCurrencyCode>SAR</DocumentCurrencyCode>
+  <TaxCurrencyCode>SAR</TaxCurrencyCode>
+  <LineCountNumeric>0</LineCountNumeric>
+  <CurrencyRate>0</CurrencyRate>
+</Invoice>

@@ -1,0 +1,70 @@
+﻿@using System.Data;
+@model DataSet
+
+<div class="table-responsive table-card order-tabel" style="width:100%">
+    <table class="table align-middle table-nowrap mb-0" id="tblActivityData">
+        <thead class="table-light text-muted">
+            <tr>
+                <th>Gender</th>
+                <th>Debit Account</th>
+                <th>Credit Account</th>
+                @* <th>Active</th> *@
+                <th width="70px">Actions</th>
+            </tr>
+        </thead>
+        <tbody class="list form-check-all">
+            @if (Model != null && Model.Tables.Count > 0 && Model.Tables[0].Rows.Count > 0)
+            {
+                foreach (DataRow dr in Model.Tables[0].Rows)
+                {
+                    <tr>
+                        <td>@dr["GenderTypeName"]</td>
+                        <td>@dr["DebitAccount"]</td>
+                        <td>@dr["CreditAccount"]</td>
+                        @* <td>
+                @{
+                if (Convert.ToBoolean(dr["IsActive"]))
+                {
+                <span>Active</span>
+                }
+                else
+                {
+                <span>In-Active</span>
+                }
+                }
+                </td> *@
+                        <td>
+                            <div class="btn-group" role="group" aria-label="Basic outlined example">
+                                <button type="button" class="btn btn-outline-secondary edit-btn" onclick="Edit('@dr["GenderTypeId"]')">
+                                    <i class="fa-regular fa-pen-to-square  text-success"></i>
+                                </button>
+                                <button type="button" class="btn btn-outline-secondary deleterow" onclick="Delete('@dr["GenderTypeId"]')">
+                                    <i class="fa-solid fa-trash-can text-danger"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+</div>
+<script>
+    $("#tblActivityData").DataTable({
+        language: {
+            search: "<i class='ri-search-line search-icon'></i>",
+            searchPlaceholder: "Search ..."
+        },
+        pageLength: 50,
+        // searching: true,
+        // info: false,
+        // dom: 'rtip',
+        // scrollX: true,
+        // bFilter: true,
+        bSort: false,
+        // bPaginate: true,
+        // destroy: true,
+        // orderCellsTop: true,
+        // fixedHeader: true
+    });
+</script>

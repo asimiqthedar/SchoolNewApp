@@ -1,0 +1,35 @@
+﻿@using System.Security.Claims;
+@{
+    string userName = Context?.User.FindFirstValue("UserName");
+    string userArabicName = Context?.User.FindFirstValue("UserArabicName");
+}
+
+<div class="dropdown ms-sm-3 header-item topbar-user">
+    <button type="button" class="btn" id="page-header-user-dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <span class="d-flex align-items-center">
+            <span class="text-end ">
+                <span class="d-none d-xl-inline-block ms-1 fw-medium user-name-text">@userName</span>
+                <span class="d-none d-xl-block ms-1 fs-12 user-name-sub-text">@Context?.User.FindFirstValue(ClaimTypes.Role)</span>
+            </span>
+            @{
+                var imgPath = "~/images/users/avatar-2.png";
+                if (!string.IsNullOrEmpty(Convert.ToString(Context?.User.FindFirstValue("ProfileImg"))))
+                {
+                    imgPath = Convert.ToString(Context?.User.FindFirstValue("ProfileImg"));
+                }
+                <img class="rounded-circle header-profile-user ms-4" style="cursor:pointer" src="@Url.Content(imgPath)" alt="@userName" title="@userName">
+            }
+        </span>
+    </button>
+    <div class="dropdown-menu dropdown-menu-end profile-dropdown">
+        <div class="item-header">
+            <h6 class="item-title">@userName</h6>
+        </div>
+        <div class="item-content">
+            <ul class="settings-list">
+                <li><a href="#"><i class="fa-regular fa-circle-user"></i> My Profile</a></li>
+                <li><a asp-controller="Auth" asp-action="Logout"><i class="fa-solid fa-arrow-right-from-bracket"></i> Log Out</a></li>
+            </ul>
+        </div>
+    </div>
+</div>

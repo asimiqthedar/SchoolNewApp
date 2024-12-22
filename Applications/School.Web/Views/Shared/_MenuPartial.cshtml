@@ -1,0 +1,123 @@
+﻿@using System.Security.Claims;
+@using Newtonsoft.Json;
+@using School.Models.WebModels;
+
+<section class="side-menu">
+    <div class="app-menu navbar-menu">
+        <div class="navbar-brand-box">
+            <div class="header-logo">
+                <a asp-controller="Home" asp-action="Index">
+                    <img src="@Url.Content("~/images/logo.webp")" alt="logo" style="width:180px;" />
+                </a>
+            </div>
+            <div class="toggle-button sidebar-toggle">
+                <button type="button" class="item-link">
+                    <span class="btn-icon-wrap">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </span>
+                </button>
+            </div>
+        </div>
+        <div id="scrollbar" class="h-100">
+            <div class="sidebar-menu-content">
+                <ul class="navbar-nav" id="navbar-nav">
+                    @{
+                        List<UserMenuModel> menues = new List<UserMenuModel>();
+
+                        if (Context.Session.Keys.Any(s => s.Equals("UserMenues")))
+                        {
+                            try
+                            {
+                                var userMenues = Context.Session.GetString("UserMenues");
+                                menues = JsonConvert.DeserializeObject<List<UserMenuModel>>(userMenues);
+                            }
+                            catch (Exception ex)
+                            {
+
+                            }
+                        }
+                        //@HttpContext.Current.Session["UserMenues"]
+                        // if (!string.IsNullOrEmpty(Convert.ToString(Context?.User.FindFirstValue("UserMenues"))))
+                        // {
+                        //     menues = JsonConvert.DeserializeObject<List<UserMenuModel>>(Context?.User.FindFirstValue("UserMenues"));
+                        // }
+                        foreach (UserMenuModel menu in menues.Where(w => w.ParentMenuId == 0).OrderBy(o => o.DisplaySequence))
+                        {
+                            bool hasChild = menues.Any(x => x.ParentMenuId == menu.MenuId);
+                            if (!hasChild)
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link menu-link @IsActive("/" + menu.MenuCtrl)" asp-controller="@menu.MenuCtrl" asp-action="@menu.MenuAction">
+                                        <i class="@menu.FaIcon"></i> <span data-key="t-dashboards">@menu.Menu</span>
+                                    </a>
+                                </li>
+                            }
+                            else
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link menu-link @IsCollapsed("/" + menu.MenuCtrl)" href="#sidebar_@menu.MenuCtrl" data-bs-toggle="collapse" role="button" aria-expanded="@IsExpanded("/" + menu.MenuCtrl)" aria-controls="sidebarApps">
+                                        <i class="@menu.FaIcon"></i> <span data-key="t-apps">@menu.Menu</span>
+                                    </a>
+                                    <div class="menu-dropdown collapse @IsShow("/"+menu.MenuCtrl+"")" id="sidebar_@menu.MenuCtrl">
+                                        <ul class="nav nav-sm flex-column">
+                                            @foreach (UserMenuModel childMenu in menues.Where(w => w.ParentMenuId == menu.MenuId).OrderBy(o => o.DisplaySequence))
+                                            {
+                                                <li class="nav-item">
+                                                    <a asp-controller="@childMenu.MenuCtrl" asp-action="@childMenu.MenuAction" class="nav-link @IsActive("/" + childMenu.MenuCtrl + "/" + childMenu.MenuAction)">
+                                                        <i class="fa-solid fa-chevron-right"></i>@childMenu.Menu
+                                                    </a>
+                                                </li>
+                                            }
+                                        </ul>
+                                    </div>
+                                </li>
+                            }
+                        }
+                    }
+                </ul>
+
+            </div>
+        </div>
+    </div>
+</section>
+
+@functions {
+    public string IsActive(string link)
+    {
+        var active = string.Empty;
+        if (Context.Request.Path.Equals(link, StringComparison.OrdinalIgnoreCase))
+        {
+            active = "menu-active";
+        }
+        return active;
+    }
+    public string IsShow(string link)
+    {
+        var active = string.Empty;
+        if (Context.Request.Path.StartsWithSegments(link, StringComparison.OrdinalIgnoreCase))
+        {
+            active = "show";
+        }
+        return active;
+    }
+    public string IsCollapsed(string link)
+    {
+        var active = "collapsed";
+        if (Context.Request.Path.StartsWithSegments(link, StringComparison.OrdinalIgnoreCase))
+        {
+            active = "";
+        }
+        return active;
+    }
+    public string IsExpanded(string link)
+    {
+        var active = "false";
+        if (Context.Request.Path.StartsWithSegments(link, StringComparison.OrdinalIgnoreCase))
+        {
+            active = "true";
+        }
+        return active;
+    }
+}

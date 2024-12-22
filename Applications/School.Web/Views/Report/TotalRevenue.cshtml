@@ -1,0 +1,134 @@
+﻿@{
+    ViewData["Title"] = "Report";
+}
+
+<div class="row">
+    <div class="col-12">
+        <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+            <div class="page-title d-flex align-items-center justify-content-between">
+                <ol class="breadcrumb m-0">
+                    <li class="breadcrumb-item">Report</li>
+                    <li class="breadcrumb-item active">Total Revenue List</li>
+                </ol>
+                 <div>
+                <button type="button" class="btn btn-secondary" onclick="ExportCSVStatement()">
+                <i class="fa-solid fa-file-excel"></i> Export to Excel
+                </button>
+                </div> 
+            </div>
+        </div>
+    </div>
+</div>
+<div class="card">
+    <div class="card-body">
+        @* @Html.Partial("_StudentReportFilterPartial") *@
+        <div class="row g-3">
+            <div class="col-lg-12 col-md-12">
+                <div class="tab-content screen-list">
+                    <div class="tab-pane fade show active" id="total-revenue-report-load">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section scripts {
+    <script>
+        $(function () {
+            $('.datepicker').datepicker({
+                format: "dd/mm/yyyy",
+                autoclose: true
+            });
+            $("#filterAcademicYear").prop("selectedIndex", 1);
+            var lastMonthDate = new Date();
+            lastMonthDate.setMonth(lastMonthDate.getMonth() - 1);
+
+            $('#InvoiceDateStart').datepicker('update', lastMonthDate);
+            $('#InvoiceDateEnd').datepicker('update', new Date());
+
+            loadTotalRevenueReportByFilter();
+        });
+        function RefreshSearch() {
+            $("#filterSearch").val("");
+            $("#filterIsActive").val("true");
+            loadTotalRevenueReportByFilter();
+        }
+        function loadTotalRevenueReportByFilter() {
+            var filterDataObj = {
+                FilterSearch: $("#filterSearch").val(),
+                FilterIsActive: $("#filterIsActive").val()
+            };
+            TotalRevenueReportLoad(filterDataObj);
+        }
+        function TotalRevenueReportLoad(filterDataObj) {
+            $('#total-revenue-report-load').empty();
+            $('#total-revenue-report-load').html('<div class="row"> <div class="col-xl-12"><div class="card order-card"><span class="text-center no-text" style="color:#212529;"><img src="@Url.Content("~/images/loding.gif")"  /></span></div></div></div>');
+            var urlToCall = baseUrl + 'Report/StudentReportDataPartial';
+            $app.post(urlToCall, filterDataObj).then(function (response) {
+                $('#total-revenue-report-load').html(response);
+            });
+        }
+
+        function ExportCSVStatement() {
+            var reportKey = 'totalrevenueexport';
+            var reportName = 'Total Revenue List';
+            var filterDataObj = {
+                ParentId: $("#ParentId").val(),
+                ParentName: $("#ParentName").val(),
+                StudentName: $("#StudentName").val(),
+                FatherMobile: $("#FatherMobile").val(),
+                InvoiceDateStart: $("#InvoiceDateStart").val(),
+                InvoiceDateEnd: $("#InvoiceDateEnd").val(),
+                AcademicYear: $("#AcademicYear").val(),
+                PaymentType: $("#PaymentType").val(),
+            };
+
+            if (filterDataObj.InvoiceDateStart == '') {
+                filterDataObj.InvoiceDateStart = getFormattedDateSearch(new Date());
+            } else {
+                filterDataObj.InvoiceDateStart = getFormattedDateSearch(new Date($("#InvoiceDateStart").datepicker('getDate')));
+            }
+            if (filterDataObj.InvoiceDateEnd == '') {
+                filterDataObj.InvoiceDateEnd = getFormattedDateSearch(new Date());
+            } else {
+                filterDataObj.InvoiceDateEnd = getFormattedDateSearch(new Date($("#InvoiceDateEnd").datepicker('getDate')));
+            }
+
+            var ParentIdParam = "ParentId: " + filterDataObj.ParentId;
+            var ParentNameParam = "ParentName: " + filterDataObj.ParentName;
+            var StudentNameParam = "StudentName: " + filterDataObj.StudentName;
+            var FatherMobileParam = "FatherMobile: " + filterDataObj.FatherMobile;
+            var InvoiceDateStartParam = "InvoiceDateStart: " + filterDataObj.InvoiceDateStart;
+            var InvoiceDateEndParam = "InvoiceDateEnd: " + filterDataObj.InvoiceDateEnd;
+            var AcademicYearParam = "AcademicYear: " + filterDataObj.AcademicYear;
+            var PaymentTypeParam = "PaymentType: " + filterDataObj.PaymentType;
+
+            var parameters = ParentIdParam + '|' + ParentNameParam + '|' + FatherMobileParam + '|' + StudentNameParam + '|' + AcademicYearParam + '|' + InvoiceDateStartParam + '|' + InvoiceDateEndParam + '|' + PaymentTypeParam;
+
+            this.ExportCSVWithParam(reportKey, reportName, parameters);
+        }
+
+        function getFormattedPreiousMonthDateSearch(date) {
+            let year = date.getFullYear();
+            let month = (date.getMonth()).toString().padStart(2, '0');
+            let day = date.getDate().toString().padStart(2, '0');
+
+            return day + '/' + month + '/' + year;
+        }
+
+        function getFormattedDateSearch(date) {
+            let year = date.getFullYear();
+            let month = (1 + date.getMonth()).toString().padStart(2, '0');
+            let day = date.getDate().toString().padStart(2, '0');
+
+            return day + '/' + month + '/' + year;
+        }
+
+        function GetDateFormat_MMMDDYYYY(date) {
+
+            return date.toLocaleDateString('en-GB', {
+                day: 'numeric', month: 'long', year: 'numeric'
+            }).replace(/ /g, '-');
+        }
+    </script>
+}

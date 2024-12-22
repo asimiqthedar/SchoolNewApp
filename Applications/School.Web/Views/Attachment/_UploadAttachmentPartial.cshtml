@@ -1,0 +1,33 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
+*@
+<div class="row g-3">
+    <div class="col-lg-12">
+        <div>
+            <label for="txtDocNumber" class="form-label">Doc No.</label>
+            <input type="text" id="txtDocNumber" class="form-control" placeholder="Doc Number" required="">
+        </div>
+    </div>  
+    <div class="col-lg-12">
+        <div>
+            <label for="DocType" class="form-label">Doc Type</label>
+            <select id="DocType" class="form-select" aria-label="Doc Type"
+                    asp-items="@(new SelectList(ViewBag.DocumentTypeDropdown,"Value", "Text"))">
+            </select>
+        </div>
+    </div>  
+    <input type="hidden" id="DocFor" value="@ViewBag.DocFor" />
+    <input type="hidden" id="DocForId" value="@ViewBag.DocForId" />
+    <div class="col-lg-12">
+        <div>
+            <label for="fdAttachments" class="form-label">Upload</label>
+            <input type="file" id="fdAttachments" class="form-control" required="">
+        </div>
+    </div>
+
+    <div class="col-md-12">
+        <button class="btn btn-success theme-btn" type="button" onclick="UploadDocs();" id="btnUploadDocs">
+            Upload
+        </button>
+    </div>
+</div>

@@ -1,0 +1,31 @@
+﻿@model School.Models.WebModels.ParentModels.ParentModel
+<div class="card chart-card">
+	<div class="card-body">
+		<div class="user-list">
+			@if (Model.StudentModelList != null)
+			{
+				foreach (var student in Model.StudentModelList)
+				{
+					<div class="single-user-list mb-3">
+						<div class="single-user-img">
+							<img src="assets/images/avatar-@student.StudentCode.ToString().Substring(student.StudentCode.ToString().Length - 1) + " .jpg" alt="Avatar" />
+						</div>
+						<div class="single-user-info">
+							<h4>@student.StudentName</h4>
+							<h6>@student.StudentArabicName</h6>
+							<div class="single-user-text">
+								<span>@student.StudentCode | @student.GradeName : @(student.GenderId == 1 ? "Male" : "Female")</span>
+							</div>
+							<div class="single-user-text">								
+								<span> ID: @student.IqamaNo </span>
+							</div>
+							<div class="single-user-text">
+								<span> Email: @student.StudentEmail </span>
+							</div>
+						</div>
+					</div>
+				}
+			}
+		</div>
+	</div>
+</div>

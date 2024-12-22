@@ -1,0 +1,126 @@
+﻿@using School.Models.WebModels.GradeModels;
+@using System.Text.Json;
+@using System.Text.Json.Serialization;
+@model GradeModel
+<div class="row">
+    <div class="col-md-12">
+        <div class="cform row gy-3">
+            <input type="hidden" id="GradeId" name="GradeId" asp-for="GradeId" />
+            <div class="col-xxl-12 col-md-12">
+                <div>
+                    <label class="form-label">Grade</label>
+                    <input type="text" class="form-control textCapital" id="GradeName" name="GradeName" asp-for="GradeName" placeholder="Grade">
+                </div>
+            </div>
+            <div class="col-xxl-6 col-md-6">
+                <div>
+                    <label class="form-label">Cost Center</label>
+                    <select id="CostCenterId" class="form-select" asp-for="CostCenterId" aria-label="Cost Center"
+                            asp-items="@(new SelectList(ViewBag.CostCenterDropdown,"Value", "Text"))">
+                    </select>
+                </div>
+            </div>
+            <div class="col-xxl-6 col-md-6">
+                <div>
+                    <label class="form-label">Gender</label>
+                    <select id="GenderTypeId" class="form-select" asp-for="GenderTypeId" aria-label="Gender"
+                            asp-items="@(new SelectList(ViewBag.GenderDropdown,"Value", "Text"))">
+                    </select>
+                </div>
+            </div>
+            <div class="col-xxl-6 col-md-6">
+                <div>
+                    <label class="form-label">Debit Account</label>
+                    <input type="text" class="form-control" id="DebitAccount" name="DebitAccount" asp-for="DebitAccount" placeholder="Debit Account">
+                </div>
+            </div>
+            <div class="col-xxl-6 col-md-6">
+                <div>
+                    <label class="form-label">Credit Account</label>
+                    <input type="text" class="form-control" id="CreditAccount" name="CreditAccount" asp-for="CreditAccount" placeholder="Credit Account">
+                </div>
+            </div>
+            <div class="col-xxl-6 col-md-6" style="display:none">
+                <div>
+                    <label class="form-label">Active</label>
+                    <select class="form-select" id="IsActive" asp-for="IsActive" aria-label="Active">
+                        <option value=true>Active</option>
+                        <option value=false>In-Active</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-12 text-center">
+                <button class="btn btn-success theme-btn" type="button" id="btnSave">@(Model.GradeId > 0 ? "Update" : "Add")</button>
+                <button class="btn btn-secondary" type="button" onclick="bootbox.hideAll();">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>   
+    $(document).ready(function () {
+         $('.textCapital').keyup(function () {
+            $(this).val($(this).val().toUpperCase());
+        });
+
+        $("#btnSave").click(function () {
+            BindData();
+        });
+        function BindData() {
+            var dataObj = {
+                GradeId: $("#GradeId").val(),
+                GradeName: $("#GradeName").val(),
+                CostCenterId: $("#CostCenterId").val(),
+                GenderTypeId: $("#GenderTypeId").val(),
+                IsActive: $("#IsActive").val(),
+                DebitAccount: $("#DebitAccount").val(),
+                CreditAccount: $("#CreditAccount").val(),
+            };
+            if (Validation(dataObj)) {
+                if (dataObj["GradeId"] == "0") {
+                    Save(dataObj);
+
+                }
+                else {
+                    var dlg_updatePromo = bootbox.dialog({
+                        message: 'Are you sure! you want to update the record?',
+                        title: 'Confirm',
+                        buttons: {
+                            ok: {
+                                label: "Yes",
+                                className: 'btn-primary',
+                                callback: function () {
+                                    Save(dataObj);
+                                }
+                            },
+                            cancel: {
+                                label: "No",
+                                className: 'btn-danger',
+                                callback: function () {
+                                    $(dlg_updatePromo).modal('hide');
+                                }
+                            }
+                        }
+                    });
+                    dlg_updatePromo.find('.modal-header').css('background-color', '#dc3545').css('border-bottom', '1px solid #dc3545');
+                }
+            }
+        }
+        function Validation(dataObj) {
+            var isError = false;
+            if (!dataObj["GradeName"] || !dataObj["GradeName"].trim()) {
+                $app.notify.validate("GradeName", "Name is required");
+                isError = true;
+            }
+            if (!dataObj["CostCenterId"] || !dataObj["CostCenterId"].trim() || dataObj["CostCenterId"].trim() == "0") {
+                $app.notify.validateDD("CostCenterId", "Cost center is required");
+                isError = true;
+            }
+            if (isError) {
+                return false;
+            }
+            else {
+                return true;
+            }
+        }
+    });
+</script>

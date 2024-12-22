@@ -1,0 +1,124 @@
+﻿@{
+    ViewData["Title"] = "Payment Method";
+}
+
+<div class="row">
+    <div class="col-12">
+        <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+            <div class="page-title d-flex align-items-center justify-content-between">
+                <ol class="breadcrumb m-0">
+                    <li class="breadcrumb-item">Setup</li>
+                    <li class="breadcrumb-item active">Payment Method List</li>
+                </ol>
+                 <div>
+                <button type="button" class="btn btn-dark btn-set-task w-sm-100" onclick="Create()">
+                <i class="fa-solid fa-plus"></i> Add
+                </button>
+                </div> 
+            </div>
+        </div>
+    </div>
+</div>
+<div class="card">
+    <div class="card-body">
+        <div class="row g-3">
+            <div class="col-lg-12 col-md-12">
+                <div class="tab-content screen-list">
+                    <div class="tab-pane fade show active" id="payment-method-load">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section scripts {
+    <script>
+        $(function () {
+            loadPaymentMethodByFilter();
+        });
+        function RefreshSearch() {
+            $("#filterSearch").val("");
+            $("#filterIsActive").val("true");
+            loadPaymentMethodByFilter();
+        }
+        function loadPaymentMethodByFilter() {
+            var filterDataObj = {
+                FilterSearch: $("#filterSearch").val(),
+                FilterIsActive: $("#filterIsActive").val()
+            };
+            PaymentMethodLoad(filterDataObj);
+        }
+        function PaymentMethodLoad(filterDataObj) {
+            $('#payment-method-load').empty();
+            $('#payment-method-load').html('<div class="row"> <div class="col-xl-12"><div class="card order-card"><span class="text-center no-text" style="color:#212529;"><img src="@Url.Content("~/images/loding.gif")"  /></span></div></div></div>');
+            var urlToCall = baseUrl + 'Setup/PaymentMethodDataPartial';
+            $app.post(urlToCall, filterDataObj).then(function (response) {
+                $('#payment-method-load').html(response);
+            });
+        }
+
+        function Create() {
+            var op = { title: 'Add Payment Method' }
+            var url = '@Url.Action("PaymentMethodEditPartial", "Setup")';
+            $app.openViewDialog(url, op);
+        }
+
+        function Edit(paymentMethodId) {
+            var op = { title: 'Update Payment Method ' }
+            var url = '@Url.Action("PaymentMethodEditPartial", "Setup")';
+            url = url + '?paymentMethodId=' + paymentMethodId;
+            $app.openViewDialog(url, op);
+        }
+        function Save(dataModel) {
+            var urlToCall = '@Url.Action("SavePaymentMethod", "Setup")';
+            $app.post(urlToCall, dataModel).then(function (response) {
+                if (response.result == 0) {
+                    bootbox.hideAll();
+                    $app.notify.success("Data has been saved!");
+                    loadPaymentMethodByFilter();
+                }
+                else if (response.result == -2) {
+                    $app.notify.error("Data already exists!");
+                }
+                else {
+                    $app.notify.error("Error in saving!");
+                }
+            });
+        }
+        function Delete(paymentMethodId) {
+            var dlg_removePromo = bootbox.dialog({
+                message: 'Are you sure! you want to delete the record?',
+                title: 'Remove',
+                buttons: {
+                    ok: {
+                        label: "Yes",
+                        className: 'btn-primary',
+                        callback: function () {
+                            var urlToCall = '@Url.Action("DeletePaymentMethod", "Setup")';
+                            urlToCall = urlToCall + '?paymentMethodId=' + paymentMethodId;
+
+                            $app.get(urlToCall).then(function (response) {
+                                if (response.result == 0) {
+                                    bootbox.hideAll();
+                                    $app.notify.success("Data has been deleted!");
+                                    loadPaymentMethodByFilter();
+                                }
+                                else {
+                                    $app.notify.error("Error in deleting!");
+                                }
+                            });
+                        }
+                    },
+                    cancel: {
+                        label: "No",
+                        className: 'btn-danger',
+                        callback: function () {
+                            $(dlg_removePromo).modal('hide');
+                        }
+                    }
+                }
+            });
+            dlg_removePromo.find('.modal-header').css('background-color', '#dc3545').css('border-bottom', '1px solid #dc3545');
+        }
+    </script>
+}

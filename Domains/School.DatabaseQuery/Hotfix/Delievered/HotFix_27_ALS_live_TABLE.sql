@@ -1,0 +1,4 @@
+﻿ALTER TABLE tblUser ADD Otp NVARCHAR(6);
+go
+ALTER TABLE tblUser ADD OtpExpiration DATETIME;
+go

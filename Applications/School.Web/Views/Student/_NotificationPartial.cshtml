@@ -1,0 +1,70 @@
+﻿@using System.Data;
+@model DataSet
+
+<div class="table-responsive table-card order-tabel" style="width:100%">
+    <table class="table align-middle table-nowrap mb-0" id="tblActivityData">
+        <thead class="table-light text-muted">
+            <tr>
+                <th><input type="checkbox" id="selectAllCheckbox"></th>
+                <th width="5%">S.No</th>              
+                <th>NotificationId</th>
+                <th>RecordId</th>
+                <th>RecordStatus</th>
+                <th>RecordType</th>
+            </tr>
+        </thead>
+        <tbody class="list form-check-all">
+                @if (Model != null && Model.Tables.Count > 0 && Model.Tables[0].Rows.Count > 0)
+                {
+                    int i = 0;
+                    foreach (DataRow dr in Model.Tables[0].Rows)
+                    {
+                        i++;
+                    <tr>
+                        <th></th>
+                        <td>@i</td>                     
+                        <td>@dr["NotificationId"]</td>
+                        <td>@dr["RecordId"]</td>
+                        <td>@dr["RecordStatus"]</td>
+                        <td>@dr["RecordType"]</td>
+                    </tr>
+                    }
+                }
+        </tbody>
+    </table>
+</div>
+<script>
+    $("#tblActivityData").DataTable({
+        language: {
+            search: "<i class='ri-search-line search-icon'></i>",
+            searchPlaceholder: "Search ..."
+        },
+        select: {
+            style: 'multi'
+        },
+        // Additional configuration options for DataTables
+        columnDefs: [
+            {
+                targets: 0,
+                render: function (data, type, row, meta) {
+                    // Render a checkbox with value
+                    return '<input type="checkbox" value="' + row.Id + '">';
+                }
+            }
+        ]
+        // searching: true,
+        // info: false,
+        // dom: 'rtip',
+        // scrollX: true,
+        // bFilter: true,
+        // bSort: true,
+        // bPaginate: true,
+        // destroy: true,
+        // orderCellsTop: true,
+        // fixedHeader: true
+    });
+    $('#selectAllCheckbox').change(function () {
+        var isChecked = $(this).is(':checked');
+        $('#tblActivityData tbody input[type="checkbox"]').prop('checked', isChecked);
+    });
+</script>

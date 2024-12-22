@@ -1,0 +1,494 @@
+/* Theme Name: Godrej 
+Author: Sunil UI Developer
+Version: 1.0.0
+Primary Use : Godrej*/
+
+/*===== Global CSS start here=======*/
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+}
+
+ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+a:hover,a:focus {
+    text-decoration: none;
+    box-shadow: none;
+}
+
+button:focus {
+    text-decoration: none;
+    box-shadow: none;
+}
+
+img {
+  border: none;
+  max-width: 100%;
+}
+
+a {
+    transition: 0.4s all ease-in-out;
+    text-decoration: none;
+}
+
+ul {
+    list-style: outside none none;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+     font-family: "Poppins", system-ui;
+    overflow-x: hidden;
+    background: #f3f3f9;
+}
+
+h1 {
+    font-size: 40px;
+    line-height: 50px;
+}
+
+h2 {
+    font-size: 36px;
+    line-height: 48px;
+}
+
+h3 {
+    font-size: 28px;
+    line-height: 1.25;
+    letter-spacing: -.02em;
+}
+
+h4 {
+    font-size: 22px;
+    line-height: 32px;
+}
+
+h5 {
+    font-size: 18px;
+    line-height: 24px;
+}
+
+h6 {
+    font-size: 16px;
+    line-height: 26px;
+}
+h1 a, h2 a, h3 a, h4 a, h5 a, h6 a {
+  color: inherit;
+}
+.padd-50 {
+    padding: 50px 0;
+}
+
+/*===== Global CSS end  here=======*/
+
+/**/
+select#year {
+    border: none;
+    width: 110px;
+    border-radius: 5px;
+    padding: 5px 10px;
+    margin-left: 5px;
+}
+.select-year label {
+    font-weight: 500;
+    font-size: 16px;
+}
+.overview-chart {
+    display: flex;
+}
+.overview-chart canvas {
+    width: 400px !important;
+    height: 270px !important;
+    object-fit: contain;
+}
+.card {
+    border: none;
+    border-radius: 5px;
+    box-shadow: rgba(9, 30, 66, 0.25) 0px 4px 8px -2px, rgba(9, 30, 66, 0.08) 0px 0px 0px 1px;
+}
+.chart-card .card-header {
+    background: none;
+}
+.payment-remainder-profile {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-bottom: 1px dotted #ddd;
+    padding-bottom: 20px;
+    margin-bottom: 10px;
+}
+.payment-user-img {
+    width: 60px;
+    height: 60px;
+    border-radius: 100px;
+}
+.payment-user-img img {border-radius: 100px;}
+
+.payment-remainder-name {
+    margin-left: 15px;
+}
+.payment-remainder-name h4 {
+    font-weight: 600;
+    color: #008b8b;
+}
+
+.card .card-header h5 {
+    margin-bottom: 0;
+}
+.payment-remainder-text ul {
+    display: flex;
+    align-items: center;
+    justify-content: space-between !important;
+}
+
+.payment-remainder-text ul li {text-transform: capitalize;font-size: 15px;font-weight: 500;}
+
+.payment-remainder-text ul li b {
+    color: #008b8b;
+    font-size: 20px;
+}
+.payment-remainder-date {
+    display: flex;
+    justify-content: space-between;
+    background: #008b8b1c;
+    padding: 15px 10px;
+    border-radius: 5px;
+    margin: 15px 0;
+}
+.payment-remainder-date span {
+    font-weight: 600;
+    text-transform: capitalize;
+    font-size: 15px;
+    color: #000;
+}
+.payment-remainder p {
+    text-align: center;
+    font-weight: 400;
+    font-size: 16px;
+}
+.card-header {
+    border: none;
+}
+.payment-header {
+    background: #008b8b1c !important;
+    padding: 15px 10px;
+    text-align: center;
+}
+
+.payment-header h5 {
+    font-weight: 500;
+    text-transform: capitalize;
+    color: #000;
+}
+.card.chart-card {
+    margin-bottom: 20px;
+}
+.single-feeoverview {
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 10px;
+    height: 125px;
+    margin-bottom: 15px;
+}
+
+
+
+.single-feeoverview h6 {
+    text-transform: capitalize;
+    font-weight: 600;
+    color: #363333;
+    margin-bottom: 0;
+}
+
+.single-feeoverview b {
+    color: #373b3b;
+    font-size: 20px;
+}
+
+
+
+.single-feeoverview {
+    flex: 1 1 calc(50% - 20px);
+    box-sizing: border-box;
+    position: relative;
+}
+
+.fee-overview-box .fee-overview-chart canvas {
+    width: 500px !important;
+    height: 300px !important;
+    object-fit: contain;
+    text-align: left;
+}
+.fee-overview-box {
+    display: flex;
+    gap: 20px;
+    justify-content: space-between;
+}
+
+.fee-overview-list {
+    display: flex;
+    flex-wrap: wrap;
+    width: 40%;
+    gap: 20px;
+}
+
+.fee-overview-chart {
+    border-right: 1px solid #ddd;
+    width: 48%;
+}
+.redoverview {
+    background: #fff6ed;
+    border-color: #f3d1af;
+}
+
+.yellowoverview {
+    background: #f9b65e05;
+    border-color: #f9b65e;
+}
+
+.greenovervier {
+    background: #ddf9ed;
+    border-color: #a0ddc3;
+}
+
+.red-overview {
+    background: #f7e4e8;
+    border-color: #cb8997;
+}
+.fee-overview-info {
+    background: #249f9f;
+    position: absolute;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    border-radius: 100px;
+    align-items: center;
+    justify-content: center;
+    top: -20px;
+    right: 20px;
+}
+
+.fee-overview-info span {
+    color: #fff;
+}
+.single-user-list {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    border: 1px solid #ddd;
+    padding: 15px;
+    border-radius: 10px;
+}
+
+.single-user-img img {
+    border-radius: 100px;
+    width: 100%;
+    height: 100%;
+}
+
+.single-user-img {
+    width: 50px;
+    height: 50px;
+    border-radius: 100px;
+    border: 4px solid #99b1a7;
+}
+
+.single-user-info h4 {
+    margin-bottom: 0;
+    font-weight: 600;
+    font-size: 18px;
+    line-height: 25px;
+}
+
+.single-user-info span {
+    font-weight: 500;
+    font-size: 12px;
+}
+.single-user-text {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 155px;
+}
+
+.single-user-text button {
+    background: #249f9f;
+    border: none;
+    color: #fff;
+    padding: 2px 10px;
+    border-radius: 5px;
+    font-size: 12px;
+}
+.user-profile-header .single-user-info {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    justify-content: center;
+}
+
+.user-profile-header .single-user-info img {
+    border-radius: 100px;
+    width: 60px;
+    height: 60px;
+}
+
+.user-profile-header {padding: 10px 0;background: #249f9f;border-top-right-radius: 5px;border-top-left-radius: 5px;}
+
+.user-profile-name h4 {
+    color: #fff;
+    margin: 0;
+}
+.user-profile-box ul {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.user-profile-box ul li {
+    flex: 1 1 calc(50% - 20px);
+    box-sizing: border-box;
+    position: relative;
+    margin-bottom: 14px;
+    font-weight: 500;
+    font-size: 16px;
+}
+
+.user-profile-box ul li:nth-child(even) {
+    text-align: right;
+}
+.user-profile-box ul li:nth-child(odd) {
+    text-align: left;
+}
+
+
+.user-profile-footer {
+    display: flex;
+    justify-content: space-between;
+    border-top: 1px solid #ddd;
+    padding: 15px 0 0;
+}
+
+.edit-btn {
+    background: #249f9f;
+    border: none;
+    color: #fff;
+    padding: 3px 15px;
+    border-radius: 5px;
+    font-size: 15px;
+}
+.alart-box .fee-overview-list {
+    width: 100%;
+}
+.alart-box .fee-overview-info {
+    position: relative;
+    top: 0;
+    left: 0;
+    background: none;
+    right: 0;
+    width: 100%;
+    text-align: right;
+    display: block;
+}
+
+.alart-box .fee-overview-info span {
+    background: #249f9f;
+    color: #fff;
+    padding: 1px 3px;
+    border-radius: 5px;
+    font-size: 12px;
+}
+
+.alart-box .single-feeoverview {
+    height: 120px;
+    margin-bottom: 0;
+}
+.avtar.avtar-s {
+    width: 40px;
+    height: 40px;
+    font-size: 14px;
+    border-radius: 12px;
+}
+
+.avtar {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    font-size: 18px;
+    font-weight: 600;
+    width: 48px;
+    height: 48px;
+}
+.bg-light-danger {
+    background: #feeceb;
+    color: #f44236;
+}
+.text-truncate {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+ .text-truncate {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+}
+.text-sm {
+    font-size: 0.75rem !important;
+}
+.notifications-box p {
+    font-size: 14px;
+}
+
+.tabel-card .card-header {
+    justify-content: space-between;
+}
+
+.tabel-card .card-header select {
+    border: none;
+    background: #ddd;
+    padding: 5px 10px;
+    border-radius: 5px;
+}
+.tabel-card table thead {
+    background: #EEECFF;
+}
+.tabel-card table thead tr th {
+    font-weight: 600;
+    text-transform: capitalize;
+}
+
+.tabel-card table tr td {
+    font-weight: 500;
+    font-size: 14px;
+    text-transform: capitalize;
+    padding: 13px 15px;
+}
+.tabel-card table tr td span {
+    background: #ddd;
+    border-radius: 5px;
+    padding: 4px 5px;
+    font-size: 14px;
+}
+.ship {
+    background: #249f9f !important;
+    color: #fff;
+}
+
+.paid {
+    background: #32b27b !important;
+    color: #fff;
+}
+
+.panding {
+    background: #dd113c !important;
+    color: #fff;
+}
+/**/

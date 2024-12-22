@@ -1,0 +1,82 @@
+﻿
+<style>
+    .backlog-filter-btn button {
+        padding: 6px 10px;
+    }
+
+</style>
+<div class="row mb-3 align-items-center  label-row">
+    <div class="col-md-12 mb-5">
+        <div class="row mb-3" style="display:none;">
+            <div class="col-md-8">
+                <div class="search-box">
+                    <input type="text" id="filterStatementSearch" class="form-control search bg-light border-light" placeholder="Search....">
+                    <i class="ri-search-line search-icon"></i>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12 p-3">
+                <div class="row">
+                        <div class="col-lg-6">
+                            <label for="filterItemCode" class="form-label">Item Code</label>
+                            <input type="text" class="form-control" id="filterItemCode" placeholder="Enter Item Code" />
+                        </div>
+                    <div class="col-lg-6">
+                        <label for="filterInvoiceNo" class="form-label">Invoice No</label>
+                        <input type="text" class="form-control" id="filterInvoiceNo" placeholder="Enter Invoice No." />
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-6 mt-2">
+                        <label for="ParentName" class="form-label">Parent Name</label>
+                        <input type="text" class="form-control" id="filterParentName" placeholder="Enter Parent Name" />
+                    </div>
+                    <div class="col-lg-6 mt-2">
+                        <label for="filterParentMobile" class="form-label">Parent Mobile</label>
+                        <input type="text" class="form-control" id="filterParentMobile" placeholder="Enter Parent Mobile" />
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-6 mt-2">
+                        <label for="PaymentMethod" class="form-label">Payment Method</label>
+                        <input type="text" class="form-control" id="filterPaymentMethod" placeholder="Enter Payment Method" />
+                        </div>
+                    <div class="col-lg-6 mt-2">
+                        <label for="filterReferenceNo" class="form-label">Reference No</label>
+                        <input type="text" class="form-control" id="filterReferenceNo" placeholder="Enter Reference No" />
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-6 mt-3">
+                        <label for="StartDate" class="form-label">Start Date</label>
+                        <input class="form-control datepicker" id="filterStartDate" value="@DateTime.Now.AddMonths(-1).ToString("dd\\/MM\\/yyyy")" />
+
+                    </div>
+                    <div class="col-lg-6 mt-3">
+                        <label for="EndDate" class="form-label">End Date</label>
+                        <input class="form-control datepicker" id="filterEndDate" value="@DateTime.Now.ToString("dd\\/MM\\/yyyy")"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-12 btn-col">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="d-flex backlog-btn-row">
+                    <div class="backlog-filter-btn">
+                        <button type="button" class="btn btn-primary" onclick="loadMonthlyRevenueReportByFilter();">
+                            Search
+                        </button>
+                    </div>
+                    <div class="backlog-filter-btn">
+                        <button type="button" class="btn btn-secondary" onclick="RefreshSearch();">
+                            Refresh
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

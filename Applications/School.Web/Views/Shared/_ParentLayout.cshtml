@@ -1,0 +1,201 @@
+﻿@using System.Security.Claims;
+@using School.Web.Helpers;
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>@ViewData["Title"] - Advanced Learning Schools</title>
+	<link rel="icon" href="@Url.Content("~/favicon.ico")">
+	
+	<link rel="stylesheet" href="@Url.Content("~/css/jquery.dataTables.min.css")" />	
+	<link rel="stylesheet" href="@Url.Content("~/css/flatpickr.min.css")">
+	<link rel="stylesheet" type="text/css" href="@Url.Content("~/css/owl.carousel.min.css")">
+	<link rel="stylesheet" type="text/css" href="@Url.Content("~/css/jquery.fancybox.min.css")">
+	<link href="@Url.Content("~/css/toastr.min.css")" rel="stylesheet" />
+	<link href="@Url.Content("~/css/lobibox.css")" rel="stylesheet" />
+	<link href="@Url.Content("~/js/datepicker/bootstrap-datepicker.min.css")" rel="stylesheet" />
+
+	<link href="@Url.Content("~/plugin/jquery-nestable.css")" rel="stylesheet" />
+	
+	<link rel="stylesheet" type="text/css" href="@Url.Content("~/css/swiper-bundle.min.css")">
+	<link rel="stylesheet" type="text/css" href="@Url.Content("~/css/choices.min.css")">	
+	<link rel="stylesheet" type="text/css" href="@Url.Content("~/css/icons.min.css")">
+	<link href="@Url.Content("~/css/select2.min.css")" rel="stylesheet" />
+
+	<link type="text/css" href="//gyrocode.github.io/jquery-datatables-checkboxes/1.2.12/css/dataTables.checkboxes.css" rel="stylesheet" />
+	<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css">
+	<link rel="stylesheet" type="text/css" href="@Url.Content("~/css/style.css")" asp-append-version="true">
+	<link rel="stylesheet" href="@Url.Content("~/assets/css/bootstrap.min.css")" />
+	<link rel="stylesheet" href="@Url.Content("~/assets/css/all.min.css")" />
+	<link rel="stylesheet" href="@Url.Content("~/assets/css/style.css")" />
+	<link rel="stylesheet" href="@Url.Content("~/assets/css/responsive.css")" />
+
+	<script>
+		var $app = { session: {}, hostUrl: '', ui: {} };
+		$app.hostUrl = '@($"{Context.Request.Scheme}://{Context.Request.Host}")';
+		var baseUrl = '@Url.Content("~/")';
+	</script>
+	@await RenderSectionAsync("styles", required: false)
+</head>
+<body>
+	<header class="header-sec header-menu-one">
+		<div class="container-fluid">
+			<div class="row">
+				<div class="col-md-12 col-sm-12">
+					<div class="navbar-header">
+						<div class="d-flex">
+						</div>
+						<div class="d-flex justify-content-between">
+							<div class="toggle-button sidebar-toggle mobile-toggle">
+								<button type="button" class="item-link">
+									<span class="btn-icon-wrap">
+										<span></span>
+										<span></span>
+										<span></span>
+									</span>
+								</button>
+							</div>
+							<div class="dropdown d-md-none  topbar-head-dropdown header-item">
+								<button type="button" class="btn btn-icon btn-topbar btn-ghost-secondary rounded-circle" id="page-header-search-dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+									<i class="fa-solid fa-magnifying-glass"></i>
+								</button>
+								<div class="dropdown-menu dropdown-menu-lg dropdown-menu-end p-0" aria-labelledby="page-header-search-dropdown">
+									<form class="p-3">
+										<div class="form-group m-0">
+											<div class="input-group">
+												<input type="text" class="form-control" placeholder="Search ..." aria-label="Recipient's username">
+												<button class="btn btn-primary" type="submit"><i class="fa-solid fa-magnifying-glass"></i></button>
+											</div>
+										</div>
+									</form>
+								</div>
+							</div>
+						<div class="user-dropdown">
+								@Html.Partial("_UserParentPartial")
+						</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</header>
+	@Html.Partial("_MenuPartial")
+	<section class="main-content">
+		<div class="page-content">
+			<div class="container-fluid">
+				<div class="mb-4">
+				</div>
+				@RenderBody()
+			</div>
+		</div>
+		<footer class="footer">
+			<div class="container-fluid">
+				<div class="row">
+					<div class="col-sm-12" style="text-align:right;">
+						<p class="copy-text">
+							©
+							<script>document.write(new Date().getFullYear())</script> Advanced Learning Schools. All right reserved.
+						</p>
+					</div>
+
+				</div>
+			</div>
+		</footer>
+	</section>
+
+     
+	  <script src="@Url.Content("~/assets/js/jquery.min.js")"></script>
+	  <script src="@Url.Content("~/assets/js/bootstrap.bundle.min.js")"></script>
+	  <script src="@Url.Content("~/assets/js/chart.js")"></script>
+	  <script src="@Url.Content("~/assets/js/custom.js")"></script>
+
+	<script src="@Url.Content("~/js/datepicker/bootstrap-datepicker.min.js")"></script>
+
+	<script src="@Url.Content("~/js/apexcharts.bundle.js")"></script>
+	<script src="@Url.Content("~/js/owl.carousel.min.js")"></script>
+	<script src="@Url.Content("~/js/jquery.fancybox.min.js")"></script>
+	<script src="@Url.Content("~/js/toastr.min.js")"></script>
+	<script src="@Url.Content("~/js/lobibox.js")"></script>
+	<script src="@Url.Content("~/js/bootbox.min.js")"></script>
+	<script src="@Url.Content("~/js/app/app.ajax.js")"></script>
+	<script src="@Url.Content("~/js/app/app.notify.js")"></script>
+	@*<script src="@Url.Content("~/plugin/jquery.nestable.js")"></script>*@
+	<script src="@Url.Content("~/js/jquery.nestable.min.js" )"></script>
+	<script src="@Url.Content("~/js/choices.min.js")"></script>
+	<script src="@Url.Content("~/js/swiper-bundle.min.js")"></script>
+
+	<script src="@Url.Content("~/js/dashboard.js")"></script>
+	<script src="@Url.Content("~/js/jquery.dataTables.min.js")"></script>
+	<script src="@Url.Content("~/js/flatpickr.min.js")"></script>
+	<script src="@Url.Content("~/js/select2.min.js")"></script>
+	<script src="@Url.Content("~/js/common.js")"></script>
+	<script type="text/javascript">
+		$(".sidebar-toggle").on("click", function () {
+			window.setTimeout(function () {
+				$(".side-menu").toggleClass("open-menu");
+				$('.main-content').toggleClass('main-content-open');
+				$('.header-sec').toggleClass('header-sec-open');
+				$('.footer').toggleClass('footer-open');
+			}, 100);
+		});
+	</script>
+	@await RenderSectionAsync("scripts", required: false)
+
+	<script>		
+		$(function () {
+			//LoadNotificationGroup();
+		});
+		function LoadNotificationGroup() {
+			$('#notification-box').empty();
+			var urlToCall = baseUrl + 'Home/GetNotificationGroup';
+			$app.get(urlToCall).then(function (response) {
+				$('#notification-box').html(response);
+			});
+		}
+		function parseDate(inputDate) {
+			// Expecting input in the format dd/MM/yyyy
+			const [day, month, year] = inputDate.split('/').map(Number);
+			// Create and return a new Date object
+			return new Date(year, month - 1, day);
+		}
+
+		function formatDateWithAbbreviation(date) {
+			// Array of month abbreviations
+			const monthAbbreviations = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+			// Get day, month, and year from the date object
+			const day = date.getDate();
+			const month = monthAbbreviations[date.getMonth()];
+			const year = date.getFullYear();
+
+			// Format and return the date in 'd-MMM-yyyy' format
+			return `${day}-${month}-${year}`;
+		}
+
+		function GetDateFormat_MMMDDYYYY(inputDate) {
+			let date;
+
+			if (typeof inputDate === 'string') {
+				// Parse the date if it's a string
+				date = parseDate(inputDate);
+			} else if (inputDate instanceof Date) {
+				// Use the Date object if it's already one
+				date = inputDate;
+			} else {
+				throw new Error('Invalid date input');
+			}
+
+			// Ensure date is a valid Date object
+			if (isNaN(date.getTime())) {
+				throw new Error('Invalid date');
+			}
+
+			// Format the date using the custom function
+			return formatDateWithAbbreviation(date);
+		}
+	</script>
+	<script type="text/javascript" src="//gyrocode.github.io/jquery-datatables-checkboxes/1.2.12/js/dataTables.checkboxes.min.js"></script>
+
+</body>
+</html>

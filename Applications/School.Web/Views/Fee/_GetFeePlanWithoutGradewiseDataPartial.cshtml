@@ -1,0 +1,49 @@
+﻿@using System.Data;
+@model DataSet
+
+<div class="table-responsive table-card order-tabel" style="width:100%">
+    <table class="table align-middle table-nowrap mb-0" id="tblActivityData">
+        <thead class="table-light text-muted">
+            <tr>
+                <th>Academic Year</th>
+                <th>Fee Type Name</th>
+                <th>FeeAmount</th>
+                <th width="70px">Actions</th>
+            </tr>
+        </thead>
+        <tbody class="list form-check-all">
+            @if (Model != null && Model.Tables.Count > 0 && Model.Tables[0].Rows.Count > 0)
+            {
+                foreach (DataRow dr in Model.Tables[0].Rows)
+                {
+                    <tr>
+                        <td>@dr["AcademicYear"]</td>
+                        <td>@dr["FeeTypeName"]</td>
+                        <td>@Convert.ToDecimal(dr["FeeAmount"]).ToTwoDecimalString()</td>                       
+                        <td>
+                            <div class="btn-group" role="group" aria-label="Basic outlined example">
+
+                                <button type="button" class="btn btn-outline-secondary edit-btn" onclick="Edit('@dr["FeeStructureId"]')">
+                                    <i class="fa-regular fa-pen-to-square  text-success"></i>
+                                </button>
+                                <button type="button" class="btn btn-outline-secondary deleterow" onclick="Delete('@dr["FeeStructureId"]')">
+                                    <i class="fa-solid fa-trash-can text-danger"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+</div>
+<script>
+    $("#tblActivityData").DataTable({
+        language: {
+            search: "<i class='ri-search-line search-icon'></i>",
+            searchPlaceholder: "Search ..."
+        },
+        pageLength: 50,
+        bSort: false
+    });
+</script>

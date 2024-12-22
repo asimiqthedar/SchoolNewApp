@@ -1,0 +1,99 @@
+﻿@using School.Models.WebModels.StudentModels;
+@model StudentFeeMasterModel
+<div class="row">
+    <div class="col-md-12">
+        <div class="cform row gy-3">
+            <input type="hidden" id="StudentFeeDetailId" name="StudentFeeDetailId" asp-for="StudentFeeDetailId" />
+            <div class="col-xxl-6 col-md-6">
+                <div>
+                    <label class="form-label">Academic Year</label>
+                    <select id="AcademicYearId" class="form-select" onchange="return GetFeeAmount()" asp-for="AcademicYearId" aria-label="Type"
+                            asp-items="@(new SelectList(ViewBag.AcademicYearDropDown,"Value", "Text"))" disabled="@(Model.StudentFeeDetailId>0)">
+                    </select>
+                </div>
+            </div>
+            <div class="col-xxl-6 col-md-6">
+                <div>
+                    <label class="form-label">Grade</label>
+                    <select id="GradeId" class="form-select" asp-for="GradeId" aria-label="Type"
+                            asp-items="@(new SelectList(ViewBag.GradeDropDown,"Value", "Text"))"
+                            disabled="true">
+                    </select>
+                </div>
+            </div>
+            <div class="col-xxl-6 col-md-6">
+                <div>
+                    <label class="form-label">Invoice Type</label>
+                    <select id="FeeTypeId" class="form-select" asp-for="FeeTypeId" onchange="return GetFeeAmount()" aria-label="Type"
+                            asp-items="@(new SelectList(ViewBag.FeeTypeDropdown,"Value", "Text"))" disabled="@(Model.StudentFeeDetailId>0)">
+                    </select>
+                </div>
+            </div>
+            <div class="col-xxl-6 col-md-6">
+                <div>
+                    <label class="form-label">Fee Amount</label>
+                    <input type="email" class="form-control" id="FeeAmount" name="FeeAmount" asp-for="FeeAmount" placeholder="Email">
+                </div>
+            </div>
+            <div class="col-md-12 text-center">
+                <button class="btn btn-success theme-btn" type="button" onclick="BindFeeTypeDetailData()">@(Model.StudentFeeDetailId > 0 ? "Update" : "Add")</button>
+                <button class="btn btn-secondary" type="button" onclick="bootbox.hideAll();">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    function BindFeeTypeDetailData() {
+        var dataObj = {
+            StudentFeeDetailId: $("#StudentFeeDetailId").val(),
+            StudentId: $("#StudentId").val(),
+            AcademicYearId: $("#AcademicYearId").val(),
+            GradeId: $("#GradeId").val(),
+            FeeTypeId: $("#FeeTypeId").val(),
+            FeeAmount: $("#FeeAmount").val()
+        };
+        if (ValidationStudentFeeTypeDetail(dataObj)) {
+            SaveStudentFeeTypeDetail(dataObj);
+        }
+    }
+    function ValidationStudentFeeTypeDetail(dataObj) {
+        var isError = false;
+        if (dataObj["AcademicYearId"] == 0) {
+            $app.notify.validate("AcademicYearId", "Academic Year is required");
+            isError = true;
+        }
+        if (dataObj["GradeId"] == 0) {
+            $app.notify.validate("GradeId", "Grade Id is required");
+            isError = true;
+        }
+        if (dataObj["FeeTypeId"] == 0) {
+            $app.notify.validate("FeeTypeId", "Fee Type Id is required");
+            isError = true;
+        }
+        if (!dataObj["FeeAmount"] || !dataObj["FeeAmount"].trim()) {
+            $app.notify.validate("FeeAmount", "Fee Amount is required");
+            isError = true;
+        }
+        if (isError) {
+            return false;
+        }
+        else {
+            return true;
+        }
+    }
+    function GetFeeAmount() {
+        if ($("#AcademicYearId").val() == 0) {
+            $app.notify.validate("AcademicYearId", "Academic Year is required");
+            //$("#FeeTypeId").val()
+            return false;
+        }
+        var urlToCall = '@Url.Action("GetStudentFeeTypeAmount", "Student")';
+        urlToCall = urlToCall + '?studentId=' + $("#StudentId").val() + "&gradeId=" + $("#GradeId").val() + "&feeTypeId=" + $("#FeeTypeId").val() + "&academicYearId=" + $("#AcademicYearId").val();
+        $app.get(urlToCall).then(function (response) {
+            $("#FeeAmount").val(0)
+            if (response.result > 0) {
+                $("#FeeAmount").val(response.result);
+            }
+        });
+    }
+</script>

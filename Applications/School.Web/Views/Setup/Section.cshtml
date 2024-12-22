@@ -1,0 +1,126 @@
+﻿@{
+    ViewData["Title"] = "Section";
+}
+
+<div class="row">
+    <div class="col-12">
+        <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+            <div class="page-title d-flex align-items-center justify-content-between">
+                <ol class="breadcrumb m-0">
+                    <li class="breadcrumb-item">Setup</li>
+                    <li class="breadcrumb-item active">Section List</li>
+                </ol>
+                <div>
+                    <button type="button" class="btn btn-dark btn-set-task w-sm-100" onclick="Create()">
+                        <i class="fa-solid fa-plus"></i> Add
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="card">
+    <div class="card-body">
+        @* @Html.Partial("_SectionFilterPartial") *@
+        <div class="row g-3">
+            <div class="col-lg-12 col-md-12">
+                <div class="tab-content screen-list">
+                    <div class="tab-pane fade show active" id="section-load">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section scripts {
+    <script>
+        $(function () {
+            loadSectionByFilter();
+        });
+        function RefreshSearch() {
+            $("#filterSearch").val("");
+            $("#filterIsActive").val("true");
+            loadSectionByFilter();
+        }
+        function loadSectionByFilter() {
+            var filterDataObj = {
+                FilterSearch: $("#filterSearch").val(),
+                FilterIsActive: $("#filterIsActive").val()
+            };
+            SectionLoad(filterDataObj);
+        }
+        function SectionLoad(filterDataObj) {
+            $('#section-load').empty();
+            $('#section-load').html('<div class="row"> <div class="col-xl-12"><div class="card order-card"><span class="text-center no-text" style="color:#212529;"><img src="@Url.Content("~/images/loding.gif")"  /></span></div></div></div>');
+            var urlToCall = baseUrl + 'Setup/SectionDataPartial';
+            $app.post(urlToCall, filterDataObj).then(function (response) {
+                $('#section-load').html(response);
+            });
+        }
+        function Create() {
+            var op = { title: 'Add Section' }
+            var url = '@Url.Action("SectionEditPartial", "Setup")';
+            $app.openViewDialog(url, op);
+        }
+        function Edit(sectionId) {
+            var op = { title: 'Update Section' }
+            var url = '@Url.Action("SectionEditPartial", "Setup")';
+            url = url + '?sectionId=' + sectionId;
+            $app.openViewDialog(url, op);
+        }
+        function Save(dataModel) {
+            var urlToCall = '@Url.Action("SaveSection", "Setup")';
+            $app.post(urlToCall, dataModel).then(function (response) {
+                if (response.result == 0) {
+                    bootbox.hideAll();
+                    $app.notify.success("Data has been saved!");
+                    loadSectionByFilter();
+                }
+                else if (response.result == -2) {
+                    $app.notify.error("Data already exists!");
+                }
+                else {
+                    $app.notify.error("Error in saving!");
+                }
+            });
+        }
+        function Delete(sectionId) {
+            var dlg_removePromo = bootbox.dialog({
+                message: 'Are you sure! you want to delete the record?',
+                title: 'Remove',
+                buttons: {
+                    ok: {
+                        label: "Yes",
+                        className: 'btn-primary',
+                        callback: function () {
+                            var urlToCall = '@Url.Action("DeleteSection", "Setup")';
+                            urlToCall = urlToCall + '?sectionId=' + sectionId;
+
+                            $app.get(urlToCall).then(function (response) {
+                                if (response.result == 0) {
+                                    bootbox.hideAll();
+                                    $app.notify.success("Data has been deleted!");
+                                    loadSectionByFilter();
+                                }
+                                else if (response.result == 547) {
+                                    $app.notify.error("Error in deleting! Record already in use.");
+                                }
+                                else {
+                                    $app.notify.error("Error in deleting!");
+                                }
+                            });
+                        }
+                    },
+                    cancel: {
+                        label: "No",
+                        className: 'btn-danger',
+                        callback: function () {
+                            $(dlg_removePromo).modal('hide');
+                        }
+                    }
+                }
+            });
+            dlg_removePromo.find('.modal-header').css('background-color', '#dc3545').css('border-bottom', '1px solid #dc3545');
+        }
+    </script>
+}

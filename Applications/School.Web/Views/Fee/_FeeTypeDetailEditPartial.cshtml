@@ -1,0 +1,206 @@
+﻿@using School.Models.WebModels.FeetypeModels;
+@model FeeTermDetailModel
+@using System.Text.Json;
+@using System.Text.Json.Serialization;
+
+@{
+    var rules = JsonSerializer.Serialize(ViewBag.GradeDropdown);
+    var selectedRules = JsonSerializer.Serialize(string.Join(",", Model.TermList.Select(e => e.TermName)));
+}
+<div class="row">
+    <div class="col-md-12">
+        <div class="cform row gy-3">
+            <input type="hidden" id="FeeTypeId" name="FeeTypeId" asp-for="FeeTypeId" />
+            <input type="hidden" id="FeeTypeDetailId" name="FeeTypeDetailId" asp-for="FeeTypeDetailId" />
+            <input type="hidden" id="IsPaymentPlan" name="IsPaymentPlan" asp-for="IsPaymentPlan" />
+            <input type="hidden" id="IsTermPlan" name="IsTermPlan" asp-for="IsTermPlan" />
+
+            <div class="col-xxl-6 col-md-6">
+                <label for="AcademicYear" class="form-label">Academic Year</label>
+                <div class="input-group">
+                    <select id="AcademicYear" class="form-select" aria-label="Academic Year"
+                            asp-items="@(new SelectList(ViewBag.AcadmicYearDropdown,"Value", "Text", Model.AcademicYearId))">
+                    </select>
+                </div>
+            </div>
+
+            <div class="col-xxl-6 col-md-6">
+                <div>
+                    <label class="form-label">Invoice Type Name</label>
+                    <select id="FeeTypeName" class="form-select" aria-label="Fee Type" disabled="true"
+                            asp-items="@(new SelectList(ViewBag.FeeTypeDropdown,"Value", "Text", Model.FeeTypeId.ToString()))">
+                    </select>
+                </div>
+            </div>
+
+            <div class="col-xxl-6 col-md-6">
+                <div>
+                    <label for="TermFeeAmount" class="form-label">Amount</label>
+                    <div class="input-group">
+                        <input type="text" class="form-control numeric" id="TermFeeAmount" placeholder="Enter Fee Amount" asp-for="TermFeeAmount" />
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-xxl-6 col-md-6">
+                <div>
+                    <label for="StaffFeeAmount" class="form-label">Staff Amount</label>
+                    <div class="input-group">
+                        <input type="text" class="form-control numeric" id="StaffFeeAmount" placeholder="Enter Staff Fee Amount" asp-for="StaffFeeAmount" />
+                    </div>
+                </div>
+            </div>
+            @if (Model.IsGradeWise)
+            {
+                <div class="col-xxl-12 col-md-12 col-lg-12">
+                    <label class="form-label">Grade</label>
+                    <div class="choices">
+                        <select id="TDiscountRules" class="form-select multiple-select" multiple aria-label="Default select grade"
+                                asp-items="@(new SelectList(ViewBag.GradeDropdown,"Value", "Text"))"></select>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="col-xxl-12 col-md-12 col-lg-12">
+                    <label class="form-label">Grade</label>
+                    <div class="choices">
+                        <select id="TDiscountRules" disabled="true" class="form-select multiple-select" multiple aria-label="Default select grade"></select>
+                    </div>
+                </div>
+            }
+
+            <div class="col-md-12 text-center">
+                <button class="btn btn-success theme-btn" onclick="BindFeeTypeDetailData()" type="button">@(Model.FeeTypeDetailId > 0 ? "Update" : "Add")</button>
+                <button class="btn btn-secondary" type="button" onclick="bootbox.hideAll();">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+    <script>
+        $(document).ready(function () {
+            $('.textCapital').keyup(function () {
+                $(this).val($(this).val().toUpperCase());
+            });
+            $('.numeric').keyup(function () {
+                this.value = this.value.replace(/[^0-9.]/g, '');
+            });
+
+    
+            var choices = new Choices('.choices');
+            // Close the dropdown on mouse out
+            $('.choices').mouseout(function () {
+                // choices.close();
+                $('.choices__list--dropdown').attr('aria-expanded', 'false');
+            });
+
+            BindAssignedRules();
+
+            function BindAssignedRules() {
+                $('#TDiscountRules').empty();
+                choiceAssignedRule.clearChoices();
+                choiceAssignedRule.removeActiveItems();
+                const arrRules = '@selectedRules';
+                const arrChangeTolabel = arrRules.replace(/(&quot\;)/g, "\"");
+                var _val = '@rules';
+                var _value = JSON.parse(_val.replace(/(&quot\;)/g, "\""));
+                var choiceValue;
+                var choiceArr = [];
+                var choiceSelectedArr = [];
+                $.each(_value, function (index, value) {
+                    if (@Model.TermList.Count > 0) {
+                        if (!(arrChangeTolabel.indexOf(value['Text']) > -1)) {
+                            choiceArr.push({ value: value['Value'], text: value['Text'] });
+                            $('#TDiscountRules').append('<option value="' + value['Value'] + '">' + value['Text'] + '</option>');
+                        }
+                        else {
+
+                            choiceSelectedArr.push({ value: value['Value'], label: value['Text'] });
+                        }
+                    }
+                    else {
+                        choiceArr.push({ value: value['Value'], text: value['Text'] });
+                        $('#TDiscountRules').append('<option value="' + value['Value'] + '">' + value['Text'] + '</option>');
+                    }
+
+                });
+
+                choiceAssignedRule.setChoices(choiceArr, 'value', 'text', false);
+
+                if (@Model.GradeId != 0) {
+                    choiceAssignedRule.setValue(choiceSelectedArr);
+                }
+            }
+
+        });
+    var choiceAssignedRule = new Choices('#TDiscountRules', {
+        removeItemButton: true,
+        shouldSort: false,
+    });
+        function BindFeeTypeDetailData() {
+                var selectedChoices = choiceAssignedRule.getValue(true).toString();
+
+                var dataObj = {
+                    AcademicYearId: $("#AcademicYear").val(),
+                    // AcademicYearName: $("#AcademicYear").text(),
+                    FeeTypeId: $("#FeeTypeId").val(),
+                    FeeTypeName: $("#FeeTypeName").val(),
+                    FeeTypeDetailId: $("#FeeTypeDetailId").val(),
+                    IsTermPlan: $("#IsTermPlan").val(),
+                    IsPaymentPlan: $("#IsPaymentPlan").val(),
+                    TermFeeAmount: $("#TermFeeAmount").val(),
+                    StaffFeeAmount: $("#StaffFeeAmount").val(),
+                    GradeRules: selectedChoices,
+                    IsGradeWise: "@Model.IsGradeWise"
+                };
+                if (Validation(dataObj)) {
+                    if (dataObj["FeeTypeDetailId"] == "0") {
+                        Save(dataObj);
+                    }
+                    else {
+                        var dlg_updatePromo = bootbox.dialog({
+                            message: 'Are you sure! you want to update the record?',
+                            title: 'Confirm',
+                            buttons: {
+                                ok: {
+                                    label: "Yes",
+                                    className: 'btn-primary',
+                                    callback: function () {
+                                        Save(dataObj);
+                                    }
+                                },
+                                cancel: {
+                                    label: "No",
+                                    className: 'btn-danger',
+                                    callback: function () {
+                                        $(dlg_updatePromo).modal('hide');
+                                    }
+                                }
+                            }
+                        });
+                        dlg_updatePromo.find('.modal-header').css('background-color', '#dc3545').css('border-bottom', '1px solid #dc3545');
+                    }
+                }
+            }
+
+        function Validation(dataObj) {
+            var isError = false;
+            if (!dataObj["FeeTypeId"] || !dataObj["FeeTypeId"].trim() || dataObj["FeeTypeId"].trim() == "0") {
+                $app.notify.validate("FeeTypeId", "Fee Type Id is required");
+                isError = true;
+            }
+            else if (dataObj["IsGradeWise"].trim() == "True" && (!dataObj["GradeRules"] || !dataObj["GradeRules"].trim())) {
+                $app.notify.validate("TDiscountRules", "Grade is required");
+                isError = true;
+            }
+            if (isError) {
+                return false;
+            }
+            else {
+                return true;
+            }
+        }
+
+    </script>
+
+

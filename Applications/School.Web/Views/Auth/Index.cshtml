@@ -1,0 +1,317 @@
+﻿@model School.Models.WebModels.UserModels.UserModel
+@{
+    Layout = null;
+
+}
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Login - Advanced Learning Schools</title>
+    <link rel="icon" type="image/x-icon" href="@Url.Content("~/favicon.ico")">
+    <link rel="stylesheet" href="@Url.Content("~/css/bootstrap.min.css")" />
+    <link rel="stylesheet" href="@Url.Content("~/css/all.min.css")">
+    <link rel="stylesheet" type="text/css" href="@Url.Content("~/css/owl.carousel.min.css")">
+    <link rel="stylesheet" type="text/css" href="@Url.Content("~/css/jquery.fancybox.min.css")">
+    <link rel="stylesheet" type="text/css" href="@Url.Content("~/css/style.css")">
+    <link rel="stylesheet" type="text/css" href="@Url.Content("~/css/responsive.css")">
+    <style>
+        #email-custom-loader {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background-color: rgba(0, 0, 0, 0.75);
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	z-index: 9999;
+	flex-direction: column;
+}
+
+.email-loader-spinner {
+	width: 60px;
+	height: 60px;
+	border: 12px solid rgba(255, 255, 255, 0.3);
+    border-top: 12px solid rgb(0 115 115);
+	border-radius: 50%;
+	animation: spin 1s linear infinite;
+}
+
+  @@keyframes spin {
+	0% {
+		transform: rotate(0deg);
+	}
+
+	100% {
+		transform: rotate(360deg);
+	}
+}
+
+#email-custom-loader p {
+	margin-top: 15px;
+	color: white;
+	font-size: 18px;
+	font-weight: bold;
+}
+
+    </style>
+</head>
+<body>
+    <div class="auth-page-wrapper">
+        <div class="auth-one-bg-position auth-one-bg" id="auth-particles">
+            <div class="bg-overlay"></div>
+            <div class="shape">
+                <svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 1440 120">
+                    <path d="M 0,36 C 144,53.6 432,123.2 720,124 C 1008,124.8 1296,56.8 1440,40L1440 140L0 140z"></path>
+                </svg>
+            </div>
+        </div>
+        <!-- auth page content -->
+        <div class="auth-page-content">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="text-center mt-sm-5 mb-4 text-white-50">
+                            <div>
+                                <a href="#" class="d-inline-block auth-logo">
+                                    <img src="@Url.Content("~/images/logo.webp")" alt="">
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row justify-content-center">
+                    <div class="col-md-8 col-lg-6 col-xl-5">
+                        <div class="card login-card">
+                            <div class="card-body p-4">
+                                <div class="text-center mt-2">
+                                    <h5 class="text-primary">Welcome Back !</h5>
+                                    <p class="text-muted">Sign in to continue to Advanced Learning Schools.</p>
+                                </div>
+                                <div class="p-2 mt-4">
+                                    <p class="text-danger">@ViewData["Message"]</p>
+                                    <form asp-controller="Auth" asp-action="Index" asp-route-returnUrl="@ViewData["ReturnUrl"]" autocomplete="off" method="post">
+                                        <div class="mb-3">
+                                            <label for="UserEmail" class="form-label">User Email</label>
+                                            <div class="input-group">
+                                                <span class="input-group-text"><i class="fa-solid fa-envelope"></i></span>
+                                                <input type="text" asp-for="UserEmail" autocomplete="off" class="form-control" placeholder="Enter user email">
+                                            </div>                                          
+                                        </div>
+                                        <div class="mb-3">
+                                            <div class="float-end">
+                                                <a href="#" id="forgotPasswordLink" class="text-muted">Forgot password?</a>
+                                            </div>
+                                            <label class="form-label" for="UserPass">Password</label>
+                                           
+                                            <div class="position-relative auth-pass-inputgroup mb-3">
+                                                <div class="input-group">
+                                                    <span class="input-group-text"> <i class="fa-solid fa-key"></i></span>
+                                                    <input type="password" asp-for="UserPass" autocomplete="off" class="form-control pe-5 password-input" placeholder="Enter password">
+                                                    <button class="btn btn-link position-absolute end-0 top-0 text-decoration-none text-muted password-addon" type="button" id="password-addon"><i class="fa-solid fa-eye"></i></button>
+                                                </div>                                                
+                                               
+                                            </div>
+                                        </div>
+                                        <div class="mt-4">
+                                            <button class="btn btn-success w-100" type="submit">Sign In</button>
+                                        </div>
+                                        <div class="mt-4 text-center">
+                                            <div class="signin-other-title">
+                                                <h5 class="fs-13 mb-4 title">Sign In with</h5>
+                                            </div>
+                                            <div>
+                                                <a class="btn btn-primary btn-icon waves-effect waves-light" href="#"><i class="fa-brands fa-facebook-f"></i></a>
+                                                <a class="btn btn-danger btn-icon waves-effect waves-light" href="#"><i class="fa-brands fa-google"></i></a>
+                                                <a class="btn btn-dark btn-icon waves-effect waves-light" href="#"><i class="fa-brands fa-github"></i></a>
+                                                <a class="btn btn-info btn-icon waves-effect waves-light" href="#"><i class="fa-brands fa-twitter"></i></a>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Forgot Password Modal  -->
+        <div class="modal fade" id="forgotPasswordModal" tabindex="-1" aria-labelledby="forgotPasswordModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="forgotPasswordModalLabel">Forgot Password</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="forgotPasswordForm" method="post">
+                            <div class="mb-3">
+                                <label for="forgotEmail" class="form-label">Enter your email</label>
+                                <input type="email" class="form-control" id="forgotEmail" placeholder="Email">
+                            </div>
+                            <div class="text-danger" id="emailError"></div>
+                        </form>
+                        <div id="email-custom-loader" style="display: none;">
+                            <div class="email-loader-spinner"></div>
+                            <p>Sending OTP, please wait...</p>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary" id="sendOtpBtn">Send OTP</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- OTP and Reset Password Modal -->
+        <div class="modal fade" id="resetPasswordModal" tabindex="-1" aria-labelledby="resetPasswordModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="resetPasswordModalLabel">Reset Password</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="resetPasswordForm" method="post">
+                             <div class="mb-3">
+                                <label for="forgotEmailhdn" class="form-label">Enter your email</label>
+                                <input type="email" class="form-control" id="forgotEmailhdn" placeholder="Email" disabled>
+                            </div>
+                            <div class="mb-3">
+                                <label for="otp" class="form-label">Enter OTP</label>
+                                <input type="text" class="form-control" id="otp" placeholder="OTP">
+                            </div>
+                            <div class="mb-3">
+                                <label for="newPassword" class="form-label">New Password</label>
+                                <input type="password" class="form-control" id="newPassword" placeholder="New Password">
+                            </div>
+                            <div class="mb-3">
+                                <label for="confirmPassword" class="form-label">Confirm Password</label>
+                                <input type="password" class="form-control" id="confirmPassword" placeholder="Confirm Password">
+                            </div>
+                            <div class="text-danger" id="resetError"></div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary" id="resetPasswordBtn">Reset Password</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- footer -->
+        <footer class="footer">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div style="text-align:right;">
+                            <p class="mb-0 text-muted">
+                                ©
+                                <script>document.write(new Date().getFullYear())</script> Advanced Learning Schools. All right reserved.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </div>
+    <script src="@Url.Content("~/js/jquery.min.js")"></script>
+    <script src="@Url.Content("~/js/bootstrap.bundle.min.js")"></script>
+    <script src="@Url.Content("~/js/owl.carousel.min.js")"></script>
+    <script src="@Url.Content("~/js/jquery.fancybox.min.js")"></script>
+    <script src="@Url.Content("~/js/jquery.nestable.min.js" )"></script>
+    <script src="@Url.Content("~/js/swiper-bundle.min.js")"></script>
+    <script src="@Url.Content("~/js/choices.min.js")"></script>
+    <script src="@Url.Content("~/js/custom.js")"></script>
+
+    <script>
+        $(document).ready(function () {
+            // Bind click events to buttons
+            $('#forgotPasswordLink').click(showForgotPasswordModal);
+            $('#sendOtpBtn').click(sendOtp);
+            $('#resetPasswordBtn').click(resetPassword);
+            $('#forgotPasswordModal').on('hidden.bs.modal', function () {
+                $('#forgotEmail').val(''); // Reset email field
+                $('#emailError').text('');
+            });
+        });
+
+
+        function showForgotPasswordModal(e) {
+            e.preventDefault();
+            $('#forgotPasswordModal').modal('show');
+        }
+
+    function sendOtp() {
+    $('#email-custom-loader').show();
+    var baseUrl = getBaseUrl();
+    var urlToCall = baseUrl + 'Auth/SendOtp';
+
+    var email = $('#forgotEmail').val();
+    if (email === '') {
+        $('#emailError').text('Please enter your email');
+        $('#email-custom-loader').hide(); // Hide loader if there's an error
+    } else {
+        $.post(urlToCall, { email: email }, function (response) {
+            $('#email-custom-loader').hide();
+            if (response.success) {
+                $('#emailError').text('');
+                $('#forgotPasswordModal').modal('hide');
+                $('#resetPasswordModal').modal('show');
+                 $('#forgotEmailhdn').val(email);
+            } else {
+                $('#emailError').text(response.message);
+            }
+        });
+    }
+}
+
+
+        function resetPassword() {
+            debugger;
+            var baseUrl = getBaseUrl();
+            var urlToCall = baseUrl + 'Auth/ResetPassword';
+
+            var email = $('#forgotEmailhdn').val();
+            var otp = $('#otp').val();
+            var newPassword = $('#newPassword').val();
+            var confirmPassword = $('#confirmPassword').val();
+
+            if (newPassword !== confirmPassword) {
+                $('#resetError').text('Passwords do not match');
+            } else {
+                $.post(urlToCall, {
+                    email: email,
+                    otp: otp,
+                    newPassword: newPassword
+                }, function (response) {
+                    if (response.success) {
+                        $('#forgotEmail').val('');
+                        $('#newPassword').val('');
+                        $('#confirmPassword').val('');
+                        $('#resetError').text('');
+                        $('#resetPasswordModal').modal('hide');
+                    } else {
+                        $('#resetError').text(response.message);
+                    }
+                });
+            }
+        }
+
+        function getBaseUrl(){
+            var $app = { session: {}, hostUrl: '', ui: {} };
+            $app.hostUrl = '@($"{Context.Request.Scheme}://{Context.Request.Host}")';
+            var baseUrl = '@Url.Content("~/")';
+            return baseUrl;
+        }
+    </script>
+</body>
+</html>

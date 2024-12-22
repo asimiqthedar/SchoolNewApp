@@ -1,0 +1,146 @@
+﻿
+<style>
+    .backlog-filter-btn button {
+        padding: 6px 10px;
+    }
+
+</style>
+<div class="row mb-3 align-items-center  label-row">
+    <div class="col-md-12 mb-5">
+        <div class="row">
+            @* <div class="col-md-8 p-3">
+                <div class="row">
+                    <div class="col-lg-6">
+                        <label for="filterParentId" class="form-label">Parent Id</label>
+                        <select id="filterParentId" class="form-select" aria-label="Parent Id"
+                                asp-items="@(new SelectList(ViewBag.ParentDropdown,"Value", "Text"))">
+                        </select>
+                    </div>
+                    <div class="col-lg-6">
+                        <label for="filterParentName" class="form-label">Parent Name</label>
+                        <input type="text" class="form-control" id="filterParentName" placeholder="Enter Parent Name" />
+                    </div>
+                    <div class="col-lg-6">
+                        <label for="filterFatherIqama" class="form-label">Father Iqama</label>
+                        <input type="text" class="form-control" id="filterFatherIqama" placeholder="Enter Father Iqama" />
+                    </div>
+                    <div class="col-lg-6">
+                        <label for="filterFatherMobile" class="form-label">Father Mobile</label>
+                        <input type="text" class="form-control" id="filterFatherMobile" placeholder="Enter Father Mobile" />
+                    </div>
+
+                </div>
+            </div> *@
+            <div class="col-md-4 p-3">
+                <div class="row">
+                    <div class="col-lg-6">
+                        <label for="filterAcademicYear" class="form-label">Academic Year</label>
+                        <select id="filterAcademicYear" class="form-select" aria-label="Academic Year"
+                                asp-items="@(new SelectList(ViewBag.AcademicYearStatementDropDown,"Value", "Text"))">
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-12 btn-col">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="d-flex backlog-btn-row">
+                    <div class="backlog-filter-btn">
+                        <button type="button" class="btn btn-primary" onclick="loadParentStudentStatementReportByFilter();">
+                            Search
+                        </button>
+                    </div>
+                    <div class="backlog-filter-btn">
+                        <button type="button" class="btn btn-secondary" onclick="RefreshSearch();">
+                            Refresh
+                        </button>
+                    </div>
+                    <div class="backlog-filter-btn">
+                        <button type="button" class="btn btn-secondary" onclick="ExportSummaryPdfStatement()">
+                            <i class="fa-solid fa-file-pdf"></i> Summary Pdf
+                        </button>
+                        <button type="button" class="btn btn-secondary" onclick="ExportPdfStatement()">
+                            <i class="fa-solid fa-file-pdf"></i> Detail Pdf
+                        </button>
+
+                        <button type="button" class="btn btn-secondary" onclick="ExportSummaryPdfStatementEnAr('en')">
+                            <i class="fa-solid fa-file-pdf"></i> English Statement
+                        </button>
+
+                        <button type="button" class="btn btn-secondary" onclick="ExportSummaryPdfStatementEnAr('ar')">
+                            <i class="fa-solid fa-file-pdf"></i> Arabic Statement
+                        </button>
+
+
+                        <button type="button" class="btn btn-secondary" onclick="ExportExcelStatement()">
+                            <i class="fa-solid fa-file-excel"></i> Export to Excel
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@* <div class="row mb-3 align-items-center  label-row">
+    <div class="col-md-12 mb-5">
+        <div class="row mb-3" style="display:none;">
+            <div class="col-md-8">
+                <div class="search-box">
+                    <input type="text" id="filterStatementSearch" class="form-control search bg-light border-light" placeholder="Search....">
+                    <i class="ri-search-line search-icon"></i>
+                </div>
+            </div>
+        </div>
+        <div class="row">          
+            <div class="col-md-12 p-3">                
+                <div class="row">               
+                    <div class="col-md-6">
+                        <div class="single-filter">
+                            <label for="AcademicYear" class="form-label">Academic Year</label>
+                            <div class="input-group">
+                                <select id="filterStatementAcadmicYear" class="form-select" aria-label="Academic Year"
+                                        asp-items="@(new SelectList(ViewBag.AcademicYearStatementDropDown,"Value", "Text"))">
+                                </select>
+                            </div>
+                        </div>
+                    </div>  
+                     <div class="col-md-6">
+                        <div class="single-filter">
+                            <label for="Student" class="form-label">Student</label>
+                            <div class="input-group">
+                                <select id="filterStatementStudent" class="form-select" aria-label="Student"
+                                        asp-items="@(new SelectList(ViewBag.StudentDropdown,"Value", "Text"))">
+                                </select>
+                            </div>
+                        </div>
+                    </div>  
+                </div>              
+            </div>
+        </div>
+    </div>
+    <div class="col-md-12 btn-col">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="d-flex backlog-btn-row">
+                    <div class="backlog-filter-btn">
+                        <button type="button" class="btn btn-primary" onclick="FeeStatementLoad();">
+                            Search
+                        </button>
+                    </div>
+                    <div class="backlog-filter-btn">
+                        <button type="button" class="btn btn-secondary" onclick="FeeStatementRefreshLoad();">
+                            Refresh
+                        </button>
+                    </div>
+                    <div class="backlog-filter-btn">
+                        <button type="button" class="btn btn-secondary" onclick="ExportCSVStatement('StudentStatement','Student Statement Report')">
+                            Export to Excel
+                        </button>                      
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div> *@

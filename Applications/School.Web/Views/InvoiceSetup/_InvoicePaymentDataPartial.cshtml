@@ -1,0 +1,95 @@
+﻿@using System.Data;
+@using School.Models.WebModels.InvoiceSetupModels
+@model List<InvInvoicePaymentModel>
+@{
+	decimal paymentAmountSum = 0;
+	if (Model != null && Model.Any())
+	{
+		paymentAmountSum = Model.ToList().Sum(s => s.PaymentAmount);
+	}
+}
+
+
+<div class="table-responsive table-card order-tabel" style="width:100%">
+	<table class="table align-middle table-nowrap mb-0" id="tblPaymentActivityData">
+		<thead class="table-light text-muted">
+			<tr>
+				<th width="5%">S.No</th>
+				<th>PaymentMethod</th>
+				<th>Payment Reference No.</th>
+				<th>Invoice Amount</th>
+				<th width="70px">Actions</th>
+			</tr>
+		</thead>
+		<tbody class="list form-check-all">
+			@if (Model != null && Model.Count > 0)
+			{
+				int i = 0;
+				foreach (var dr in Model)
+				{
+					i++;
+					<tr>
+						<td>@i</td>
+						<td>@dr.PaymentMethod</td>
+						<td>@dr.PaymentReferenceNumber</td>
+						<td width="80px" style="text-align:right; width:80px">@Convert.ToDecimal(dr.PaymentAmount).ToTwoDecimalString()</td>
+						<td>
+							@if (dr.IsEditRestricted.HasValue && !dr.IsEditRestricted.Value)
+							{
+								<div class="btn-group" role="group" aria-label="Basic outlined example">
+									<button type="button" class="btn btn-outline-secondary deleterow" title="Delete" onclick="DeleteInvoicePayment('@dr.InvoiceNo','@dr.InvoiceSessionKey','@dr.SessionKey')">
+										<i class="fa-solid fa-trash-can text-danger"></i>
+									</button>
+								</div>
+							}
+
+						</td>
+					</tr>
+				}
+			}
+		</tbody>
+		<tfoot>
+			<tr>
+				<td colspan="3" style="text-align: right;"><strong>Total Paid Amount:</strong></td>
+				<td id="totalPaymentAmount" style="text-align:right; width:80px">
+					@Convert.ToDecimal(paymentAmountSum).ToTwoDecimalString()
+				</td>
+				<td></td>
+			</tr>
+		</tfoot>
+	</table>
+</div>
+
+<script>
+	$(document).ready(function () {
+		var table = $("#tblPaymentActivityData").DataTable({
+			// language: {
+			//     search: "<i class='ri-search-line search-icon'></i>",
+			//     searchPlaceholder: "Search ..."
+			// },
+			bInfo: false,
+			pageLength: 0,
+			bSort: false,
+			searching: false,
+			paging: false,
+			// drawCallback: function (settings) {
+			//     var api = this.api();
+			//     var info = api.page.info();
+
+			//     api.column(0, { search: 'applied', order: 'applied' }).nodes().each(function (cell, i) {
+			//         cell.innerHTML = i + 1;// cell.innerHTML = i + 1 + info.start;
+			//     });
+
+			//     // // Calculate and display total payment amount
+			//     // var total = api
+			//     //     .column(3) // Assuming PaymentAmount is in the 4th column (index 3)
+			//     //     .data()
+			//     //     .reduce(function (a, b) {
+			//     //         return parseFloat(a) + parseFloat(b.replace(/[^\d.-]/g, '')); // Remove any non-numeric characters except decimal point and negative sign
+			//     //     }, 0);
+
+			//     // $('#totalPaymentAmount').html(total.toFixed(2)); // Display total with 2 decimal places
+			// }
+		});
+	});
+</script>

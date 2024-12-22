@@ -1,0 +1,1192 @@
+﻿@model School.Models.WebModels.SchoolModels.SchoolModel
+@{
+    ViewData["Title"] = "School";
+}
+<div class="row">
+    <div class="col-12">
+        <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+            <div class="page-title d-flex align-items-center justify-content-between">
+                <ol class="breadcrumb m-0">
+                    <li class="breadcrumb-item">School</li>
+                    <li class="breadcrumb-item active">Add/Edit School</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</div>
+<input type="hidden" id="SchoolId" value="@Model.SchoolId" />
+<div class="row">    
+    <div class="col-xxl-12 col-md-12 col-lg-12 pro-tab">
+        <div class="card mt-xxl-n5">
+            <div class="card-header">
+                <ul class="nav nav-tabs-custom rounded card-header-tabs border-bottom-0" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <a class="nav-link active" data-bs-toggle="tab" href="#schoolDetails" role="tab" aria-selected="true">
+                            School Details
+                        </a>
+                    </li>
+                    @if (Model.SchoolId > 0)
+                    {
+                        <li class="nav-item" role="presentation">
+                            <a class="nav-link" data-bs-toggle="tab" href="#contactInfo" role="tab" aria-selected="false" tabindex="1">
+                                Contact Information
+                            </a>
+                        </li>
+                    }                    
+                    @if (Model.SchoolId > 0)
+                    {
+                        <li class="nav-item" role="presentation">
+                            <a class="nav-link" data-bs-toggle="tab" href="#logoInfo" role="tab" aria-selected="false" tabindex="2">
+                                Logos
+                            </a>
+                        </li>
+                    }
+                    @if (Model.SchoolId > 0)
+                    {
+                        <li class="nav-item" role="presentation">
+                            <a class="nav-link" data-bs-toggle="tab" href="#SchoolAccountInfo" role="tab" aria-selected="false" tabindex="3">
+                                Account Integration
+                            </a>
+                        </li>
+                    }
+                    @if (Model.SchoolId > 0)
+                    {
+                        <li class="nav-item" role="presentation">
+                            <a class="nav-link" data-bs-toggle="tab" href="#GenerateFee" role="tab" aria-selected="false" tabindex="4">
+                                Generate Fee
+                            </a>
+                        </li>
+                    }
+                    @if (Model.SchoolId > 0)
+                    {
+                        <li class="nav-item" role="presentation">
+                            <a class="nav-link" data-bs-toggle="tab" href="#GenerateSiblingDiscount" role="tab" aria-selected="false" tabindex="5">
+                                Generate Sibling Discount
+                            </a>
+                        </li>
+                    }
+                    @if (Model.SchoolId > 0)
+                    {
+                        <li class="nav-item" role="presentation">
+                            <a class="nav-link" data-bs-toggle="tab" href="#CancleSiblingDiscount" role="tab" aria-selected="false" tabindex="5">
+                                Cancle Sibling Discount
+                            </a>
+                        </li>
+                    }
+                </ul>
+            </div>
+            <div class="card-body p-4">
+                <div class="tab-content">
+                    <div class="tab-pane active show" id="schoolDetails" role="tabpanel">
+                        <div class="row mt-2">
+                            <div class="col-12">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h6>School Info</h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="cform row gy-3">
+                                                    <input type="hidden" id="SchoolId" name="SchoolId" asp-for="SchoolId" />
+
+                                                    <div class="col-xxl-6 col-md-6">
+                                                        <div>
+                                                            <label class="form-label">Name</label>
+                                                            <input type="text" class="form-control" id="SchoolNameEnglish" name="SchoolNameEnglish" asp-for="SchoolNameEnglish" placeholder="Name">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-xxl-6 col-md-6">
+                                                        <div>
+                                                            <label class="form-label">Arabic Name</label>
+                                                            <input type="text" class="form-control" id="SchoolNameArabic" name="SchoolNameArabic" asp-for="SchoolNameArabic" placeholder="Arabic Name">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-xxl-6 col-md-6">
+                                                        <div>
+                                                            <label class="form-label">Branch</label>
+                                                            <select id="BranchId" class="form-select" asp-for="BranchId" aria-label="Branch"
+                                                                    asp-items="@(new SelectList(ViewBag.BranchDropdown,"Value", "Text"))">
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-xxl-6 col-md-6">
+                                                        <div>
+                                                            <label class="form-label">Country</label>
+                                                            <select id="CountryId" class="form-select" asp-for="CountryId" aria-label="Country"
+                                                                    asp-items="@(new SelectList(ViewBag.CountryDropdown,"Value", "Text"))">
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-xxl-6 col-md-6">
+                                                        <div>
+                                                            <label class="form-label">City</label>
+                                                            <input type="text" class="form-control" id="City" name="City" asp-for="City" placeholder="City">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-xxl-6 col-md-6">
+                                                        <div>
+                                                            <label class="form-label">Address</label>
+                                                            <input type="text" class="form-control" id="Address" name="Address" asp-for="Address" placeholder="Address">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-xxl-6 col-md-6">
+                                                        <div>
+                                                            <label class="form-label">Telephone</label>
+                                                            <input type="text" class="form-control" id="Telephone" name="Telephone" asp-for="Telephone" placeholder="Telephone">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-xxl-6 col-md-6">
+                                                        <div>
+                                                            <label class="form-label">Email</label>
+                                                            <input type="email" class="form-control" id="SchoolEmail" name="SchoolEmail" asp-for="SchoolEmail" placeholder="Email">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-xxl-6 col-md-6">
+                                                        <div>
+                                                            <label class="form-label">Vat No</label>
+                                                            <input type="text" class="form-control" id="VatNo" name="VatNo" asp-for="VatNo" placeholder="Vat No">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-xxl-6 col-md-6">
+                                                        <div>
+                                                            <label class="form-label">Website Url</label>
+                                                            <input type="text" class="form-control" id="WebsiteUrl" name="WebsiteUrl" asp-for="WebsiteUrl" placeholder="WebsiteUrl">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-xxl-6 col-md-6">
+                                                    <div>
+                                                        <label class="form-label">Active</label>
+                                                        <select class="form-select" name="IsActive" id="IsActive" asp-for="IsActive" aria-label="Active">
+                                                            <option value=true>Active</option>
+                                                            <option value=false>In-Active</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row mt-2">
+                                                <div class="col-lg-12">
+                                                    <div class="hstack gap-2 justify-content-end">
+                                                        <button type="button" id="btnSave" class="btn btn-primary">@(Model.SchoolId == 0 ? "Add" : "Update")</button>
+                                                        <a href="@Url.Action("parentlist","parent")" class="btn btn btn-secondary">Cancel</a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        @*<div class="tab-pane" id="accountInfo" role="tabpanel">
+                                        <div class="row mt-2">
+                                        <div class="col-lg-3 mb-3 ">
+                                        <label class="form-label">Receivable Account</label>
+                                        <div class="input-group">
+                                        <span class="input-group-text"><i class="fa-solid fa-file-invoice"></i></span>
+                                        <input type="text" class="form-control" id="ReceivableAccount" placeholder="Enter receivable account" asp-for="AccountModel.ReceivableAccount" />
+                                        </div>
+                                        </div>
+                                        <div class="col-lg-3 mb-3 ">
+                                        <label class="form-label">Receivable Account</label>
+                                        <div class="input-group">
+                                        <span class="input-group-text"><i class="fa-solid fa-file-invoice"></i></span>
+                                        <input type="text" class="form-control" id="AdvanceAccount" placeholder="Enter advance account" asp-for="AccountModel.AdvanceAccount" />
+                                        </div>
+                                        </div>
+                                        </div>
+                                        <div class="row mt-2">
+                                        <div class="col-lg-12">
+                                        <div class="hstack gap-2 justify-content-end">
+                                        <button type="button" id="btnSaveAccount" class="btn btn-primary">@(Model.ParentId == 0 ? "Add" : "Update")</button>
+                                        </div>
+                                        </div>
+                                        </div>
+                                        </div>
+                                        <div class="tab-pane" id="uploadDocuments" role="tabpanel">
+                                        <div class="d-flex align-items-center mb-4">
+                                        <h5 class="flex-grow-1 mb-0">&nbsp;</h5>
+                                        <div class="flex-shrink-0">
+                                        <button type="button" onclick="OpenAttachmentPopUp('@((int)School.Models.WebModels.DocFor.Parent)')" class="btn btn-dark">
+                                        <i class="ri-upload-2-fill me-1 align-bottom"></i>Upload File
+                                        </button>
+                                        </div>
+                                        </div>
+                                        <div class="row">
+                                        <div class="col-lg-12">
+                                        <div class="table-responsive" id="dvAttachments">
+                                        </div>
+                                        </div>
+                                        </div>
+                                        </div>*@
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane" id="contactInfo" role="tabpanel">
+                        <div class="row">
+                            <div class="col-12">
+                                <button type="button" class="btn btn-dark btn-set-task w-sm-100" style="float:right" onclick="CreateContact()">
+                                    <i class="fa-solid fa-plus"></i> Add
+                                </button>
+                            </div>
+                        </div>
+                        <div class="row mt-2">
+                            <div class="col-12" id="contact-info-load">
+                            </div>
+                        </div>
+                    </div>                   
+                    <div class="tab-pane" id="SchoolAccountInfo" role="tabpanel">
+                        <div class="row">
+                            <div class="col-12">
+                                <button type="button" class="btn btn-dark btn-set-task w-sm-100" style="float:right" onclick="CreateSchoolAccountInfo()">
+                                    <i class="fa-solid fa-plus"></i> Add
+                                </button>
+                            </div>
+                        </div>
+                        <div class="row mt-2">
+                            <div class="col-12" id="school-account-info-load">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane" id="logoInfo" role="tabpanel">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="cform row gy-3">
+                                    <div class="col-xxl-6 col-md-6">
+                                        <div>
+                                            <label class="form-label">Logo Name</label>
+                                            <input type="text" class="form-control textCapital" id="LogoName" name="LogoName" placeholder="Logo Name">
+                                        </div>
+                                    </div>
+                                    <div class="col-xxl-6 col-md-6">
+                                        <div>
+                                            <label class="form-label">Logo</label>
+                                            <input type="file" class="form-control" id="LogoFile" name="LogoFile" placeholder="Logo image">
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-12 text-center">
+                                        <button class="btn btn-success theme-btn" type="button" onclick="UploadImage()">Upload</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <hr />
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="swiper project-swiper mt-n4">
+                                    <div class="d-flex justify-content-end gap-2 mb-2">
+                                        <div class="slider-button-prev">
+                                            <div class="avatar-title fs-18 rounded px-1">
+                                                <i class="ri-arrow-left-s-line"></i>
+                                            </div>
+                                        </div>
+                                        <div class="slider-button-next">
+                                            <div class="avatar-title fs-18 rounded px-1">
+                                                <i class="ri-arrow-right-s-line"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="swiper-wrapper" id="logo-load">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane" id="GenerateFee" role="tabpanel">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="cform row gy-3">
+                                    <div class="col-xxl-6 col-md-6">
+                                        <label for="AcademicYear" class="form-label">Academic Year</label>
+                                        <div class="input-group">
+                                            <select id="GenerateFeeAcademicYear" class="form-select" aria-label="Academic Year"
+                                                    asp-items="@(new SelectList(ViewBag.AcadmicYearDropdown,"Value", "Text"))">
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-xxl-6 col-md-6">
+                                        <label for="InvoiceType" class="form-label">Invoice Type</label>
+                                        <div class="input-group">
+                                            <select id="GenerateFeeInvoiceType" class="form-select" aria-label="Invoice Type"
+                                                    asp-items="@(new SelectList(ViewBag.FeeTypeDropdown,"Value", "Text"))">
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-xxl-6 col-md-6">
+                                        <label for="Grade" class="form-label">Grade</label>
+                                        <div class="input-group">
+                                            <select id="GenerateFeeGrade" class="form-select" aria-label="Grade"
+                                                    asp-items="@(new SelectList(ViewBag.GradeDropdown,"Value", "Text"))">
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-12 text-center">
+                                        <button class="btn btn-primary" type="button" onclick="GeneratedFee('1','0')">Generate Fee</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mt-2">
+                            <div class="col-12" id="generate-fee-load">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane" id="GenerateSiblingDiscount" role="tabpanel">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="cform row gy-3">
+                                    <div class="col-xxl-6 col-md-6">
+                                        <label for="AcademicYear" class="form-label">Academic Year</label>
+                                        <div class="input-group">
+                                            <select id="GenerateDiscountAcademicYear" class="form-select" aria-label="Academic Year"
+                                                    asp-items="@(new SelectList(ViewBag.AcadmicYearDropdown,"Value", "Text"))">
+                                            </select>
+                                        </div>
+                                    </div>                                   
+                                    @* <div class="col-xxl-6 col-md-6">
+                                        <label for="Grade" class="form-label">Grade</label>
+                                        <div class="input-group">
+                                            <select id="GenerateDiscountGrade" class="form-select" aria-label="Grade"
+                                                    asp-items="@(new SelectList(ViewBag.GradeDropdown,"Value", "Text"))">
+                                            </select>
+                                        </div>
+                                    </div>
+ *@
+                                    <div class="col-md-12 text-center">
+                                        <button class="btn btn-primary" type="button" onclick="GeneratedSiblingDiscount('1','0')">Apply Sibling Discount</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mt-2">
+                            <div class="col-12" id="generate--sibling-discount-load">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane" id="CancleSiblingDiscount" role="tabpanel">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="cform row gy-3">
+                                    <div class="col-xxl-6 col-md-6">
+                                        <label for="CancleDiscountAcademicYear" class="form-label">Academic Year</label>
+                                        <div class="input-group">
+                                            <select id="CancleDiscountAcademicYear" onchange="GetSiblingDiscountStudent()" class="form-select" aria-label="Academic Year"
+                                                    asp-items="@(new SelectList(ViewBag.AcadmicYearDropdown,"Value", "Text"))">
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12" style="text-align: right;">
+                                        <button class="btn btn-primary" type="button" onclick="CancleSelectedSiblingDiscount()">Cancle All Sibling Discount</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mt-2">
+                            <div class="col-12" id="cancle-sibling-discount-load">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <script src="~/js/working/document.js" asp-append-version="true"></script>
+    <script>
+        $(document).ready(function () {
+            $('.numeric').keyup(function () {
+                this.value = this.value.replace(/[^0-9.]/g, '');
+            });
+            $('.datepicker').datepicker({
+                format: "dd/mm/yyyy",
+                autoclose: "true"
+            });
+            $("#btnSave").click(function () {
+                var formData = new FormData();
+                formData.append('SchoolId', $("#SchoolId").val());
+                //formData.append('logoImage', $("#profile-img-file-input")[0].files[0]);
+                formData.append('SchoolNameEnglish', $("#SchoolNameEnglish").val());
+                formData.append('SchoolNameArabic', $("#SchoolNameArabic").val());
+                formData.append('BranchId', $("#BranchId").val());
+                formData.append('CountryId', $("#CountryId").val());
+                formData.append('City', $("#City").val());
+                formData.append('Address', $("#Address").val());
+                formData.append('Telephone', $("#Telephone").val());
+                formData.append('SchoolEmail', $("#SchoolEmail").val());
+                formData.append('WebsiteUrl', $("#WebsiteUrl").val());
+                formData.append('VatNo', $("#VatNo").val());
+                formData.append('IsActive', $("#IsActive").val());
+                if (ValidateForm(formData)) {
+                    if (formData.get("SchoolId") == "0") {
+                        SaveSchool(formData);
+                    }
+                    else {
+                        var dlg_updatePromo = bootbox.dialog({
+                            message: 'Are you sure! you want to update the record?',
+                            title: 'Confirm',
+                            buttons: {
+                                ok: {
+                                    label: "Yes",
+                                    className: 'btn-primary',
+                                    callback: function () {
+                                        SaveSchool(formData);
+                                    }
+                                },
+                                cancel: {
+                                    label: "No",
+                                    className: 'btn-danger',
+                                    callback: function () {
+                                        $(dlg_updatePromo).modal('hide');
+                                    }
+                                }
+                            }
+                        });
+                        dlg_updatePromo.find('.modal-header').css('background-color', '#dc3545').css('border-bottom', '1px solid #dc3545');
+                    }
+                }
+            });
+            ContactLoad();
+            //AcademicLoad();
+            //AcademicTermLoad();
+            LogoLoad();
+            SchoolAccountInfoLoad();
+            LoadGeneratedFee();
+            LoadGeneratedSiblingDiscount();
+            GetSiblingDiscountStudent();
+        });
+        function ValidateForm(formData) {
+            let isError = false;
+            if (!formData.get("SchoolNameEnglish") || !formData.get("SchoolNameEnglish").trim()) {
+                $app.notify.validate("SchoolNameEnglish", "School Name English is required");
+                isError = true;
+            }
+            if (!formData.get("BranchId") || !formData.get("BranchId").trim()) {
+                $app.notify.validateDD("BranchId", "Branch is required");
+                isError = true;
+            }
+            if (!formData.get("CountryId") || !formData.get("CountryId").trim()) {
+                $app.notify.validateDD("CountryId", "Country is required");
+                isError = true;
+            }
+
+            if (isError) {
+                return false;
+            }
+            else {
+                return true;
+            }
+        }
+        function SaveSchool(dataModel) {
+            var urlToCall = '@Url.Action("SaveSchool", "School")';
+            $.post({
+                url: urlToCall,
+                data: dataModel,
+                processData: false,
+                contentType: false,
+                success: function (response) {
+                    if (response.result > 0) {
+                        $("#SchoolId").val(response.result);
+                        $app.messageBox.success("Data has been saved!", "Success", RedirectToEdit)
+                    }
+                    else if (response.result == -2) {
+                        $app.notify.error("Data already exists!");
+                    }
+                    else {
+                        $app.notify.error("Error in saving!");
+                    }
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    $app.notify.error("Error in saving!");
+                }
+            });
+        }
+        function UploadImage() {
+            var formData = new FormData();
+            formData.append('profilePic', $("#LogoFile")[0].files[0]);
+            formData.append('SchoolId', $("#SchoolId").val());
+            formData.append('LogoName', $("#LogoName").val());
+            var urlToCall = '@Url.Action("UploadLogoPicture", "School")';
+            $.post({
+                url: urlToCall,
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function (response) {
+                    if (response.result == 0) {
+                        $app.notify.success("Image has been uploaded successfully!");
+                        LogoLoad();
+                    }
+                    else if (response.result == -2) {
+                        $app.notify.error("Error in upload!");
+                    }
+                    else {
+                        $app.notify.error("Error in upload!");
+                    }
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    $app.notify.error("Error in saving!");
+                }
+            });
+        }
+        function RedirectToEdit() {
+
+            var url = '@Url.Action("AddEditSchool", "School")';
+            url = url + "?schoolId=" + $("#SchoolId").val()
+            window.location.href = url;
+        }
+        function ContactLoad() {
+            var filterDataObj = {
+                FilterSearch: $("#filterSearch").val(),
+                FilterIsActive: true
+            };
+            $('#contact-info-load').empty();
+            $('#contact-info-load').html('<div class="row"> <div class="col-xl-12"><div class="card order-card"><span class="text-center no-text" style="color:#212529;"><img src="@Url.Content("~/images/loding.gif")"  /></span></div></div></div>');
+            var urlToCall = baseUrl + 'School/ContactInformationDataPartial?schoolId=' + $("#SchoolId").val();
+            $app.post(urlToCall, filterDataObj).then(function (response) {
+                $('#contact-info-load').html(response);
+            });
+        }
+        function CreateContact() {
+            var op = { title: 'Add Contact Information' }
+            var url = '@Url.Action("ContactInformationEditPartial", "School")';
+            $app.openViewDialog(url, op);
+        }
+        function SaveContact(dataModel) {
+            var urlToCall = '@Url.Action("SaveContactInformation", "School")';
+            $app.post(urlToCall, dataModel).then(function (response) {
+                if (response.result == 0) {
+                    bootbox.hideAll();
+                    $app.notify.success("Data has been saved!");
+                    ContactLoad();
+                }
+                else if (response.result == -2) {
+                    $app.notify.error("Data already exists!");
+                }
+                else {
+                    $app.notify.error("Error in saving!");
+                }
+            });
+        }
+        function DeleteContact(contactId) {
+            var dlg_removePromo = bootbox.dialog({
+                message: 'Are you sure you want to remove this?',
+                title: 'Remove',
+                buttons: {
+                    ok: {
+                        label: "Yes",
+                        className: 'btn-primary',
+                        callback: function () {
+                            var urlToCall = '@Url.Action("DeleteContactInformation", "School")';
+                            urlToCall = urlToCall + '?contactId=' + contactId;
+
+                            $app.get(urlToCall).then(function (response) {
+                                if (response.result == 0) {
+                                    bootbox.hideAll();
+                                    $app.notify.success("Data has been deleted!");
+                                    ContactLoad();
+                                }
+                                else {
+                                    $app.notify.error("Error in deleting!");
+                                }
+                            });
+                        }
+                    },
+                    cancel: {
+                        label: "No",
+                        className: 'btn-danger',
+                        callback: function () {
+                            $(dlg_removePromo).modal('hide');
+                        }
+                    }
+                }
+            });
+        }
+        function EditContact(contactId) {
+            var op = { title: 'Update Contact Information' }
+            var url = '@Url.Action("ContactInformationEditPartial", "School")';
+            url = url + '?schoolId=' + $("#SchoolId").val() + '&contactId=' + contactId;
+            $app.openViewDialog(url, op);
+        }       
+        function CreateAcademic() {
+            var op = { title: 'Add Academic' }
+            var url = '@Url.Action("SchoolAcademicEditPartial", "School")';
+            $app.openViewDialog(url, op);
+        }
+        function SaveAcademic(dataModel) {
+            var urlToCall = '@Url.Action("SaveSchoolAcademic", "School")';
+            $app.post(urlToCall, dataModel).then(function (response) {
+                if (response.result == 0) {
+                    bootbox.hideAll();
+                    $app.notify.success("Data has been saved!");
+                    AcademicLoad();
+                }
+                else if (response.result == -2) {
+                    $app.notify.error("Data already exists!");
+                }
+                else {
+                    $app.notify.error("Error in saving!");
+                }
+            });
+        }
+        function DeleteAcademic(schoolAcademicId) {
+            var dlg_removePromo = bootbox.dialog({
+                message: 'Are you sure you want to remove this?',
+                title: 'Remove',
+                buttons: {
+                    ok: {
+                        label: "Yes",
+                        className: 'btn-primary',
+                        callback: function () {
+                            var urlToCall = '@Url.Action("DeleteSchoolAcademic", "School")';
+                            urlToCall = urlToCall + '?schoolAcademicId=' + schoolAcademicId;
+
+                            $app.get(urlToCall).then(function (response) {
+                                if (response.result == 0) {
+                                    bootbox.hideAll();
+                                    $app.notify.success("Data has been deleted!");
+                                    AcademicLoad();
+                                }
+                                else if (response.result == 547) {
+                                    $app.notify.error("Error in deleting! Record already in use.");
+                                }
+                                else {
+                                    $app.notify.error("Error in deleting!");
+                                }
+                            });
+                        }
+                    },
+                    cancel: {
+                        label: "No",
+                        className: 'btn-danger',
+                        callback: function () {
+                            $(dlg_removePromo).modal('hide');
+                        }
+                    }
+                }
+            });
+        }
+        function EditAcademic(schoolAcademicId) {
+            var op = { title: 'Update Academic' }
+            var url = '@Url.Action("SchoolAcademicEditPartial", "School")';
+            url = url + '?schoolId=' + $("#SchoolId").val() + '&schoolAcademicId=' + schoolAcademicId;
+            $app.openViewDialog(url, op);
+        }       
+        function CreateTermAcademic() {
+            var op = { title: 'Add Term Academic' }
+            var url = '@Url.Action("SchoolTermAcademicEditPartial", "School")';
+            url = url + '?schoolId=' + $("#SchoolId").val();
+            $app.openViewDialog(url, op);
+        }
+        function SaveTermAcademic(dataModel) {
+            var urlToCall = '@Url.Action("SaveSchoolTermAcademic", "School")';
+            $app.post(urlToCall, dataModel).then(function (response) {
+                if (response.result == 0) {
+                    bootbox.hideAll();
+                    $app.notify.success("Data has been saved!");
+                    AcademicTermLoad();
+                }
+                else if (response.result == -2) {
+                    $app.notify.error("Data already exists!");
+                }
+                else if (response.result == -3) {
+                    $app.notify.error("Start Date can not be less then acadmic start date!");
+                }
+                else if (response.result == -4) {
+                    $app.notify.error("End Date can not be greater then acadmic end date!");
+                }
+                else if (response.result == -5) {
+                    $app.notify.error("Term date already exists");
+                }
+
+                else {
+                    $app.notify.error("Error in saving!");
+                }
+            });
+        }
+        function DeleteTermAcademic(schoolTermAcademicId) {
+            var dlg_removePromo = bootbox.dialog({
+                message: 'Are you sure you want to remove this?',
+                title: 'Remove',
+                buttons: {
+                    ok: {
+                        label: "Yes",
+                        className: 'btn-primary',
+                        callback: function () {
+                            var urlToCall = '@Url.Action("DeleteSchoolAcademic", "School")';
+                            urlToCall = urlToCall + '?schoolTermAcademicId=' + schoolTermAcademicId;
+
+                            $app.get(urlToCall).then(function (response) {
+                                if (response.result == 0) {
+                                    bootbox.hideAll();
+                                    $app.notify.success("Data has been deleted!");
+                                    AcademicTermLoad();
+                                }
+                                else {
+                                    $app.notify.error("Error in deleting!");
+                                }
+                            });
+                        }
+                    },
+                    cancel: {
+                        label: "No",
+                        className: 'btn-danger',
+                        callback: function () {
+                            $(dlg_removePromo).modal('hide');
+                        }
+                    }
+                }
+            });
+        }
+        function EditTermAcademic(schoolTermAcademicId) {
+            var op = { title: 'Update Term Academic' }
+            var url = '@Url.Action("SchoolTermAcademicEditPartial", "School")';
+            url = url + '?schoolId=' + $("#SchoolId").val() + '&schoolTermAcademicId=' + schoolTermAcademicId;
+            $app.openViewDialog(url, op);
+        }
+        function LogoLoad() {
+            $("#LogoName").val("");
+            $("#LogoFile").val("");
+            $('#logo-load').empty();
+            //$('#logo-load').html('<div class="row"> <div class="col-xl-12"><div class="card order-card"><span class="text-center no-text" style="color:#212529;"><img src="@Url.Content("~/images/loding.gif")"  /></span></div></div></div>');
+            var urlToCall = baseUrl + 'School/LogoDataPartial?schoolId=' + $("#SchoolId").val();
+            $app.post(urlToCall).then(function (response) {
+                $('#logo-load').html(response);
+            });
+        }
+        function DeleteLogo(schoolLogoId) {
+            var dlg_removePromo = bootbox.dialog({
+                message: 'Are you sure you want to remove this?',
+                title: 'Remove',
+                buttons: {
+                    ok: {
+                        label: "Yes",
+                        className: 'btn-primary',
+                        callback: function () {
+                            var urlToCall = '@Url.Action("DeleteSchoolLogo", "School")';
+                            urlToCall = urlToCall + '?schoolLogoId=' + schoolLogoId;
+
+                            $app.get(urlToCall).then(function (response) {
+                                if (response.result == 0) {
+                                    bootbox.hideAll();
+                                    $app.notify.success("Data has been deleted!");
+                                    LogoLoad();
+                                }
+                                else {
+                                    $app.notify.error("Error in deleting!");
+                                }
+                            });
+                        }
+                    },
+                    cancel: {
+                        label: "No",
+                        className: 'btn-danger',
+                        callback: function () {
+                            $(dlg_removePromo).modal('hide');
+                        }
+                    }
+                }
+            });
+        }
+        function SchoolAccountInfoLoad() {
+            $('#school-account-info-load').empty();
+            $('#school-account-info-load').html('<div class="row"> <div class="col-xl-12"><div class="card order-card"><span class="text-center no-text" style="color:#212529;"><img src="@Url.Content("~/images/loding.gif")"  /></span></div></div></div>');
+            var urlToCall = baseUrl + 'School/SchoolAccountInfoDataPartial?schoolId=' + $("#SchoolId").val();
+            $app.post(urlToCall).then(function (response) {
+                $('#school-account-info-load').html(response);
+            });
+        }
+        function CreateSchoolAccountInfo() {
+            var op = { title: 'Add School Account Info' }
+            var url = '@Url.Action("SchoolAccountInfoEditPartial", "School")';
+            url = url + '?schoolId=' + $("#SchoolId").val();
+            $app.openViewDialog(url, op);
+        }
+        function SaveSchoolAccountInfo(dataModel) {
+            var urlToCall = '@Url.Action("SaveSchoolAccountInfo", "School")';
+            $app.post(urlToCall, dataModel).then(function (response) {
+                if (response.result == 0) {
+                    bootbox.hideAll();
+                    $app.notify.success("Data has been saved!");
+                    SchoolAccountInfoLoad();
+                }
+                else if (response.result == -2) {
+                    $app.notify.error("Data already exists!");
+                }
+
+                else {
+                    $app.notify.error("Error in saving!");
+                }
+            });
+        }
+        function DeleteSchoolAccountInfo(schoolAccountIId) {
+            var dlg_removePromo = bootbox.dialog({
+                message: 'Are you sure you want to remove this?',
+                title: 'Remove',
+                buttons: {
+                    ok: {
+                        label: "Yes",
+                        className: 'btn-primary',
+                        callback: function () {
+                            var urlToCall = '@Url.Action("DeleteSchoolAccountInfo", "School")';
+                            urlToCall = urlToCall + '?schoolAccountIId=' + schoolAccountIId;
+
+                            $app.get(urlToCall).then(function (response) {
+                                if (response.result == 0) {
+                                    bootbox.hideAll();
+                                    $app.notify.success("Data has been deleted!");
+                                    SchoolAccountInfoLoad();
+                                }
+                                else {
+                                    $app.notify.error("Error in deleting!");
+                                }
+                            });
+                        }
+                    },
+                    cancel: {
+                        label: "No",
+                        className: 'btn-danger',
+                        callback: function () {
+                            $(dlg_removePromo).modal('hide');
+                        }
+                    }
+                }
+            });
+        }
+        function EditSchoolAccountInfo(schoolAccountIId) {
+            var op = { title: 'Update School Account Info' }
+            var url = '@Url.Action("SchoolAccountInfoEditPartial", "School")';
+            url = url + '?schoolId=' + $("#SchoolId").val() + '&schoolAccountIId=' + schoolAccountIId;
+            $app.openViewDialog(url, op);
+        }
+        function LoadGeneratedFee() {
+            $('#generate-fee-load').empty();
+            $('#generate-fee-load').html('<div class="row"> <div class="col-xl-12"><div class="card order-card"><span class="text-center no-text" style="color:#212529;"><img src="@Url.Content("~/images/loding.gif")"  /></span></div></div></div>');
+            var urlToCall = baseUrl + 'School/GenerateFeeDataPartial';
+            $app.post(urlToCall).then(function (response) {
+                $('#generate-fee-load').html(response);
+            });
+            LoadNotificationGroup();
+        }
+        function GeneratedFee(actionId, feeGenerateId) {
+            var dataModel = {
+                FeeGenerateId: feeGenerateId,
+                SchoolAcademicId: $("#GenerateFeeAcademicYear").val(),
+                FeeTypeId: $("#GenerateFeeInvoiceType").val(),
+                GradeId: $("#GenerateFeeGrade").val(),
+                ActionId: actionId
+            };
+            if (ValidateGenerateFeeInput(dataModel)) {
+                var urlToCall = '@Url.Action("SaveGenerateFee", "School")';
+                $app.post(urlToCall, dataModel).then(function (response) {
+                    if (response.result == 0) {
+                        bootbox.hideAll();
+                        $app.notify.success("Fee generated!");
+                        LoadGeneratedFee();
+                    }
+                    else if (response.result == -2) {
+                        $app.notify.error("Fee already generated. Please regenrate from grid!");
+                    }
+
+                    else {
+                        $app.notify.error("Error in saving!");
+                    }
+                });
+            }
+        }
+        function ValidateGenerateFeeInput(dataObj) {
+            var isError = false;
+            if (dataObj["FeeGenerateId"] == 0) {
+                if (dataObj["SchoolAcademicId"] == 0) {
+                    $app.notify.validateDD("GenerateFeeAcademicYear", "Academic year is required");
+                    isError = true;
+                }
+                if (dataObj["FeeTypeId"] == 0) {
+                    $app.notify.validateDD("GenerateFeeInvoiceType", "Invoice type is required");
+                    isError = true;
+                }
+                if (dataObj["GradeId"] == 0) {
+                    $app.notify.validateDD("GenerateFeeGrade", "Grade is required");
+                    isError = true;
+                }
+            }
+            if (isError) {
+                return false;
+            }
+            else {
+                return true;
+            }
+        }
+        function DeleteGeneratedFee(actionId, feeGenerateId) {
+            var dlg_removePromo = bootbox.dialog({
+                message: 'Are you sure you want to remove this?',
+                title: 'Remove',
+                buttons: {
+                    ok: {
+                        label: "Yes",
+                        className: 'btn-primary',
+                        callback: function () {
+
+                            var urlToCall = '@Url.Action("UpdateGenerateFee", "School")';
+                            urlToCall = urlToCall + '?feeGenerateId=' + feeGenerateId + '&actionId=' + actionId;
+
+                            $app.get(urlToCall).then(function (response) {
+                                if (response.result == 0) {
+                                    bootbox.hideAll();
+                                    $app.notify.success("Data has been deleted!");
+                                    LoadGeneratedFee();
+                                }
+                                else {
+                                    $app.notify.error("Error in deleting!");
+                                }
+                            });
+                        }
+                    },
+                    cancel: {
+                        label: "No",
+                        className: 'btn-danger',
+                        callback: function () {
+                            $(dlg_removePromo).modal('hide');
+                        }
+                    }
+                }
+            });
+        }
+        function ApplyFee(actionId, feeGenerateId) {
+            var dlg_removePromo = bootbox.dialog({
+                message: 'Are you sure you want to apply?',
+                title: 'Apply',
+                buttons: {
+                    ok: {
+                        label: "Yes",
+                        className: 'btn-primary',
+                        callback: function () {
+
+                            var urlToCall = '@Url.Action("UpdateGenerateFee", "School")';
+                            urlToCall = urlToCall + '?feeGenerateId=' + feeGenerateId + '&actionId=' + actionId;
+
+                            $app.get(urlToCall).then(function (response) {
+                                if (response.result == 0) {
+                                    bootbox.hideAll();
+                                    $app.notify.success("Approval request has been sent for apply fee!");
+                                    LoadGeneratedFee();
+                                }
+                                else {
+                                    $app.notify.error("Error in apply!");
+                                }
+                            });
+                        }
+                    },
+                    cancel: {
+                        label: "No",
+                        className: 'btn-danger',
+                        callback: function () {
+                            $(dlg_removePromo).modal('hide');
+                        }
+                    }
+                }
+            });
+        }
+        function ViewFeeGeneratedStudent(feeGenerateId) {
+            var op = { title: 'View Generated Fee Student', customClass: 'fee-generated-student-modal' }
+            var url = '@Url.Action("FeeGeneratedStudentPartial", "School")';
+            url = url + '?feeGenerateId=' + feeGenerateId;
+            $app.openViewDialog(url, op);
+        }
+
+        //Discount Section Start
+        function LoadGeneratedSiblingDiscount() {
+            $('#generate--sibling-discount-load').empty();
+            $('#generate--sibling-discount-load').html('<div class="row"> <div class="col-xl-12"><div class="card order-card"><span class="text-center no-text" style="color:#212529;"><img src="@Url.Content("~/images/loding.gif")"  /></span></div></div></div>');
+            var urlToCall = baseUrl + 'School/GenerateSiblingDiscountDataPartial';
+            $app.post(urlToCall).then(function (response) {
+                $('#generate--sibling-discount-load').html(response);
+            });
+            LoadNotificationGroup();
+        }
+        function GeneratedSiblingDiscount(actionId, siblingDiscountId) {
+            var dataModel = {
+                SiblingDiscountId: siblingDiscountId,
+                SchoolAcademicId: $("#GenerateDiscountAcademicYear").val(),
+                ActionId: actionId
+            };
+            if (ValidateGenerateSiblingDiscountInput(dataModel)) {
+                var urlToCall = '@Url.Action("SaveGenerateSiblingDiscount", "School")';
+                $app.post(urlToCall, dataModel).then(function (response) {
+                    if (response.result == 0) {
+                        bootbox.hideAll();
+                        $app.notify.success("Sibling discount generated!");
+                        LoadGeneratedSiblingDiscount();
+                    }
+                    else if (response.result == -2) {
+                        $app.notify.error("Sibling discount already generated. Please regenrate from grid!");
+                    }
+
+                    else {
+                        $app.notify.error("Error in saving!");
+                    }
+                });
+            }
+        }
+        function ValidateGenerateSiblingDiscountInput(dataObj) {
+            var isError = false;
+            if (dataObj["SiblingDiscountId"] == 0) {
+                if (dataObj["SchoolAcademicId"] == 0) {
+                    $app.notify.validateDD("GenerateDiscountAcademicYear", "Academic year is required");
+                    isError = true;
+                }               
+            }
+            if (isError) {
+                return false;
+            }
+            else {
+                return true;
+            }
+        }
+        function DeleteGeneratedSiblingDiscount(actionId, siblingDiscountId) {
+            var dlg_removePromo = bootbox.dialog({
+                message: 'Are you sure you want to remove this?',
+                title: 'Remove',
+                buttons: {
+                    ok: {
+                        label: "Yes",
+                        className: 'btn-primary',
+                        callback: function () {
+
+                            var urlToCall = '@Url.Action("UpdateGenerateSiblingDiscount", "School")';
+                            urlToCall = urlToCall + '?siblingDiscountId=' + siblingDiscountId + '&actionId=' + actionId;
+
+                            $app.get(urlToCall).then(function (response) {
+                                if (response.result == 0) {
+                                    bootbox.hideAll();
+                                    $app.notify.success("Data has been deleted!");
+                                    LoadGeneratedSiblingDiscount();
+                                }
+                                else {
+                                    $app.notify.error("Error in deleting!");
+                                }
+                            });
+                        }
+                    },
+                    cancel: {
+                        label: "No",
+                        className: 'btn-danger',
+                        callback: function () {
+                            $(dlg_removePromo).modal('hide');
+                        }
+                    }
+                }
+            });
+        }
+        function ApplySiblingDiscount(actionId, siblingDiscountId) {
+            var dlg_removePromo = bootbox.dialog({
+                message: 'Are you sure you want to apply?',
+                title: 'Apply',
+                buttons: {
+                    ok: {
+                        label: "Yes",
+                        className: 'btn-primary',
+                        callback: function () {
+
+                            var urlToCall = '@Url.Action("UpdateGenerateSiblingDiscount", "School")';
+                            urlToCall = urlToCall + '?siblingDiscountId=' + siblingDiscountId + '&actionId=' + actionId;
+
+                            $app.get(urlToCall).then(function (response) {
+                                if (response.result == 0) {
+                                    bootbox.hideAll();
+                                    $app.notify.success("Approval request has been sent for apply sibling discount!");
+                                    LoadGeneratedSiblingDiscount();
+                                }
+                                else {
+                                    $app.notify.error("Error in apply!");
+                                }
+                            });
+                        }
+                    },
+                    cancel: {
+                        label: "No",
+                        className: 'btn-danger',
+                        callback: function () {
+                            $(dlg_removePromo).modal('hide');
+                        }
+                    }
+                }
+            });
+        }
+        function ViewSiblingDiscountGeneratedStudent(siblingDiscountId) {
+            var op = { title: 'View Generated Sibling Discount', customClass: 'fee-generated-student-modal' }
+            var url = '@Url.Action("SiblingDiscountGeneratedStudentPartial", "School")';
+            url = url + '?siblingDiscountId=' + siblingDiscountId;
+            $app.openViewDialog(url, op);
+        }
+        //Discount Section End
+
+        //Cancle Discount Start
+        function GetSiblingDiscountStudent()
+        {
+            $('#cancle-sibling-discount-load').empty();
+            $('#cancle-sibling-discount-load').html('<div class="row"> <div class="col-xl-12"><div class="card order-card"><span class="text-center no-text" style="color:#212529;"><img src="@Url.Content("~/images/loding.gif")"  /></span></div></div></div>');
+            var urlToCall = baseUrl + 'School/GetSiblingDiscountStudent';
+            urlToCall = urlToCall + '?academicYearId=' + $("#CancleDiscountAcademicYear").val();
+            $app.post(urlToCall).then(function (response) {
+                $('#cancle-sibling-discount-load').html(response);
+            });
+        }
+        function SiblingDiscountStatusProcess(actionId, studentSiblingDiscountDetailId) {
+            var urlToCall = '@Url.Action("UpdateSiblingDiscountStatus", "Student")';
+            urlToCall = urlToCall + '?actionId=' + actionId + '&studentSiblingDiscountDetailId=' + studentSiblingDiscountDetailId;
+            $app.get(urlToCall).then(function (response) {
+                if (response.result == 0) {
+                    bootbox.hideAll();
+                    $app.notify.success("Status has been updated!");
+                    GetSiblingDiscountStudent();
+                    LoadNotificationGroup();
+                }
+                else {
+                    $app.notify.error("Error!");
+                }
+            });
+        }
+        function getSiblingDiscountSelectedRowIds() {
+            var selectedIds = [];
+            $('#tblSiblingDiscountDataIndivisual tbody input[type="checkbox"]:checked').each(function () {
+                var id = $(this).data('id');
+                selectedIds.push(parseInt(id));
+            });
+            return selectedIds;
+        }
+        function CancleSelectedSiblingDiscount() {
+            var selectedIds = getSiblingDiscountSelectedRowIds();
+            if (selectedIds.length === 0) {
+                $app.notify.error("Please select atleast one record to cancle!");
+            }
+            else {
+                var studentSiblingDiscountDetailIds = selectedIds.join(',');
+                var dataModel = {
+                    StudentSiblingDiscountDetailIds: studentSiblingDiscountDetailIds
+                };
+                var urlToCall = '@Url.Action("CancleMultiSiblingDiscount", "School")';
+                urlToCall = urlToCall + "?studentSiblingDiscountDetailIds=" + studentSiblingDiscountDetailIds;
+                $.post({
+                    url: urlToCall,
+                    data: dataModel,
+                    success: function (response) {
+                        if (response.result == 0) {
+                            $app.notify.success("Status has been updated!");
+                            GetSiblingDiscountStudent();
+                            LoadNotificationGroup();
+                        }                       
+                        else {
+                            $app.notify.error("Error in update!");
+                        }
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        $app.notify.error("Error in update!");
+                    }
+                });
+            }
+        }
+        //Cancle Discount End
+    </script>
+}

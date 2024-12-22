@@ -1,0 +1,115 @@
+﻿@{
+    ViewData["Title"] = "Invoice Type";
+}
+<div class="row">
+    <div class="col-12">
+        <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+            <div class="page-title d-flex align-items-center justify-content-between">
+                <ol class="breadcrumb m-0">
+                    <li class="breadcrumb-item">Fee</li>
+                    <li class="breadcrumb-item active">Fee Type</li>
+                </ol>
+                <div>
+                    <button type="button" class="btn btn-dark btn-set-task w-sm-100" onclick="Create()">
+                        <i class="fa-solid fa-plus"></i> Add
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="card">
+    <div class="card-body">
+        <div class="row g-3">
+            <div class="col-lg-12 col-md-12">
+                <div class="tab-content screen-list">
+                    <div class="tab-pane fade show active" id="fee-type-load">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section scripts {
+    <script>
+        $(function () {
+            FeeTypeLoad();
+        });
+
+        function FeeTypeLoad() {
+            $('#fee-type-load').empty();
+            $('#fee-type-load').html('<div class="row"> <div class="col-xl-12"><div class="card order-card"><span class="text-center no-text" style="color:#212529;"><img src="@Url.Content("~/images/loding.gif")"  /></span></div></div></div>');
+            var urlToCall = baseUrl + 'Fee/FeeTypeDataPartial';
+            $app.post(urlToCall).then(function (response) {
+                $('#fee-type-load').html(response);
+            });
+        }
+        function Create() {
+            var op = { title: 'Add Fee Type' }
+            var url = '@Url.Action("FeeTypeEditPartial", "Fee")';
+            $app.openViewDialog(url, op);
+        }
+        function Edit(feeTypeId) {
+            var op = { title: 'Update Fee Type' }
+            var url = '@Url.Action("FeeTypeEditPartial", "Fee")';
+            url = url + '?feeTypeId=' + feeTypeId;
+            $app.openViewDialog(url, op);
+        }
+        function Save(dataModel) {
+            var urlToCall = '@Url.Action("SaveFeeType", "Fee")';
+            $app.post(urlToCall, dataModel).then(function (response) {
+                if (response.result == 0) {
+                    bootbox.hideAll();
+                    $app.notify.success("Data has been saved!");
+                    FeeTypeLoad();
+                }
+                else if (response.result == -2) {
+                    $app.notify.error("Data already exists!");
+                }
+                else {
+                    $app.notify.error("Error in saving!");
+                }
+            });
+        }
+        function Delete(feeTypeId) {
+            var dlg_removePromo = bootbox.dialog({
+                message: 'Are you sure! you want to delete the record?',
+                title: 'Remove',
+                buttons: {
+                    ok: {
+                        label: "Yes",
+                        className: 'btn-primary',
+                        callback: function () {
+                            var urlToCall = '@Url.Action("DeleteFeeType", "Fee")';
+                            urlToCall = urlToCall + '?feeTypeId=' + feeTypeId;
+
+                            $app.get(urlToCall).then(function (response) {
+                                if (response.result == 0) {
+                                    bootbox.hideAll();
+                                    $app.notify.success("Data has been deleted!");
+                                    FeeTypeLoad();
+                                }
+                                else {
+                                    $app.notify.error("Error in deleting!");
+                                }
+                            });
+                        }
+                    },
+                    cancel: {
+                        label: "No",
+                        className: 'btn-danger',
+                        callback: function () {
+                            $(dlg_removePromo).modal('hide');
+                        }
+                    }
+                }
+            });
+            dlg_removePromo.find('.modal-header').css('background-color', '#dc3545').css('border-bottom', '1px solid #dc3545');
+        }
+        function FeeTypeDetail(feeTypeId) {
+            var url = '@Url.Action("FeeTypeDetail", "Fee")';
+            url = url + '?feeTypeId=' + feeTypeId;
+            window.location.href=url;// (url, "_blank");
+        }
+    </script>
+}

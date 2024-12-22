@@ -1,0 +1,76 @@
+﻿@using System.Data;
+@model DataSet
+
+<div class="table-responsive table-card order-tabel" style="width:100%">
+    <table class="table align-middle table-nowrap mb-0" id="tblActivityDataPaymentPlan">
+        <thead class="table-light text-muted">
+            <tr>
+                <th width="10%">S.No</th>
+                <th>Amount</th>
+                <th>Due Date</th>
+                <th width="70px">Actions</th>
+            </tr>
+        </thead>
+        <tbody class="list form-check-all">
+            @if (Model != null && Model.Tables.Count > 0 && Model.Tables[0].Rows.Count > 0)
+            {
+                int i = 0;
+                foreach (DataRow dr in Model.Tables[0].Rows)
+                {
+                    i++;
+                    <tr>
+                        <td>@i</td>
+                        <td>@Convert.ToDecimal(dr["PaymentPlanAmount"]).ToTwoDecimalString()</td>
+                        <td>@Convert.ToDateTime(dr["DueDate"]).ToString("dd/MM/yyyy")</td>
+                        <td>
+                            @if (Convert.ToBoolean(dr["IsApproved"]) == false && Convert.ToBoolean(dr["IsRejected"]) == false)
+                            {
+                                <span>Approval Pending</span>
+                            }
+                            else
+                            {
+                                <div class="btn-group" role="group" aria-label="Basic outlined example">
+                                    @*  <button type="button" class="btn btn-outline-secondary edit-btn" onclick="EditPaymentPlan('@dr["FeePaymentPlanId"]')">
+                        <i class="fa-regular fa-pen-to-square  text-success"></i>
+                        </button> *@
+                                    <button type="button" class="btn btn-outline-secondary deleterow" onclick="DeletePaymentPlan('@dr["FeePaymentPlanId"]')">
+                                        <i class="fa-solid fa-trash-can text-danger"></i>
+                                    </button>
+                                </div>
+                            }
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+</div>
+<script>
+    $("#tblActivityDataPaymentPlan").DataTable({
+        // language: {
+        //     search: "<i class='ri-search-line search-icon'></i>",
+        //     searchPlaceholder: "Search ..."
+        // },
+        // pageLength: 10,
+        // searching: false,
+        // info: false,
+        // dom: 'rtip',
+        // // scrollX: true,
+        // // bFilter: true,
+        // bSort: false,
+        // // bPaginate: true,
+        // // destroy: true,
+        // // orderCellsTop: true,
+        // // fixedHeader: true
+
+        language: {
+            search: "<i class='ri-search-line search-icon'></i>",
+            searchPlaceholder: "Search ..."
+        },
+        pageLength: 100,
+        bSort: false,
+        searching: false,
+        info: true,
+        bPaginate: false,
+    });
+</script>

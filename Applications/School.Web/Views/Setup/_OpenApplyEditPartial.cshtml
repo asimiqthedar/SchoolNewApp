@@ -1,0 +1,131 @@
+﻿@using School.Models.WebModels.GenderModels;
+@model OpenApplyModel
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="cform row gy-3">
+            <input type="hidden" id="OpenApplyId" name="OpenApplyId" asp-for="OpenApplyId" />
+            <div class="col-xxl-12 col-md-12">
+                <div>
+                    <label class="form-label">Client Id</label>
+                    <input type="text" class="form-control" id="ClientId" name="ClientId" asp-for="ClientId" placeholder="Client Id">
+                </div>
+            </div>
+            <div class="col-xxl-12 col-md-12">
+                <div>
+                    <label class="form-label">Client Secret</label>
+                    <input type="text" class="form-control" id="ClientSecret" name="ClientSecret" asp-for="ClientSecret" placeholder="Client Secret">
+                </div>
+            </div>
+            <div class="col-xxl-12 col-md-12">
+                <div>
+                    <label class="form-label">Audience</label>
+                    <input type="text" class="form-control" id="Audience" name="Audience" asp-for="Audience" placeholder="Audience">
+                </div>
+            </div>
+            <div class="col-xxl-12 col-md-12">
+                <div>
+                    <label class="form-label">Grant Type</label>
+                    <input type="text" class="form-control" id="GrantType" name="GrantType" asp-for="GrantType" placeholder="GrantType">
+                </div>
+            </div>
+            <div class="col-xxl-12 col-md-12">
+                <div>
+                    <label class="form-label">OpenApply Job Path</label>
+                    <input type="text" class="form-control" id="OpenApplyJobPath" name="OpenApplyJobPath" asp-for="OpenApplyJobPath" placeholder="OpenApplyJobPath">
+                </div>
+            </div>
+            <div class="col-xxl-12 col-md-12" style="display:none">
+                <div>
+                    <label class="form-label">Active</label>
+                    <select class="form-select" id="IsActive" asp-for="IsActive" aria-label="Active">
+                        <option value=true>Active</option>
+                        <option value=false>In-Active</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-12 text-center">
+                <button class="btn btn-success theme-btn" type="button" onclick="BindData()">@(Model.OpenApplyId > 0 ? "Update" : "Add")</button>
+                <button class="btn btn-secondary" type="button" onclick="bootbox.hideAll();">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        $('.textCapital').keyup(function () {
+            $(this).val($(this).val().toUpperCase());
+        });
+    });
+    function BindData() {
+        var dataObj = {
+            OpenApplyId: $("#OpenApplyId").val(),
+            ClientId: $("#ClientId").val(),
+            ClientSecret: $("#ClientSecret").val(),
+            Audience: $("#Audience").val(),
+            GrantType: $("#GrantType").val(),
+            OpenApplyJobPath: $("#OpenApplyJobPath").val(),
+
+            IsActive: $("#IsActive").val()
+        };
+        if (Validation(dataObj)) {
+            if (dataObj["OpenApplyId"] == "0") {
+                Save(dataObj);
+
+            }
+            else {
+                var dlg_updatePromo = bootbox.dialog({
+                    message: 'Are you sure! you want to update the record?',
+                    title: 'Confirm',
+                    buttons: {
+                        ok: {
+                            label: "Yes",
+                            className: 'btn-primary',
+                            callback: function () {
+                                Save(dataObj);
+                            }
+                        },
+                        cancel: {
+                            label: "No",
+                            className: 'btn-danger',
+                            callback: function () {
+                                $(dlg_updatePromo).modal('hide');
+                            }
+                        }
+                    }
+                });
+                dlg_updatePromo.find('.modal-header').css('background-color', '#dc3545').css('border-bottom', '1px solid #dc3545');
+            }
+        }
+    }
+    function Validation(dataObj) {
+        var isError = false;
+        if (!dataObj["ClientId"] || !dataObj["ClientId"].trim()) {
+            $app.notify.validate("ClientId", "Client Id is required");
+            isError = true;
+        }
+        if (!dataObj["ClientSecret"] || !dataObj["ClientSecret"].trim()) {
+            $app.notify.validate("ClientSecret", "Client Secret is required");
+            isError = true;
+        }
+        if (!dataObj["Audience"] || !dataObj["Audience"].trim()) {
+            $app.notify.validate("Audience", "Audience is required");
+            isError = true;
+        }
+        if (!dataObj["GrantType"] || !dataObj["GrantType"].trim()) {
+            $app.notify.validate("GrantType", "Grant Type is required");
+            isError = true;
+        }
+        if (!dataObj["OpenApplyJobPath"] || !dataObj["OpenApplyJobPath"].trim()) {
+            $app.notify.validate("OpenApplyJobPath", "OpenApply Job Path is required");
+            isError = true;
+        }
+        if (isError) {
+            return false;
+        }
+        else {
+            return true;
+        }
+    }
+   
+</script>

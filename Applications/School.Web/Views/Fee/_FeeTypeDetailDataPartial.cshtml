@@ -1,0 +1,74 @@
+﻿@using System.Data;
+@model DataSet
+
+<div class="table-responsive table-card order-tabel" style="width:100%">
+    <table class="table align-middle table-nowrap mb-0" id="tblActivityData">
+        <thead class="table-light text-muted">
+            <tr>
+                <th>Academic Year</th>
+                <th>Invoice Type Name</th>               
+                <th>Grade</th>
+                <th width="80px" style="width:80px"> Amount</th>   
+                <th width="150px" style="width:80px">Staff Amount</th>
+                <th width="150px">Term Plan</th>
+                <th width="150px">Payment Plan</th>
+                <th width="70px">Actions</th>
+            </tr>
+        </thead>
+        <tbody class="list form-check-all">
+            @if (Model != null && Model.Tables.Count > 0 && Model.Tables[0].Rows.Count > 0)
+            {
+                foreach (DataRow dr in Model.Tables[0].Rows)
+                {
+                    <tr>
+                        <td>@dr["AcademicYear"]</td>
+                        <td>@dr["FeeTypeName"]</td>
+                        <td>@dr["GradeName"]</td>
+                        <td width="80px" style="text-align:right; width:80px">@Convert.ToDecimal(dr["TermFeeAmount"]).ToTwoDecimalString()</td>
+                        <td width="150px" style="text-align:right; width:80px">@Convert.ToDecimal(dr["StaffFeeAmount"]).ToTwoDecimalString()</td>
+                        <td>
+                            @{
+                                if (Convert.ToBoolean(dr["IsTermPlan"]))
+                                {
+                                    <button type="button" class="btn btn-dark btn-set-task w-sm-100" onclick="TermPlanDetail('@dr["FeeTypeId"]','@dr["FeeTypeDetailId"]')">
+                                        Term Detail
+                                    </button>
+                                }                               
+                            }
+                        </td>
+                        <td>
+                            @{
+                                if (Convert.ToBoolean(dr["IsPaymentPlan"]))
+                                {
+                                    <button type="button" class="btn btn-dark btn-set-task w-sm-100" onclick="PaymentPlanDetail('@dr["FeeTypeId"]','@dr["FeeTypeDetailId"]')">
+                                        Payment Detail
+                                    </button>
+                                }                               
+                            }
+                        </td>                      
+                        <td>
+                            <div class="btn-group" role="group" aria-label="Basic outlined example">
+                                <button type="button" class="btn btn-outline-secondary edit-btn" onclick="Edit('@dr["FeeTypeDetailId"]')">
+                                    <i class="fa-regular fa-pen-to-square  text-success"></i>
+                                </button> 
+                                <button type="button" class="btn btn-outline-secondary deleterow" onclick="Delete('@dr["FeeTypeDetailId"]')">
+                                    <i class="fa-solid fa-trash-can text-danger"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+</div>
+<script>
+    $("#tblActivityData").DataTable({
+        language: {
+            search: "<i class='ri-search-line search-icon'></i>",
+            searchPlaceholder: "Search ..."
+        },
+        pageLength: 50,
+        bSort: false
+    });
+</script>

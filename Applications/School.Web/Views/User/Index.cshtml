@@ -1,0 +1,133 @@
+﻿@{
+    ViewData["Title"] = "Employee";
+}
+
+<div class="row">
+    <div class="col-12">
+        <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+            <div class="page-title d-flex align-items-center justify-content-between">
+                <ol class="breadcrumb m-0">
+                    <li class="breadcrumb-item">User</li>
+                    <li class="breadcrumb-item active">User List</li>
+                </ol>
+                <div>
+                    <button type="button" class="btn btn-dark btn-set-task w-sm-100" onclick="Create()">
+                        <i class="fa-solid fa-plus"></i> Add
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="card">
+    <div class="card-body">
+        @Html.Partial("_UserFilterPartial")
+        <div class="row g-3">
+            <div class="col-lg-12 col-md-12">
+                <div class="tab-content screen-list">
+                    <div class="tab-pane fade show active" id="user-load">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section scripts {
+    <script>
+        $(function () {
+            loadUserByFilter();
+        });
+        function RefreshSearch() {
+            $("#filterSearch").val("");
+            $("#filterRoleId").val("0");
+            $("#filterIsActive").val("true");
+            loadUserByFilter();
+        }
+        function loadUserByFilter() {
+            var filterDataObj = {
+                FilterSearch: $("#filterSearch").val(),
+                FilterRoleId: $("#filterRoleId").val(),
+                FilterIsActive: $("#filterIsActive").val()
+            };
+            UserLoad(filterDataObj);
+        }
+        function UserLoad(filterDataObj) {
+            $('#user-load').empty();
+            $('#user-load').html('<div class="row"> <div class="col-xl-12"><div class="card order-card"><span class="text-center no-text" style="color:#212529;"><img src="@Url.Content("~/images/loding.gif")"  /></span></div></div></div>');
+            // var url = '@Url.Action("UserDataPartial", "User")';
+            // $('#user-load').load(url);
+            var urlToCall = baseUrl + 'User/UserDataPartial';
+            $app.post(urlToCall, filterDataObj).then(function (response) {
+                $('#user-load').html(response);
+            });
+        }
+        function Create() {
+            var op = { title: 'Add User' }
+            var url = '@Url.Action("UserEditPartial", "User")';
+            $app.openViewDialog(url, op);
+        }
+        function Edit(userId) {
+            var op = { title: 'Update User' }
+            var url = '@Url.Action("UserEditPartial", "User")';
+            url = url + '?userId=' + userId;
+            $app.openViewDialog(url, op);
+        }
+        function Save(dataModel) {
+            var urlToCall = '@Url.Action("SaveUser", "User")';
+            $app.post(urlToCall, dataModel).then(function (response) {
+                if (response.result == 0) {
+                    bootbox.hideAll();
+                    $app.notify.success("Data has been saved!");
+                    loadUserByFilter();
+                }
+                else if (response.result == -2) {
+                    $app.notify.error("Data already exists!");
+                }
+                else {
+                    $app.notify.error("Error in saving!");
+                }
+            });
+        }
+        function Delete(userId) {
+            var dlg_removePromo = bootbox.dialog({
+                message: 'Are you sure! you want to delete the record?',
+                title: 'Remove',
+                buttons: {
+                    ok: {
+                        label: "Yes",
+                        className: 'btn-primary',
+                        callback: function () {
+                            var urlToCall = '@Url.Action("DeleteUser", "User")';
+                            urlToCall = urlToCall + '?userId=' + userId;
+
+                            $app.get(urlToCall).then(function (response) {
+                                if (response.result == 0) {
+                                    bootbox.hideAll();
+                                    $app.notify.success("Data has been deleted!");
+                                    loadUserByFilter();
+                                }
+                                else {
+                                    $app.notify.error("Error in deleting!");
+                                }
+                            });
+                        }
+                    },
+                    cancel: {
+                        label: "No",
+                        className: 'btn-danger',
+                        callback: function () {
+                            $(dlg_removePromo).modal('hide');
+                        }
+                    }
+                }
+            });
+            dlg_removePromo.find('.modal-header').css('background-color', '#dc3545').css('border-bottom', '1px solid #dc3545');
+        }
+        function UploadImage(userId) {
+            var op = { title: 'Update Image' }
+            var url = '@Url.Action("UploadUserImagePartial", "User")';
+            url = url + '?userId=' + userId;
+            $app.openViewDialog(url, op);
+        }
+    </script>
+}

@@ -1,0 +1,203 @@
+﻿@{
+	ViewData["Title"] = "Parent Student Report";
+}
+<style>
+	.backlog-filter-btn button {
+		padding: 6px 10px;
+	}
+</style>
+
+<div class="row">
+	<div class="col-12">
+		<div class="page-title-box d-sm-flex align-items-center justify-content-between">
+			<div class="page-title d-flex align-items-center justify-content-between">
+				<ol class="breadcrumb m-0">
+					<li class="breadcrumb-item">Report</li>
+					<li class="breadcrumb-item active">Parent Student Report</li>
+				</ol>
+				<div>
+					<button type="button" class="btn btn-secondary" onclick="ExportCSVStatement()">
+						<i class="fa-solid fa-file-excel"></i> Export to Excel
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="card">
+	<div class="card-body">
+		<div style="margin-bottom:10px;">
+			<button class="btn btn-dark btn-warning w-sm-100" type="button" data-bs-toggle="collapse" data-bs-target="#filterCollapse" aria-expanded="false" aria-controls="filterCollapse">
+				<i class="mx-1 fa-solid fa-filter"></i>Filter
+			</button>
+		</div>
+		<div class="collapse" id="filterCollapse">
+			<div class="row mb-3 align-items-center  label-row">
+				<div class="col-md-12 mb-5">
+					<div class="row">
+						<div class="col-md-12 p-3">
+							<div class="row">
+								<div class="col-lg-6">
+									<label for="filterParent" class="form-label">Parent</label>
+									<select id="filterParent" class="form-select" aria-label="Academic Year"
+											asp-items="@(new SelectList(ViewBag.ParentDropDown,"Value", "Text"))">
+									</select>
+								</div>
+								<div class="col-lg-6">
+									<label for="filterStudent" class="form-label">Student</label>
+									<select id="filterStudent" class="form-select" aria-label="Academic Year"
+											asp-items="@(new SelectList(ViewBag.StudentDropDown,"Value", "Text"))">
+									</select>
+								</div>
+								<div class="col-lg-6">
+									<label for="filterAcademicYear" class="form-label">Academic Year</label>
+									<select id="filterAcademicYear" class="form-select" aria-label="Academic Year"
+											asp-items="@(new SelectList(ViewBag.AcademicYearDropDown,"Value", "Text"))">
+									</select>
+								</div>
+								<div class="col-lg-6">
+									<label for="filterCostCenter" class="form-label">Cost Center</label>
+									<select id="filterCostCenter" class="form-select" aria-label="CostCenter"
+											asp-items="@(new SelectList(ViewBag.CostCenterDropdown,"Value", "Text"))">
+									</select>
+								</div>
+								<div class="col-lg-6">
+									<label for="filterGrade" class="form-label">Grade</label>
+									<select id="filterGrade" class="form-select" aria-label="Grade"
+											asp-items="@(new SelectList(ViewBag.GradeDropdown,"Value", "Text"))">
+									</select>
+								</div>
+								<div class="col-lg-6">
+									<label for="filterGender" class="form-label">Gender</label>
+									<select id="filterGender" class="form-select" aria-label="Gender"
+											asp-items="@(new SelectList(ViewBag.GenderDropdown,"Value", "Text"))">
+									</select>
+								</div>
+
+								<div class="col-lg-6">
+									<div class="single-filter">
+										<label for="StartDate" class="form-label">Start Date</label>
+										<input class="form-control datepicker" id="filterStartDate" value="@DateTime.Now.AddMonths(-1).ToString("dd/MM/yyyy")" />
+									</div>
+								</div>
+								<div class="col-lg-6">
+									<div class="single-filter">
+										<label for="EndDate" class="form-label">End Date</label>
+										<input class="form-control datepicker" id="filterEndDate" value="@DateTime.Now.ToString("dd/MM/yyyy")" />
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="col-md-12 btn-col">
+					<div class="row">
+						<div class="col-md-12">
+							<div class="d-flex backlog-btn-row">
+								<div class="backlog-filter-btn">
+									<button type="button" class="btn btn-primary" onclick="LoadParentStudentReportByFilter();">
+										Search
+									</button>
+								</div>
+								<div class="backlog-filter-btn">
+									<button type="button" class="btn btn-secondary" onclick="RefreshSearch();">
+										Refresh
+									</button>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="row g-3">
+			<div class="col-lg-12 col-md-12">
+				<div class="tab-content screen-list">
+					<div class="tab-pane fade show active" id="parent-student-report-load">
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+@section scripts {
+	<script>
+		$(function () {
+			$('.datepicker').datepicker({
+				format: "dd/mm/yyyy",
+				autoclose: true
+			});
+
+			var lastMonthDate = new Date();
+			lastMonthDate.setMonth(lastMonthDate.getMonth() - 1);
+
+			$('#filterStartDate').datepicker('update', lastMonthDate);
+			$('#filterEndDate').datepicker('update', new Date());
+
+			$("#filterAcademicYear").prop("selectedIndex", 1);
+			loadCurrentAcademicYear();
+		});
+
+		
+		function loadCurrentAcademicYear() {
+			var urlToCall = baseUrl + 'Report/GetCurrentAcademicYear';
+			$app.post(urlToCall).then(function (response) {
+				if (response && response.periodFrom) {
+					const periodFromDate = new Date(response.periodFrom);
+					const formattedDate = periodFromDate.toLocaleDateString('en-GB'); // "dd/MM/yyyy" format
+					document.getElementById('filterStartDate').value = formattedDate;
+
+					LoadParentStudentReportByFilter();
+				}
+			});
+		}
+
+
+		function RefreshSearch() {
+			$("#filterParent").val(0);
+			$("#filterStudent").val(0);
+			$("#filterAcademicYear").val(0);
+			$("#filterCostCenter").val(0);
+			$("#filterGrade").val(0);
+			$("#filterGender").val(0);
+			LoadParentStudentReportByFilter();
+		}
+		function LoadParentStudentReportByFilter() {
+			var filterDataObj = {
+				ParentId: $("#filterParent").val(),
+				StudentId: $("#filterStudent").val(),
+				AcademicYear: $("#filterAcademicYear").val(),
+				CostCenter: $("#filterCostCenter").val(),
+				Grade: $("#filterGrade").val(),
+				Gender: $("#filterGender").val(),
+				StartDate: GetDateFormat_MMMDDYYYY($("#filterStartDate").val()),
+				EndDate: GetDateFormat_MMMDDYYYY($("#filterEndDate").val())
+			};
+			LoadParentStudentReport(filterDataObj);
+		}
+		function LoadParentStudentReport(filterDataObj) {
+			$('#parent-student-report-load').empty();
+			$('#parent-student-report-load').html('<div class="row"> <div class="col-xl-12"><div class="card order-card"><span class="text-center no-text" style="color:#212529;"><img src="@Url.Content("~/images/loding.gif")"  /></span></div></div></div>');
+			var urlToCall = baseUrl + 'Report/ParentStudentReportDataPartial';
+			$app.post(urlToCall, filterDataObj).then(function (response) {
+				$('#parent-student-report-load').html(response);
+			});
+		}
+
+		function ExportCSVStatement() {
+			var reportKey = 'parentstudentreportexport';
+			var reportName = 'Parent Student Report';
+			var ParentIdParam = "ParentId: " + $("#filterParent").val();
+			var StudentIdParam = "StudentId: " + $("#filterStudent").val();
+			var AcademicYearParam = "AcademicYear: " + $("#filterAcademicYear").val();
+			var CostCenterParam = "CostCenter: " + $("#filterCostCenter").val();
+			var GradeParam = "Grade: " + $("#filterGrade").val();
+			var GenderParam = "Gender: " + $("#filterGender").val();
+			var StartDateParam = "StartDate: " + GetDateFormat_MMMDDYYYY($("#filterStartDate").val());
+			var EndDateParam = "EndDate: " + GetDateFormat_MMMDDYYYY($("#filterEndDate").val());
+			var parameters = ParentIdParam + '|' + StudentIdParam + '|' + AcademicYearParam + '|' + CostCenterParam + '|' + GradeParam + '|' + GenderParam + '|' + StartDateParam + '|' + EndDateParam;
+			this.ExportCSVWithParam(reportKey, reportName, parameters);
+		}
+	</script>
+}
+

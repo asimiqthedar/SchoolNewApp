@@ -1,0 +1,114 @@
+﻿@using School.Models.WebModels.VatModels;
+@model VatModel
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="cform row gy-3">
+            <input type="hidden" id="VatId" name="VatId" asp-for="VatId" />
+            <div class="col-xxl-6 col-md-6">
+                <div>
+                    <label class="form-label">Type</label>
+                    <select id="FeeTypeId" class="form-select" asp-for="FeeTypeId" aria-label="Type"
+                            asp-items="@(new SelectList(ViewBag.FeeTypeDropdown,"Value", "Text"))"
+                            disabled="@(Model.VatId > 0)">
+                    </select>
+                </div>
+            </div>
+            <div class="col-xxl-6 col-md-6">
+                <div>
+                    <label class="form-label">Vat %</label>
+                    <input type="text" class="form-control" id="VatTaxPercent" name="VatTaxPercent" asp-for="VatTaxPercent" placeholder="Vat Percent">
+                </div>
+            </div>
+            <div class="col-xxl-6 col-md-6">
+                <div>
+                    <label class="form-label">Debit Account</label>
+                    <input type="text" class="form-control" id="DebitAccount" name="DebitAccount" asp-for="DebitAccount" placeholder="Debit Account">
+                </div>
+            </div>
+            <div class="col-xxl-6 col-md-6">
+                <div>
+                    <label class="form-label">Credit Account</label>
+                    <input type="text" class="form-control" id="CreditAccount" name="CreditAccount" asp-for="CreditAccount" placeholder="Credit Account">
+                </div>
+            </div>
+            <div class="col-md-12 text-center">
+                <button class="btn btn-success theme-btn" type="button" onclick="BindData()">@(Model.VatId > 0 ? "Update" : "Add")</button>
+                <button class="btn btn-secondary" type="button" onclick="bootbox.hideAll();">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $('.textCapital').keyup(function () {
+            $(this).val($(this).val().toUpperCase());
+        });
+    });
+    function BindData() {
+        var dataObj = {
+            VatId: $("#VatId").val(),
+            FeeTypeId: $("#FeeTypeId").val(),
+            VatTaxPercent: $("#VatTaxPercent").val(),
+            DebitAccount: $("#DebitAccount").val(),
+            CreditAccount: $("#CreditAccount").val(),
+        };
+
+        if (Validation(dataObj)) {
+            if (dataObj["VatId"] == "0") {
+                Save(dataObj);
+
+            }
+            else {
+                var dlg_updatePromo = bootbox.dialog({
+                    message: 'Are you sure! you want to update the record?',
+                    title: 'Confirm',
+                    buttons: {
+                        ok: {
+                            label: "Yes",
+                            className: 'btn-primary',
+                            callback: function () {
+                                Save(dataObj);
+                            }
+                        },
+                        cancel: {
+                            label: "No",
+                            className: 'btn-danger',
+                            callback: function () {
+                                $(dlg_updatePromo).modal('hide');
+                            }
+                        }
+                    }
+                });
+                dlg_updatePromo.find('.modal-header').css('background-color', '#dc3545').css('border-bottom', '1px solid #dc3545');
+            }
+           
+        }
+    }
+    function Validation(dataObj) {
+        var isError = false;
+        if (!dataObj["FeeTypeId"] || dataObj["FeeTypeId"]=="0") {
+            $app.notify.validateDD("FeeTypeId", "Type is required");
+            isError = true;
+        }
+        if (!dataObj["VatTaxPercent"] || !dataObj["VatTaxPercent"].trim()) {
+            $app.notify.validate("VatTaxPercent", "Vat percent is required");
+            isError = true;
+        }
+        // if (!dataObj["DebitAccount"] || !dataObj["DebitAccount"].trim()) {
+        //     $app.notify.validate("DebitAccount", "Debit Account is required");
+        //     isError = true;
+        // }
+        // if (!dataObj["CreditAccount"] || !dataObj["CreditAccount"].trim()) {
+        //     $app.notify.validate("CreditAccount", "Credit Account is required");
+        //     isError = true;
+        // }
+        if (isError) {
+            return false;
+        }
+        else {
+            return true;
+        }
+    }
+</script>

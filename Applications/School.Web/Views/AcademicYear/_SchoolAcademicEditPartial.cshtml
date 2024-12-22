@@ -1,0 +1,152 @@
+﻿@model School.Models.WebModels.SchoolAcademicModels.SchoolAcademicModel
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="cform row gy-3">
+            <input type="hidden" id="SchoolAcademicId" name="SchoolAcademicId" asp-for="SchoolAcademicId" />
+            <div class="col-xxl-12 col-md-12">
+                <div>
+                    <label class="form-label">Academic Year</label>
+                    <input type="text" class="form-control" id="AcademicYear" name="AcademicYear" asp-for="AcademicYear" placeholder="Academic Year">
+                </div>
+            </div>
+            <div class="col-xxl-6 col-md-6">
+                <div>
+                    <label class="form-label">Period From</label>
+                    <input id="PeriodFrom" class="form-control datepicker"
+                           value="@(!string.IsNullOrEmpty(Convert.ToString(Model.PeriodFrom))?Convert.ToDateTime(Model.PeriodFrom).ToString("dd/MM/yyyy"):"")"
+                           placeholder="dd/MM/yyyy" />
+                </div>
+            </div>
+            <div class="col-xxl-6 col-md-6">
+                <div>
+                    <label class="form-label"> Period To</label>
+                    <input id="PeriodTo" class="form-control datepicker"
+                           value="@(!string.IsNullOrEmpty(Convert.ToString(Model.PeriodTo))?Convert.ToDateTime(Model.PeriodTo).ToString("dd/MM/yyyy"):"")"
+                           placeholder="dd/MM/yyyy" />
+                </div>
+            </div>
+            <div class="col-xxl-6 col-md-6">
+                <div>
+                    <label class="form-label"> Debit Account</label>
+                    <input id="DebitAccount" name="DebitAccount" class="form-control" asp-for="DebitAccount" placeholder="Debit Account" />
+                </div>
+            </div>
+            <div class="col-xxl-6 col-md-6">
+                <div>
+                    <label class="form-label"> Credit Account</label>
+                    <input id="CreditAccount" name="CreditAccount" class="form-control" asp-for="CreditAccount" placeholder="Credit Account" />
+                </div>
+            </div>
+            <div class="col-xxl-6 col-md-6">
+                <div>
+                    <label class="form-label">Active</label>
+                    <select class="form-select" name="AIsActive" id="AIsActive" asp-for="IsActive" aria-label="Active">
+                        <option value=true>Active</option>
+                        <option value=false>Closed</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-xxl-6 col-md-6">
+                <div>
+                    <label class="form-label">Is Current Year</label>
+                    <select class="form-select" name="IsCurrentYear" id="IsCurrentYear" asp-for="IsCurrentYear" aria-label="Active">
+                        <option value=true>Active</option>
+                        <option value=false>Closed</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-12 text-center">
+                <button class="btn btn-success theme-btn" type="button" onclick="BindAcademicData()">@(Model.SchoolAcademicId > 0 ? "Update" : "Add")</button>
+                <button class="btn btn-secondary" type="button" onclick="bootbox.hideAll();">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $('.datepicker').datepicker({
+        format: "dd/mm/yyyy",
+        autoclose: "true"
+    });
+    function BindAcademicData() {      
+        var dataObj = {
+            SchoolAcademicId: $("#SchoolAcademicId").val(),
+            AcademicYear: $("#AcademicYear").val(),
+            DebitAccount: $("#DebitAccount").val(),
+            CreditAccount: $("#CreditAccount").val(),
+            PeriodFrom: GetFormateDate($("#PeriodFrom").datepicker("getDate")),
+            PeriodTo: GetFormateDate($("#PeriodTo").datepicker("getDate")),
+            IsActive: $("#AIsActive").val(),
+            IsCurrentYear: $("#IsCurrentYear").val()
+        };
+        if (ValidationAcademic(dataObj)) {
+            SaveAcademic(dataObj);
+        }
+    }
+    function ValidationAcademic(dataObj) {
+        var isError = false;
+        if (!dataObj["AcademicYear"] || !dataObj["AcademicYear"].trim()) {
+            $app.notify.validate("AcademicYear", "Academic is required");
+            isError = true;
+        }
+        if (!dataObj["PeriodFrom"]) {
+            $app.notify.validateDD("PeriodFrom", "Period From is required");
+            isError = true;
+        }
+        if (!dataObj["PeriodTo"]) {
+            $app.notify.validate("PeriodTo", "Period To is required");
+            isError = true;
+        }
+        if (isError) {
+            return false;
+        }
+        else {
+            return true;
+        }
+    }
+    function GetDateFormat_MMMDDYYYY(date) {
+      
+        return date.toLocaleDateString('en-GB', {
+            day: 'numeric', month: 'long', year: 'numeric'
+        }).replace(/ /g, '-');
+    }
+
+    function GetFormateDate(dateObject) {       
+        var monthArray = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+        var d = new Date(dateObject);
+        // var f = Date.parse(d).toString('yyyy-MMM-dd')
+
+        var day = d.getDate();
+        var month = monthArray[d.getMonth()]; //+1
+        //var month = date.toLocaleDateString('en-GB', { month: 'long' })
+        var year = d.getFullYear();
+        if (day < 10) {
+            day = "0" + day;
+        }
+        // if (month < 10) {
+        //     month = "0" + month;
+        // }
+        var date = day + "-" + month + "-" + year;
+
+        return date;
+    }
+
+    function GetFormateDateMonth(dateObject) {
+        var monthArray = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+        var d = new Date(dateObject);
+        // var f = Date.parse(d).toString('yyyy-MMM-dd')
+
+        var day = d.getDate();
+        var month = monthArray[d.getMonth()]; //+1
+        //var month = date.toLocaleDateString('en-GB', { month: 'long' })
+        var year = d.getFullYear();
+        if (day < 10) {
+            day = "0" + day;
+        }
+       
+
+        return day;
+    }
+
+    
+</script>

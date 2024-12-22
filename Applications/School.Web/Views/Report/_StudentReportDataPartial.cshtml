@@ -1,0 +1,95 @@
+﻿@using System.Data;
+@model DataSet;
+<div class="table-responsive">
+    <table class="table align-middle table-nowrap mb-0" id="tblStudentStatementFeeData">
+        <thead class="table-light text-muted">
+            <tr>
+                <th class="text-center" style="width: 5%">S.No</th>
+                <th>Academic Year</th>
+                <th>Student Name</th>
+                <th>Invoice No</th>
+                <th>Date</th>
+                <th>Payment Method</th>
+                <th>Fee Type</th>
+                <th class="text-end">Fee Amount</th>
+                <th class="text-end">Paid Amount</th>
+            </tr>
+        </thead>
+        <tbody class="list form-check-all">
+            @if (Model != null && Model.Tables.Count > 0 && Model.Tables[0].Rows.Count > 0)
+            {
+                int i = 0;
+                foreach (DataRow dr in Model.Tables[0].Rows)
+                {
+                    i++;
+                    <tr>
+                        <td class="text-center">@i</td>
+                        <td>@dr["AcademicYear"]</td>
+                        <td>@dr["StudentName"]</td>
+                        <td>@dr["InvoiceNo"]</td>
+                        <td>@dr["RecordDate"]</td>
+                        <td>@dr["PaymentMethod"]</td>
+                        <td>@dr["FeeTypeName"]</td>
+                        <td class="text-end">@Convert.ToDecimal(dr["FeeAmount"]).ToTwoDecimalString()</td>
+                        <td class="text-end">@Convert.ToDecimal(dr["PaidAmount"]).ToTwoDecimalString()</td>
+                    </tr>
+                }
+            }
+        </tbody>
+        <tfoot>
+            <tr>
+                <th colspan="8" class="text-end">Total Balance:</th>
+                <th class="text-end" id="totalBalanceAmount"></th>
+            </tr>
+        </tfoot>
+    </table>
+</div>
+
+<script>
+    $(document).ready(function () {
+        var table = $('#tblStudentStatementFeeData').DataTable({
+            language: {
+                search: "<i class='ri-search-line search-icon'></i>",
+                searchPlaceholder: "Search ..."
+            },
+            pageLength: 10,
+            ordering: true,
+            responsive: true,
+            columnDefs: [
+                { orderable: false, targets: 0 }
+            ],
+            drawCallback: function (settings) {
+                var api = this.api();
+                var info = api.page.info();
+                api.column(0, { search: 'applied', order: 'applied' }).nodes().each(function (cell, i) {
+                    cell.innerHTML = i + 1;// cell.innerHTML = i + 1 + info.start;
+                });
+                // Calculate and display totals
+                var totalFeeAmount = api
+                    .column(7, { search: 'applied' })
+                    .data()
+                    .reduce(function (a, b) {
+                        return parseFloat(a) + parseFloat(b.replace(/[^\d.-]/g, ''));
+                    }, 0);
+
+                var totalPaidAmount = api
+                    .column(8, { search: 'applied' })
+                    .data()
+                    .reduce(function (a, b) {
+                        return parseFloat(a) + parseFloat(b.replace(/[^\d.-]/g, ''));
+                    }, 0);
+
+                var totalPaidAmount = api
+                    .column(8, { search: 'applied' })
+                    .data()
+                    .reduce(function (a, b) {
+                        return parseFloat(a) + parseFloat(b.replace(/[^\d.-]/g, ''));
+                    }, 0);
+
+                var totalBalance = totalFeeAmount - totalPaidAmount
+
+                $('#totalBalanceAmount').html(totalBalance.toFixed(2));
+            }
+        });
+    });
+</script>

@@ -1,0 +1,169 @@
+﻿@using System.Data;
+@using School.Models.WebModels.InvoiceSetupModels
+@model List<InvInvoiceDetailModel>;
+@{
+	decimal ItemSubtotalSum = 0;
+	if (Model != null && Model.Any())
+	{
+		ItemSubtotalSum = Model.ToList().Sum(s => s.ItemSubtotal);
+	}
+}
+<div class="card-body">
+	<div class="table-responsive table-card order-tabel" style="width:100%">
+		<table class="table align-middle table-nowrap mb-0 " id="tblparentInvoicelist">
+			<thead class="table-light text-muted">
+				<tr>
+					<th width="5%">S.No</th>
+					<th>Invoice Type</th>
+					<th>Academic Year</th>
+					<th>Parent Code</th>
+					<th>Parent Name</th>
+					<th>Student Code</th>
+					<th>Student Name</th>
+					<th>Quantity</th>
+					<th>Price</th>
+					<th>VAT</th>
+					<th>Total</th>
+					<th width="70px">Actions</th>
+				</tr>
+			</thead>
+			<tbody class="list form-check-all">
+				@if (Model != null && Model.Count > 0)
+				{
+					int i = 0;
+					foreach (var dr in Model)
+					{
+						i++;
+						<tr>
+							<td>@i</td>
+							<td>@dr.InvoiceType</td>
+							<td>@dr.AcademicYear</td>
+							<td>@dr.ParentCode</td>
+							<td>@dr.ParentName</td>
+							<td>@dr.StudentCode</td>
+							<td>@dr.StudentName</td>
+							@if (dr.Quantity > 0)
+							{
+								<td>@dr.Quantity</td>
+							}
+							else
+							{
+								<td></td>
+							}
+
+							<td width="80px" style="text-align:right; width:80px">@Convert.ToDecimal(@dr.UnitPrice).ToTwoDecimalString()</td>
+							<td width="80px" style="text-align:right; width:80px">@Convert.ToDecimal(@dr.TaxAmount).ToTwoDecimalString()</td>
+							<td width="80px" style="text-align:right; width:80px">@Convert.ToDecimal(@dr.ItemSubtotal).ToTwoDecimalString()</td>
+
+							<td>
+								<div class="dropdown" style="float:right">
+									<a href="javascript:void(0);" class="btn btn-light btn-icon" id="dropdownMenuLink1" data-bs-toggle="dropdown" aria-expanded="true">
+										<i class="ri-equalizer-fill"></i>
+									</a>
+									<ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuLink1" data-popper-placement="bottom-end" style="position: absolute; inset: 0px 0px auto auto; margin: 0px; transform: translate(0px, 23px);">
+										<li>
+											<button type="button" class="btn btn-outline-secondary deleterow w-100 text-start" onclick="Print('@dr.InvoiceNo')" title="Print">
+												<i class="fa-solid fa-print"></i> Print
+											</button>
+										</li>
+										<li>
+											<button type="button" class="btn btn-outline-secondary deleterow w-100 text-start" onclick="Email('@dr.InvoiceDetailId')" title="Email">
+												<i class="fa-solid fa-envelope"></i> Email
+											</button>
+										</li>
+
+									</ul>
+								</div>
+							</td>
+						</tr>
+					}
+				}
+			</tbody>
+			<tfoot>
+				<tr>
+					<td colspan="10" style="text-align: right;"><strong>Total:</strong></td>
+					<td id="totalItemSubtotal" style="text-align:right; width:80px">
+						@Convert.ToDecimal(ItemSubtotalSum).ToTwoDecimalString()
+
+					</td>
+					<td></td>
+				</tr>
+			</tfoot>
+		</table>
+	</div>
+</div>
+
+<script>
+	$(document).ready(function () {
+		var table = $("#tblparentInvoicelist").DataTable({
+			// language: {
+			//     search: "<i class='ri-search-line search-icon'></i>",
+			//     searchPlaceholder: "Search ..."
+			// },
+			bInfo: false,
+			pageLength: 50,
+			bSort: false,
+			searching: false,
+			paging: false,
+			drawCallback: function (settings) {
+			}
+		});
+	});
+
+			function Print(invoiceNo) {
+				var urlToCall = '@Url.Action("GetInvoicePdfPath", "InvoiceSetup")';
+				urlToCall = urlToCall + '?invoiceNo=' + invoiceNo;
+
+				$app.get(urlToCall).then(function (response) {
+					if (response.result == 0) {			
+
+						let pdfWindow = window.open("")
+						pdfWindow.document.write(
+							"<iframe width='100%' height='100%' src='data:application/pdf;base64, " +
+							encodeURI(response.invoicePdfBytes) + "'></iframe>"
+						)
+
+					}
+					else {
+						$app.notify.error("Error in printing invoice!");
+					}
+				});
+			}
+
+				function Email(invoiceId) {
+					var dlg_removePromo = bootbox.dialog({
+						message: 'Are you sure! you want to send invoice?',
+						title: 'Email',
+						buttons: {
+							ok: {
+								label: "Yes",
+								className: 'btn-primary',
+								callback: function () {
+									var urlToCall = '@Url.Action("SendInvoice", "InvoiceSetup")';
+									urlToCall = urlToCall + '?invoiceId=' + invoiceId;
+
+									$app.get(urlToCall).then(function (response) {
+										if (response.result == 0) {
+											bootbox.hideAll();
+											$app.notify.success("Email has been sent!");
+											loadInvoiceByFilter();
+										}
+										else {
+											$app.notify.error("Error in sending!");
+										}
+									});
+								}
+							},
+							cancel: {
+								label: "No",
+								className: 'btn-danger',
+								callback: function () {
+									$(dlg_removePromo).modal('hide');
+								}
+							}
+						}
+					});
+					dlg_removePromo.find('.modal-header').css('background-color', '#dc3545').css('border-bottom', '1px solid #dc3545');
+				}
+
+</script>

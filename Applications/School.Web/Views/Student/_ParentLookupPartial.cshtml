@@ -1,0 +1,117 @@
+﻿<div class="row">
+    <div class="col-lg-12">
+        <span id="requirvalidation" style="color:red"></span>
+    </div>
+    <div class="col-lg-6">
+        <div class="mb-3">
+            <label for="LookupParentId" class="form-label">Parent Code</label>
+            <div class="input-group">
+                <input type="text" class="form-control" id="LookupParentId" placeholder="Enter parent code" />
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-6">
+        <div class="mb-3">
+            <label for="LookupFatherName" class="form-label">Father Name</label>
+            <div class="input-group">
+                <input type="text" class="form-control" id="LookupFatherName" placeholder="Enter father name" />
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-6">
+        <div class="mb-3">
+            <label for="LookupFatherArabic" class="form-label">Father Arabic Name</label>
+            <div class="input-group">
+                <input type="text" class="form-control" id="LookupFatherArabic" placeholder="Enter father arabic name" />
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-6">
+        <div class="mb-3">
+            <label for="LookupFatherMobileNumber" class="form-label">Father Mobile Number</label>
+            <div class="input-group">
+                <input type="text" class="form-control" id="LookupFatherMobileNumber" placeholder="Enter father mobile number" />
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-6">
+        <div class="mb-3">
+            <label for="LookupFatherIqamaNumber" class="form-label">Father Iqama Number</label>
+            <div class="input-group">
+                <input type="text" class="form-control" id="LookupFatherIqamaNumber" placeholder="Enter father iqama number" />
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-lg-12" id="parent-load">
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12 text-center">
+        <button class="btn btn-success theme-btn" type="button" id="btnLookupSearch" onclick="searchParent()">Search</button>
+        <button class="btn btn-secondary" type="button" onclick="hideParentModelPopup();">Cancel</button>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        // $("#btnLookupSearch").click(function () {
+        //     debugger;
+        //     $("#requirvalidation").empty();
+        //     if ((!$("#LookupParentId").val() || !$("#LookupParentId").val().trim())
+        //         && (!$("#LookupFatherName").val() || !$("#LookupFatherName").val().trim())
+        //         && (!$("#LookupFatherArabic").val() || !$("#LookupFatherArabic").val().trim())
+        //         && (!$("#LookupMotherName").val() || !$("#LookupMotherName").val().trim())
+        //         && (!$("#LookupMotherArabic").val() || !$("#LookupMotherArabic").val().trim())) {
+        //         $("#requirvalidation").html("Please enter at least one value for search");
+        //         return false;
+        //     }
+        //     ParentLoad()
+        // });
+    });
+    
+    function searchParent(){
+        $("#requirvalidation").empty();
+        if ((!$("#LookupParentId").val() || !$("#LookupParentId").val().trim())
+            && (!$("#LookupParentCode").val() || !$("#LookupParentCode").val().trim())
+            && (!$("#LookupFatherName").val() || !$("#LookupFatherName").val().trim())
+            && (!$("#LookupFatherArabic").val() || !$("#LookupFatherArabic").val().trim())
+            && (!$("#LookupFatherMobileNumber").val() || !$("#LookupFatherMobileNumber").val().trim())
+            && (!$("#LookupFatherIqamaNumber").val() || !$("#LookupFatherIqamaNumber").val().trim())) {
+            $("#requirvalidation").html("Please enter at least one value for search");
+            return false;
+        }
+        ParentLoad()
+    }
+    function ParentLoad() {
+        var filterDataObj = {
+            LookupParentId: $("#LookupParentId").val(),
+            LookupParentCode: $("#LookupParentCode").val(),
+            LookupFatherName: $("#LookupFatherName").val(),
+            LookupFatherArabic: $("#LookupFatherArabic").val(),
+            LookupFatherMobileNumber: $("#LookupFatherMobileNumber").val(),
+            LookupFatherIqamaNumber: $("#LookupFatherIqamaNumber").val(),
+        };
+        $('#parent-load').empty();
+        $('#parent-load').html('<div class="row"> <div class="col-xl-12"><div class="card order-card"><span class="text-center no-text" style="color:#212529;"><img src="@Url.Content("~/images/loding.gif")"  /></span></div></div></div>');
+        var urlToCall = baseUrl + 'Student/ParentLookup';
+        $app.post(urlToCall, filterDataObj).then(function (response) {
+            $('#parent-load').html(response);
+        });
+    }
+
+    function hideParentModelPopup() {
+        if ($app._currViewDialog_.length == 2) {
+            $app._currViewDialog_[1].hide();
+            $app._currViewDialog_.pop();
+        }
+           
+        // if ($app._currViewDialog_.length == 1)
+        //     $app._currViewDialog_[0].hide();
+
+    }
+    function SelectParent(parentId) {
+        hideParentModelPopup();
+        BindParent(parentId);
+    }
+</script>

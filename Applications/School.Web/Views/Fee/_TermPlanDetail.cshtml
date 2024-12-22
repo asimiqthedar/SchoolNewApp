@@ -1,0 +1,117 @@
+﻿@using School.Models.WebModels.FeetypeModels;
+@using School.Models.WebModels.SchoolTermAcademicModels
+@model FeeTermDetailModel
+
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="row mb-4 readonly">
+            <div class="col-xxl-2 col-md-2">
+                <b>Academic Year</b>
+            </div>
+            <div class="col-xxl-4 col-md-4">
+                @Model.AcademicYear
+            </div>
+            <div class="col-xxl-2 col-md-2">
+                <b>Invoice Type</b>
+            </div>
+            <div class="col-xxl-4 col-md-4">
+                @Model.FeeTypeName
+            </div>
+
+            <div class="col-xxl-2 col-md-2">
+                <b>Grade Name</b>
+            </div>
+            <div class="col-xxl-4 col-md-4">
+                @Model.GradeName
+            </div>
+            <div class="col-xxl-2 col-md-2">
+                <b>Invoice Amount</b>
+            </div>
+            <div class="col-xxl-4 col-md-4">
+                @Model.TermFeeAmount.ToTwoDecimalString()
+            </div>
+        </div>
+        <div class="table-responsive table-card order-tabel" style="width:100%">
+            <table class="table align-middle table-nowrap mb-0" id="tblFeeTermDetail">
+                <thead class="table-light text-muted">
+                    <tr>
+                        <th width="10%">S.No</th>
+                        <th width="100px">Term Name</th>
+                        <th width="100px">Start Date</th>
+                        <th width="100px">End Date</th>
+                        <th width="100px">Invoice Amount</th>
+                    </tr>
+                </thead>
+                <tbody class="list form-check-all">
+                    @if (Model != null && Model.TermList.Count > 0)
+                    {
+                        int i = 1;
+                        decimal totalAmount = Model.TermFeeAmount;
+                        var termWiseFee = Model.TermFeeAmount / Model.TermList.Count;
+
+                        foreach (SchoolTermAcademicModel schoolTermAcademicModel in Model.TermList)
+                        {
+                            if (totalAmount > Convert.ToInt32(termWiseFee))
+                            {
+                                totalAmount = totalAmount - Convert.ToInt32(termWiseFee);
+                                termWiseFee = Convert.ToInt32(termWiseFee);
+                            }
+                            else
+                            {
+                                termWiseFee = totalAmount;
+                            }
+
+                            <tr>
+                                <td>@i</td>
+                                <td>@schoolTermAcademicModel.TermName</td>
+                                <td>@Convert.ToDateTime(schoolTermAcademicModel.StartDate).ToString("dd/MM/yyyy")</td>
+                                <td>@Convert.ToDateTime(schoolTermAcademicModel.EndDate).ToString("dd/MM/yyyy")</td>
+                                <td style="text-align:right">@Convert.ToDecimal(termWiseFee).ToTwoDecimalString()</td>
+                            </tr>
+                            i++;
+                        }
+                    }
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="4" style="text-align:right"><b>Total</b></td>
+                        <td style="text-align:right">@Model.TermFeeAmount.ToTwoDecimalString()</td>
+                    </tr>
+                </tfoot>
+            </table>
+           
+        </div>
+    </div>
+</div>
+
+
+<script>
+    $("#tblFeeTermDetail").DataTable({
+        // language: {
+        //     search: "<i class='ri-search-line search-icon'></i>",
+        //     searchPlaceholder: "Search ..."
+        // },
+        // pageLength: 10,
+        // searching: false,
+        // info: false,
+        // dom: 'rtip',
+        // // scrollX: true,
+        // // bFilter: true,
+        // bSort: false,
+        // // bPaginate: true,
+        // // destroy: true,
+        // // orderCellsTop: true,
+        // // fixedHeader: true
+
+        language: {
+            search: "<i class='ri-search-line search-icon'></i>",
+            searchPlaceholder: "Search ..."
+        },
+        pageLength: 100,
+        bSort: false,
+        searching: false,
+        info: true,
+        bPaginate: false,
+    });
+</script>

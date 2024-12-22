@@ -1,0 +1,99 @@
+﻿@using System.Data;
+@model DataSet
+
+<div class="table-responsive table-card order-tabel" style="width:100%">
+    <table class="table align-middle table-nowrap mb-0" id="tblActivityData">
+        <thead class="table-light text-muted">
+            <tr>
+                <th width="2%">S.No</th>
+                <th>Student Code</th>
+                <th>Parent ID</th>
+                <th>Name</th>
+                <th>Arabic Name</th>
+                @*   <th>Email</th> *@
+                @*<th>Date Of Birth</th>*@
+                @*<th>Iqama No</th>*@
+                <th>Nationality</th>
+                <th>Gender</th>
+                @*<th>Admission Date</th>*@
+                <th>Grade</th>
+                 <th>Status</th>
+                @*<th>Active</th>*@
+                <th width=70px">Actions</th>
+            </tr>
+        </thead>
+        <tbody class="list form-check-all">
+                @if (Model != null && Model.Tables.Count > 0 && Model.Tables[0].Rows.Count > 0)
+                {
+                    int i = 0;
+                    foreach (DataRow dr in Model.Tables[0].Rows)
+                    {
+                        i++;
+                    <tr>
+                        <td>@i</td>
+                        <td>
+                            <a id="View" onclick="View('@dr["StudentId"]')" style="cursor:pointer" class="fw-medium link-primary">
+                                    @{
+                                        var imgPath = "~/images/users/avatar-2.png";
+                                        if (!string.IsNullOrEmpty(Convert.ToString(dr["StudentImage"])))
+                                        {
+                                            imgPath = Convert.ToString(dr["StudentImage"]);
+                                        }
+                                    <img class="avatar sm rounded-circle me-2" style="cursor:pointer" src="@Url.Content(imgPath)" />
+                                    }
+                                <span>@dr["StudentCode"]</span>
+                            </a>
+                        </td>
+                        <td> @dr["ParentCode"]</td>
+                        <td>@dr["StudentName"]</td>
+                        <td>@dr["StudentArabicName"]</td>
+                            @* <td>@dr["StudentEmail"]</td> *@
+                            @*<td>@Convert.ToDateTime(dr["DOB"]).ToString("dd-MM-yyyy")</td>*@
+                            @*<td>@dr["IqamaNo"]</td>*@
+                        <td>@dr["CountryName"]</td>
+                        <td>@dr["GenderTypeName"]</td>
+                            @*<td>@Convert.ToDateTime(dr["AdmissionDate"]).ToString("dd-MM-yyyy")</td>*@
+                        <td>@dr["GradeName"]</td>
+                             <td>@dr["StatusName"]</td>
+                            @* <td>
+                @{
+                if (Convert.ToBoolean(dr["IsActive"]))
+                {
+                <span>Active</span>
+                }
+                else
+                {
+                <span>In-Active</span>
+                }
+                }
+                </td>*@
+                        <td>
+                            <div class="btn-group" role="group" aria-label="Basic outlined example">
+                                <button type="button" class="btn btn-outline-secondary edit-btn" onclick="Edit('@dr["StudentId"]')">
+                                    <i class="fa-regular fa-pen-to-square  text-success"></i>
+                                </button>
+                                <button type="button" class="btn btn-outline-secondary deleterow" onclick="Delete('@dr["StudentId"]')">
+                                    <i class="fa-solid fa-trash-can text-danger"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                    }
+                }
+        </tbody>
+    </table>
+</div>
+<script>
+        $("#tblActivityData").DataTable({
+            language: {
+                search: "<i class='ri-search-line search-icon'></i>",
+                searchPlaceholder: "Search ..."
+            }         
+        });
+        $('#tblActivityData').DataTable().on('draw.dt', function () {
+            var info = $('#tblActivityData').DataTable().page.info();
+            $('#tblActivityData').DataTable().column(0, { search: 'applied', order: 'applied' }).nodes().each(function (cell, i) {
+                cell.innerHTML = i + 1;// cell.innerHTML = i + 1 + info.start;
+            });
+        });
+</script>

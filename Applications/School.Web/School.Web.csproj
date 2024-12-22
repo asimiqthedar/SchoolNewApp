@@ -1,0 +1,115 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(RunConfiguration)' == 'https' " />
+  <PropertyGroup Condition=" '$(RunConfiguration)' == 'http' " />
+  <ItemGroup>
+    <Compile Remove="wwwroot\uploads\**" />
+    <Content Remove="wwwroot\uploads\**" />
+    <EmbeddedResource Remove="wwwroot\uploads\**" />
+    <None Remove="wwwroot\uploads\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="12.0.1" />
+    <PackageReference Include="EPPlus" Version="7.3.2" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Log4Net.AspNetCore" Version="8.0.0" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="6.0.17" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="Spire.PDF" Version="10.9.0" />
+    <PackageReference Include="Spire.XLS" Version="14.9.5" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Domains\School.Models\School.Models.csproj" />
+    <ProjectReference Include="..\..\Domains\School.Services\School.Services.csproj" />
+    <ProjectReference Include="..\..\Domains\ZatcaIntegrationSDK\ZatcaIntegrationSDK.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="itext.barcodes">
+      <HintPath>External DLLs\itext.barcodes.dll</HintPath>
+    </Reference>
+    <Reference Include="itext.forms">
+      <HintPath>External DLLs\itext.forms.dll</HintPath>
+    </Reference>
+    <Reference Include="itext.html2pdf">
+      <HintPath>External DLLs\itext.html2pdf.dll</HintPath>
+    </Reference>
+    <Reference Include="itext.io">
+      <HintPath>External DLLs\itext.io.dll</HintPath>
+    </Reference>
+    <Reference Include="itext.kernel">
+      <HintPath>External DLLs\itext.kernel.dll</HintPath>
+    </Reference>
+    <Reference Include="itext.layout">
+      <HintPath>External DLLs\itext.layout.dll</HintPath>
+    </Reference>
+    <Reference Include="itext.pdfa">
+      <HintPath>External DLLs\itext.pdfa.dll</HintPath>
+    </Reference>
+    <Reference Include="itext.sign">
+      <HintPath>External DLLs\itext.sign.dll</HintPath>
+    </Reference>
+    <Reference Include="itext.styledxmlparser">
+      <HintPath>External DLLs\itext.styledxmlparser.dll</HintPath>
+    </Reference>
+    <Reference Include="itextsharp">
+      <HintPath>External DLLs\itextsharp.dll</HintPath>
+    </Reference>
+    <Reference Include="itextsharp.pdfa">
+      <HintPath>External DLLs\itextsharp.pdfa.dll</HintPath>
+    </Reference>
+    <Reference Include="zxing">
+      <HintPath>External DLLs\zxing.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="SupportFiles\phantomjs\0skwv5zy.0pt.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SupportFiles\phantomjs\1kp4ar3p.dh5.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SupportFiles\phantomjs\LICENSE.BSD">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SupportFiles\phantomjs\phantomjs.exe">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SupportFiles\phantomjs\print.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SupportFiles\phantomjs\printinv.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+	<None Update="SupportFiles\phantomjs\printinvsummary.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+	  <None Update="SupportFiles\phantomjs\printinvsummary_ar.js">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+    <None Update="SupportFiles\phantomjs\printreceipt.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SupportFiles\phantomjs\qhx3lgtf.tyi.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SupportFiles\phantomjs\third-party.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SupportFiles\phantomjs\vhv1jboi.gs0.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SupportFiles\phantomjs\zcrh11qy.ddn.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+</Project>

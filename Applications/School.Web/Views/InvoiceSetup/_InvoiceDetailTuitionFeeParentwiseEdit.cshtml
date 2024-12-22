@@ -1,0 +1,639 @@
+﻿@using School.Models.WebModels.InvoiceSetupModels;
+@model InvInvoiceDetailTuitionFeeModel
+
+<div class="row">
+	<input type="hidden" id="InvoiceDetailId" name="InvoiceDetailId" asp-for="InvoiceDetailId" />
+	<input type="hidden" id="IsAdvance" name="IsAdvance" asp-for="IsAdvance" />
+	<input type="type" hidden asp-for="SessionKey" name="name" value="@Model.SessionKey" />
+	<input type="hidden" id="totalBalance" name="totalBalance" />
+	<div class="row">
+		<div class="col-xxl-6 col-md-6">
+			<div class="mb-3">
+				<label for="AcademicYear" class="form-label">Academic Year</label>
+				<div class="input-group">
+					<select id="AcademicYear" class="form-select form-control" aria-label="Academic Year"
+							asp-items="@(new SelectList(ViewBag.AcademicYearDropDown,"Value", "Text", Model.AcademicYear))">
+					</select>
+				</div>
+			</div>
+		</div>
+		<div class="col-lg-6">
+			<div class="mb-3">
+				<label for="FatherIqama" class="form-label">Father Iqama Number</label>
+				<input type="text" id="IqamaNumber" class="form-control" asp-for="IqamaNumber" placeholder="Father Iqama Number" disabled>
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-lg-6">
+			<div class="mb-3">
+				<label for="ParentId" class="form-label">Parent ID</label>
+				<div class="input-group">
+					<select id="ParentId" class="form-select " asp-for="ParentId" aria-label="Parent"
+							asp-items="@(new SelectList(ViewBag.ParentDropdown,"Value", "Text",Model.ParentId))" disabled="@Model.IsSameParent">
+					</select>
+					<a class="search-lookup" onclick="ParentLookup();"><i class="fa-solid fa-magnifying-glass"></i></a>
+				</div>
+				<div style="text-align:right;">
+					<b>Total Balance : <span id="lblParentTotalBalance">0.00</span></b>
+				</div>
+
+			</div>
+		</div>
+		<div class="col-lg-6">
+			<div class="mb-3">
+				<label for="ParentName" class="form-label"> Parent Name</label>
+				<input type="text" id="ParentName" class="form-control" asp-for="ParentName" placeholder="Parent Name" disabled>
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-lg-6">
+			<div class="mb-3">
+				<label for="Nationality" class="form-label">Nationality</label>
+				<div class="input-group">
+					<select id="Nationality" class="form-select" aria-label="Nationality"
+							asp-items="@(new SelectList(ViewBag.CountryDropDown,"Value", "Text", Model.NationalityId))" disabled>
+					</select>
+				</div>
+			</div>
+		</div>
+		<div class="col-lg-4">
+			<div class="mb-3">
+				<label for="Nationality" class="form-label">Payable Amount</label>
+				<input type="text" id="PayableAmount" class="form-control" placeholder="Payable Amount">
+			</div>
+		</div>
+		<div class="col-lg-2">
+			<div style="margin-top:30px;">
+				<button class="btn btn-primary" onclick="applyPayableAmount()">Auto Apply</button>
+			</div>
+		</div>
+	</div>
+	<div class="overflow-hidden">
+		<table class="student-table text-center">
+			<thead>
+				<tr>
+					<th scope="col">S.No</th>
+					<th scope="col">Student Name</th>
+					<th scope="col">Grade</th>
+					<th scope="col">Fee Amount</th>
+					<th scope="col">Taxable Amount</th>
+					<th scope="col">Vat</th>
+					<th scope="col">Discount</th>
+					<th scope="col">Itemsubtotal</th>
+				</tr>
+			</thead>
+			<tbody id="studentTableBody">
+			</tbody>
+		</table>
+	</div>
+	<div class="col-md-12 text-center">
+		<button class="btn btn-success theme-btn" type="button" onclick="BindData()">@(Model.InvoiceDetailId > 0 ? "Update" : "Add")</button>
+		<button class="btn btn-secondary" type="button" onclick="hideDialog();">Cancel</button>
+	</div>
+</div>
+
+<script>
+
+	$(document).ready(function () {
+		$('.textCapital').keyup(function () {
+			$(this).val($(this).val().toUpperCase());
+		})
+		$("#AcademicYear").prop("selectedIndex", 1);
+
+
+		$('#ParentId').change(function () {
+			var parentId = $(this).val();
+			if (parentId) {
+				LoadParentControl(parentId)
+				GetFeeAmountParentStudent();
+				LoadParentFeeBalance(parentId);
+			}
+		});
+
+		var parentId = parseInt("@Model.ParentId");
+		if (parentId > 0) {
+			GetFeeAmountParentStudent()
+			LoadParentFeeBalance(parentId);
+		}
+
+		$('#UnitPrice').val(formatNumber($('#UnitPrice').val()));
+		$('#UnitPriceAvailable').val(formatNumber($('#UnitPriceAvailable').val()));
+		// $('#Discount').val(formatNumber($('#Discount').val()));
+		$('#TaxAmount').val(formatNumber($('#TaxAmount').val()));
+		$('#ItemSubtotal').val(formatNumber($('#ItemSubtotal').val()));
+
+		$("#AcademicYear").change(function () {
+			var academicYearId = $(this).val();
+			OnAcademicYearChange(academicYearId);
+
+			$app.notify.validate("AcademicYear", "", true);
+
+		});
+	});
+
+	function LoadParentControl(parentId) {
+		if (parentId) {
+			$.ajax({
+				url: '@Url.Action("GetParentById", "InvoiceSetup")',
+				type: 'GET',
+				data: { parentId: parentId },
+				success: function (data) {
+					console.log(data)
+					$('#ParentName').val(data[0].FatherName);
+					$('#IqamaNumber').val(data[0].FatherIqamaNo);
+					$('#Nationality').val(data[0].FatherNationalityId);
+					//GetVATDetail(data[0].FatherNationalityId);
+					$app.notify.validate("ParentName", "", true)
+				}
+			});
+		} else {
+			$('#ParentName').val('');
+			$('#IqamaNumber').val('');
+			$('#Nationality').val('');
+		}
+	}
+
+	function GetFeeAmountParentStudent() {
+		var academicYearId = $('#AcademicYear').val();
+		var parentId = $('#ParentId').val();
+		if (parentId && academicYearId) {
+			$.ajax({
+				url: '@Url.Action("GetFeeAmountParentStudent", "InvoiceSetup")',
+				type: 'GET',
+				data: { parentId: parentId, invoiceTypeName: 'Tuition', academicYearId: academicYearId },
+				success: function (data) {
+					let studentTableData = [];
+					studentTableData = data;
+					console.log(studentTableData, "gfapts")
+					updateStudentTable(studentTableData);
+
+					if (!ValidateAdvanceYearWIthAmount()) {
+						$app.notify.error("Payable amount is available, Cannot select advance year");
+					}
+				}
+			});
+		}
+	}
+
+	function updateStudentTable(studentTableData) {
+		let tableBody = document.getElementById('studentTableBody');
+		tableBody.innerHTML = '';
+
+		if (studentTableData.length > 0) {
+			studentTableData.forEach((row, index) => {
+
+				let tr = document.createElement('tr');
+				tr.setAttribute('id', "student_id_" + row.studentId);
+				tr.setAttribute('data-parentCode', row.parentCode);
+				tr.setAttribute('data-parentId', row.parentId);
+				tr.setAttribute('data-finalFeeAmount', row.finalFeeAmount);
+				tr.setAttribute('data-vatPercent', row.vatPercent);
+				tr.setAttribute('data-studentId', row.studentId);
+				tr.setAttribute('data-feeTypeId', row.feeTypeId);
+				tr.setAttribute('data-gradeId', row.gradeId);
+				tr.setAttribute('data-isAdvance', row.isAdvance);
+				tr.setAttribute('data-isStaffMember', row.isStaffMember);
+				tr.setAttribute('data-studentName', row.studentName);
+				tr.setAttribute('data-fatherMobile', row.fatherMobile);
+				tr.setAttribute('data-studentCode', row.studentCode);
+
+				tr.innerHTML = `
+							<td>${index + 1}</td>
+							<td width="30%">${row.studentName}</td>
+							<td width="16%">${row.gradeName}</td>
+							<td><input type="text" value="${formatNumber(row.finalFeeAmount)}" disabled class="form-control"></td>
+							<td><input type="text" id="txtTaxableAmount_${row.studentId}" value="0.00" data-parentCode="${row.parentCode}" data-parentId="${row.parentId}" data-finalFeeAmount="${row.finalFeeAmount}" data-vatPercent="${row.vatPercent}" data-studentId="${row.studentId}" data-feeTypeId="${row.feeTypeId}" data-gradeId="${row.gradeId}" data-isAdvance="${row.isAdvance}" data-isStaffMember="${row.isStaffMember}" class="form-control txtTaxableAmount" onfocusout="OntxtTaxableAmount(this)"></td>
+							<td><input type="text" id="txtVatAmount_${row.studentId}" value="0.00" data-parentCode="${row.parentCode}" data-parentId="${row.parentId}" data-finalFeeAmount="${row.finalFeeAmount}" data-vatPercent="${row.vatPercent}" data-studentId="${row.studentId}" data-feeTypeId="${row.feeTypeId}" data-gradeId="${row.gradeId}" data-isAdvance="${row.isAdvance}" data-isStaffMember="${row.isStaffMember}" class="form-control txtVatAmount" onfocusout="OntxtVatAmount(this)"></td>
+							<td><input type="text" id="txtDiscountAmount_${row.studentId}" value="0.00" data-parentCode="${row.parentCode}" data-parentId="${row.parentId}" data-finalFeeAmount="${row.finalFeeAmount}" data-vatPercent="${row.vatPercent}" data-studentId="${row.studentId}" data-feeTypeId="${row.feeTypeId}" data-gradeId="${row.gradeId}" data-isAdvance="${row.isAdvance}" data-isStaffMember="${row.isStaffMember}" class="form-control txtVatAmount" onfocusout="OntxtDiscountAmount(this)"></td>
+							<td><input type="text" id="txtItemsubtotal_${row.studentId}" value="0.00" data-parentCode="${row.parentCode}" data-parentId="${row.parentId}" data-finalFeeAmount="${row.finalFeeAmount}" data-vatPercent="${row.vatPercent}" data-studentId="${row.studentId}" data-feeTypeId="${row.feeTypeId}" data-gradeId="${row.gradeId}" data-isAdvance="${row.isAdvance}" data-isStaffMember="${row.isStaffMember}" class="form-control txtItemsubtotal" onfocusout="OntxtItemsubtotal(this)"></td>
+							`;
+				tableBody.appendChild(tr);
+			});
+		} else {
+			let tr = document.createElement('tr');
+			tr.innerHTML = `
+										<td colspan="4" class="text-center text-muted">No record found</td>
+									`;
+			tableBody.appendChild(tr);
+		}
+	}
+
+	function OntxtTaxableAmount(e) {
+		var element = $(e);
+
+		var data_studentId = element.attr("data-studentId");
+
+		var data_finalFeeAmount = element.attr("data-finalFeeAmount");
+		var data_vatPercent = element.attr("data-vatPercent");
+		var data_feeTypeId = element.attr("data-feeTypeId");
+		var data_gradeId = element.attr("data-gradeId");
+		var data_isAdvance = element.attr("data-isAdvance");
+		var data_isStaffMember = element.attr("data-isStaffMember");
+
+		var taxableAmount = parseFloat(element.val()).toFixed(2);
+		//var itemSubTotal = parseFloat($("#txtItemsubtotal_" + data_studentId).val()).toFixed(2);
+
+		var taxAmount = parseFloat(taxableAmount * (data_vatPercent / 100)).toFixed(2);
+		var itemSubTotal = parseFloat(taxableAmount) + parseFloat(taxAmount);
+
+		$("#txtItemsubtotal_" + data_studentId).val(itemSubTotal);
+		$("#txtTaxableAmount_" + data_studentId).val(taxableAmount);
+		$("#txtVatAmount_" + data_studentId).val(taxAmount);
+
+		var discountAmount = $("#txtDiscountAmount_" + data_studentId).val();
+
+		ValidateStudentfeeAmount(data_finalFeeAmount, itemSubTotal, data_isAdvance, data_studentId, discountAmount);
+	}
+
+	function OntxtVatAmount(e) {
+		var element = $(e);
+
+		var data_studentId = element.attr("data-studentId");
+
+		var data_finalFeeAmount = element.attr("data-finalFeeAmount");
+		var data_vatPercent = element.attr("data-vatPercent");
+		var data_feeTypeId = element.attr("data-feeTypeId");
+		var data_gradeId = element.attr("data-gradeId");
+		var data_isAdvance = element.attr("data-isAdvance");
+		var data_isStaffMember = element.attr("data-isStaffMember");
+
+		var taxAmount = parseFloat(element.val()).toFixed(2);
+		var itemSubTotal = parseFloat($("#txtItemsubtotal_" + data_studentId).val()).toFixed(2);
+
+		var taxableAmount = parseFloat(itemSubTotal) - parseFloat(taxAmount);
+
+		$("#txtItemsubtotal_" + data_studentId).val(itemSubTotal);
+		$("#txtTaxableAmount_" + data_studentId).val(taxableAmount);
+		$("#txtVatAmount_" + data_studentId).val(taxAmount);
+
+		var discountAmount = $("#txtDiscountAmount_" + data_studentId).val();
+		ValidateStudentfeeAmount(data_finalFeeAmount, itemSubTotal, data_isAdvance, data_studentId, discountAmount);
+	}
+
+	function OntxtDiscountAmount(e) {
+
+		var element = $(e);
+
+		var data_studentId = element.attr("data-studentId");
+
+		var data_finalFeeAmount = element.attr("data-finalFeeAmount");
+		var data_isAdvance = element.attr("data-isAdvance");
+
+		var currentValue = $("#txtItemsubtotal_" + data_studentId).val();
+
+		var discountAmount = $("#txtDiscountAmount_" + data_studentId).val();
+		ValidateStudentfeeAmount(data_finalFeeAmount, currentValue, data_isAdvance, data_studentId, discountAmount);
+	}
+
+	function OntxtItemsubtotal(e) {
+		var element = $(e);
+
+		var data_studentId = element.attr("data-studentId");
+
+		var data_finalFeeAmount = element.attr("data-finalFeeAmount");
+		var data_vatPercent = element.attr("data-vatPercent");
+		var data_feeTypeId = element.attr("data-feeTypeId");
+		var data_gradeId = element.attr("data-gradeId");
+		var data_isAdvance = element.attr("data-isAdvance");
+		var data_isStaffMember = element.attr("data-isStaffMember");
+
+		var currentValue = parseFloat(element.val()).toFixed(2);
+		var taxableAmount = parseFloat(currentValue / (1 + (data_vatPercent / 100)), 2).toFixed(2);
+		var taxAmount = parseFloat(currentValue - taxableAmount).toFixed(2);
+
+		$("#txtItemsubtotal_" + data_studentId).val(currentValue);
+		$("#txtTaxableAmount_" + data_studentId).val(taxableAmount);
+		$("#txtVatAmount_" + data_studentId).val(taxAmount);
+		var discountAmount = $("#txtDiscountAmount_" + data_studentId).val();
+		ValidateStudentfeeAmount(data_finalFeeAmount, currentValue, data_isAdvance, data_studentId, discountAmount);
+	}
+
+	function ValidateStudentfeeAmount(finalFeeAmount, calculatedSubTotal, isAdvance, data_studentId, discountAmount) {
+		if (parseFloat(finalFeeAmount) > 0) {
+			if (parseFloat(calculatedSubTotal) + parseFloat(discountAmount) > parseFloat(finalFeeAmount)) {
+				$app.notify.error("Amount cannot greated than total fee!");
+
+				$("#txtItemsubtotal_" + data_studentId).val(0.00);
+				$("#txtTaxableAmount_" + data_studentId).val(0.00);
+				$("#txtVatAmount_" + data_studentId).val(0.00);
+
+				return false;
+			}
+		}
+		if (isAdvance && isAdvance == "true" && parseFloat(finalFeeAmount) > 0) {
+			$app.notify.error("Please clear balance amount first, Cannot take advance!");
+
+			$("#txtItemsubtotal_" + data_studentId).val(0.00);
+			$("#txtTaxableAmount_" + data_studentId).val(0.00);
+			$("#txtVatAmount_" + data_studentId).val(0.00);
+			$("#txtDiscountAmount_" + data_studentId).val(0.00);
+
+			return false;
+		}
+		return true;
+	}
+
+	function formatNumber(num) {
+		return (parseFloat(num) || 0).toFixed(2);
+	}
+
+	function LoadParentFeeBalance(parentId) {
+		debugger;
+		if (parentId) {
+			$.ajax({
+				url: '@Url.Action("GetParentFeeBalance", "InvoiceSetup")',
+				type: 'GET',
+				data: { parentId: parentId },
+				success: function (data) {
+					$("#lblParentTotalBalance").text(data.totalBalance);
+					$("#totalBalance").val(data.totalFeeAmountValue);
+				}
+			});
+		}
+	}
+
+	function BindData() {
+		var totalPayableAmoynt = 0;
+		var myarray = [];
+
+		if (!ValidateAdvanceYearWIthAmount()) {
+			return;
+		}
+
+		$("#studentTableBody tr").each(function (row, index) {
+			var element = $(this);
+
+			var data_studentId = element.attr("data-studentId");
+
+			var data_feeTypeId = element.attr("data-feeTypeId");
+			var data_gradeId = element.attr("data-gradeId");
+			var data_isAdvance = element.attr("data-isAdvance");
+			var data_isStaffMember = element.attr("data-isStaffMember");
+			var studentName = element.attr("data-studentName");
+
+			var data_finalFeeAmount = element.attr("data-finalFeeAmount");
+			var data_vatPercent = element.attr("data-vatPercent");
+
+			var data_studentCode = element.attr("data-studentCode");
+			var data_parentCode = element.attr("data-parentCode");
+			var data_fatherMobile = element.attr("data-fatherMobile");
+
+			var ItemSubtotal = $("#txtItemsubtotal_" + data_studentId).val();
+			var UnitPrice = $("#txtTaxableAmount_" + data_studentId).val();
+			var TaxAmount = $("#txtVatAmount_" + data_studentId).val();
+			var discount = $("#txtDiscountAmount_" + data_studentId).val();
+
+			var obNew = {
+				AcademicYear: $("#AcademicYear").val(),
+				AcademicYearName: $("#AcademicYear option:selected").text(),
+				InvoiceType: "Tuition Fee",
+				InvoiceDetailId: $("#InvoiceDetailId").val(),
+				IqamaNumber: $("#IqamaNumber").val(),
+
+				ParentId: $("#ParentId").val(),
+				ParentName: $("#ParentName").val(),
+				AcademicYear: $("#AcademicYear").val(),
+				NationalityId: $("#Nationality").val(),
+				SessionKey: $("#SessionKey").val(),
+
+				StudentId: data_studentId,
+				StudentName: studentName,
+				StudentCode: data_studentCode,
+				ParentCode: data_parentCode,
+				FatherMobile: data_fatherMobile,
+
+				GradeId: data_gradeId,
+
+				UnitPrice: UnitPrice,
+				TaxableAmount: UnitPrice,
+				UnitPriceAvailable: data_finalFeeAmount,
+
+				TaxAmount: TaxAmount,
+				TaxRate: data_vatPercent,
+
+				Discount: parseFloat(discount),
+				ItemSubtotal: ItemSubtotal,
+
+				IsAdvance: data_isAdvance == "true",
+				Quantity: 1
+
+			};
+			myarray.push(obNew);
+
+
+			totalPayableAmoynt = totalPayableAmoynt + parseFloat(ItemSubtotal, 2);
+		});
+
+		if (totalPayableAmoynt <= 0) {
+			$app.notify.error("A Paybale amount cannot be zero or less");//Exception in calling zatca
+			return;
+		}
+		debugger;
+		var isAdvance = getAdavcenYearCheck();
+		var totalAvailableBalance = getParentTotalBalance();
+
+		if (isAdvance == true) {
+			if (totalAvailableBalance > 0) {
+				$app.notify.error("Balance is available, cannot take payment for advance year");//Exception in calling zatca
+				return;
+			}
+			else if (totalPayableAmoynt <= 0) {
+				$app.notify.error("A Paybale amount cannot be zero or less");//Exception in calling zatca
+				return;
+			}
+			else if (totalPayableAmoynt <= totalAvailableBalance ){
+				$app.notify.error("Invalid advance payment");//Exception in calling zatca
+				return;
+			}
+		} else {
+			if (totalPayableAmoynt > totalAvailableBalance) {
+				$app.notify.error("Payable amount cannot be greater than total balance");//Exception in calling zatca
+				return;
+			}
+		}
+
+		var dataObj = {
+			InvoiceType: "Tuition Fee",
+			InvoiceDetailId: $("#InvoiceDetailId").val(),
+			IqamaNumber: $("#IqamaNumber").val(),
+			AcademicYear: $("#AcademicYear").val(),
+			ParentId: $("#ParentId").val(),
+			ParentName: $("#ParentName").val(),
+			NationalityId: $("#Nationality").val(),
+			SessionKey: $("#SessionKey").val(),
+
+			StudentId: $("#StudentId").val(),
+			StudentName: $("#StudentName").val(),
+
+			GradeId: $("#GradeId").val(),
+			Discount: 0,
+			UnitPrice: $("#UnitPrice").val(),
+			UnitPriceAvailable: $("#UnitPriceAvailable").val(),
+			TaxAmount: $("#TaxAmount").val(),
+			TaxableAmount: 0,
+			TaxRate: $("#TaxRate").val(),
+			ItemSubtotal: $("#ItemSubtotal").val(),
+			IsAdvance: $("#IsAdvance").val()
+		};
+
+		if (Validation(dataObj)) {
+			if (dataObj["InvoiceDetailId"] == "0") {
+				SaveTuitionFeeList(myarray);
+			}
+			else {
+				var dlg_updatePromo = bootbox.dialog({
+					message: 'Are you sure! you want to update the record?',
+					title: 'Confirm',
+					buttons: {
+						ok: {
+							label: "Yes",
+							className: 'btn-primary',
+							callback: function () {
+								SaveTuitionFeeList(myarray);
+							}
+						},
+						cancel: {
+							label: "No",
+							className: 'btn-danger',
+							callback: function () {
+								$(dlg_updatePromo).modal('hide');
+							}
+						}
+					}
+				});
+				dlg_updatePromo.find('.modal-header').css('background-color', '#dc3545').css('border-bottom', '1px solid #dc3545');
+			}
+		}
+	}
+
+	function Validation(dataObj) {
+		console.log(dataObj);
+
+		var isError = false;
+		if (!dataObj["ParentName"] || !dataObj["ParentName"].trim()) {
+			$app.notify.validate("ParentName", "Parent Name is required");
+			isError = true;
+		}
+		if (!dataObj["IqamaNumber"] || !dataObj["IqamaNumber"].trim()) {
+			$app.notify.validate("IqamaNumber", "Iqama Number is required");
+			isError = true;
+		}
+
+		if (!dataObj["AcademicYear"] || !dataObj["AcademicYear"].trim() || dataObj["AcademicYear"] == "0") {
+			$app.notify.validate("AcademicYear", "Academic Year is required");
+			isError = true;
+		}
+
+		if (isError) {
+			return false;
+		}
+		else {
+			return true;
+		}
+	}
+
+	function hideDialog() {
+		bootbox.hideAll();
+	}
+
+	function ParentLookup() {
+		var op = { title: 'Search Parent' }
+		var url = '@Url.Action("ParentLookupPartial", "Student")';
+		$app.openViewDialog(url, op);
+	}
+
+	function BindParent(parentId) {
+		$("#ParentId").val(parentId).trigger('change')
+	}
+	function formatNumber(num) {
+		return (parseFloat(num) || 0).toFixed(2);
+	}
+
+
+	function applyPayableAmount() {
+		let payableAmount = parseFloat($('#PayableAmount').val());
+
+		let studentRows = $('#studentTableBody tr');
+		let numberOfStudents = studentRows.length;
+
+		let amountPerStudent = (payableAmount / numberOfStudents).toFixed(0);
+		let totalAssignedAmount = (amountPerStudent * (numberOfStudents - 1)).toFixed(0);
+
+		studentRows.each(function (index, row) {
+			let studentId = $(row).attr('data-studentId');
+			let finalAmount;
+
+			if (index === numberOfStudents - 1) {
+				var finalAmount2 = (payableAmount - totalAssignedAmount).toFixed(0);
+				finalAmount = parseFloat(finalAmount2);
+			} else {
+				finalAmount = amountPerStudent;
+			}
+
+			$(`#txtItemsubtotal_${studentId}`).val(parseFloat(finalAmount).toFixed(2));
+
+			let vatPercent = parseFloat($(row).attr('data-vatPercent'));
+			let taxableAmount = (finalAmount / (1 + (vatPercent / 100))).toFixed(2);
+			let vatAmount = (finalAmount - taxableAmount).toFixed(2);
+
+			$(`#txtTaxableAmount_${studentId}`).val(taxableAmount);
+			$(`#txtVatAmount_${studentId}`).val(vatAmount);
+		});
+	}
+
+
+	function OnAcademicYearChange(academicYearId) {
+		if (academicYearId == "0") {
+			$("$IsAdvance").val(0);
+		} else {
+			var academicYearId = $('#AcademicYear').val();
+
+			if (academicYearId) {
+				$.ajax({
+					url: '@Url.Action("GetAcademicYearInfo", "InvoiceSetup")',
+					type: 'GET',
+					data: {
+						academicYearId: academicYearId
+					},
+					success: function (data) {
+						console.log(data);
+						if (data == null) {
+							$("#IsAdvance").val(0);
+						}
+						else {
+							$("#IsAdvance").val(data.successResult);
+						}
+						GetFeeAmountParentStudent();
+					}
+				});
+			}
+		}
+		console.log("academicYearId- " + academicYearId);
+	}
+
+	function ValidateAdvanceYearWIthAmount() {
+		var IsAdvanceValue = $("#IsAdvance").val();
+		var IsAdvance = (IsAdvanceValue == 'True' || IsAdvanceValue == '1') ? 1 : 0;
+
+		var totalPaybaleAMount = $("#totalBalance").val();
+		if (IsAdvance == 1 && parseFloat(totalPaybaleAMount) > 0) {
+			$app.notify.error("Payable amount is available, Cannot select advance year");//Exception in calling zatca
+			return false;
+		}
+		return true;
+	}
+
+	function getAdavcenYearCheck() {
+		var IsAdvanceValue = $("#IsAdvance").val();
+		var IsAdvance = (IsAdvanceValue == 'True' || IsAdvanceValue == '1') ? 1 : 0;
+		return IsAdvance == 1;
+	}
+
+	function getParentTotalBalance() {
+		var totalPaybaleAMount = $("#totalBalance").val();
+		return parseFloat(totalPaybaleAMount);
+	}
+
+</script>

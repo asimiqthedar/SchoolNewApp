@@ -1,0 +1,129 @@
+﻿@using System.Data;
+@model DataSet
+
+<div class="table-responsive table-card order-tabel" style="width:100%">
+    <table class="table align-middle table-nowrap mb-0" id="tblGenerateSiblingDiscountActivityData">
+        <thead class="table-light text-muted">
+            <tr>
+                <th width="5%">S.No</th>
+                <th>Academic Year</th>
+                <th>Invoice Type</th>
+                <th>Status</th>
+                <th>Student Sibling Discount Count</th>
+                <th width="70px">Actions</th>
+            </tr>
+        </thead>
+        <tbody class="list form-check-all">
+            @if (Model != null && Model.Tables.Count > 0 && Model.Tables[0].Rows.Count > 0)
+            {
+                int i = 0;
+                foreach (DataRow dr in Model.Tables[0].Rows)
+                {
+                    i++;
+                    <tr>
+                        <td>@i</td>
+                        <td>@dr["AcademicYear"]</td>
+                        <td>@dr["FeeTypeName"]</td>
+                        <td>
+                            <div class="avatar-group">
+                                <ul class="table-list">
+                                    @if (Convert.ToInt32(dr["GenerateStatus"]) == 1)
+                                    {
+                                        <li>Generated</li>
+                                    }
+                                    else if (Convert.ToInt32(dr["GenerateStatus"]) == 2)
+                                    {
+                                        <li>
+                                            Applied-Pending for Approval
+                                        </li>
+                                    }
+                                    else if (Convert.ToInt32(dr["GenerateStatus"]) == 3)
+                                    {
+                                        <li>
+                                            Applied
+                                        </li>
+                                    }
+                                    else if (Convert.ToInt32(dr["GenerateStatus"]) == 4)
+                                    {
+                                        <li>
+                                            Rejected
+                                        </li>
+                                    }
+                                    else if (Convert.ToInt32(dr["GenerateStatus"]) == 5)
+                                    {
+                                        <li>
+                                            Regenerate
+                                        </li>
+                                    }
+                                </ul>
+                            </div>
+                        </td>
+                        <td>
+                            <button type="button" class="btn btn-dark btn-set-task w-sm-100" onclick="ViewSiblingDiscountGeneratedStudent('@dr["SiblingDiscountId"]')">
+                                @dr["StudentCount"] Students discount generated
+                            </button>
+                        </td>
+                        <td>
+                            @if (Convert.ToInt32(dr["GenerateStatus"]) == 1 || Convert.ToInt32(dr["GenerateStatus"]) == 5)
+                            {
+                                <div class="dropdown">
+                                    <a href="javascript:void(0);" class="btn btn-light btn-icon" id="dropdownMenuLink1" data-bs-toggle="dropdown" aria-expanded="true">
+                                        <i class="ri-equalizer-fill"></i>
+                                    </a>
+                                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuLink1" data-popper-placement="bottom-end" style="position: absolute; inset: 0px 0px auto auto; margin: 0px; transform: translate(0px, 23px);">
+                                        <li><a class="dropdown-item" style="cursor:pointer;" onclick="GeneratedSiblingDiscount('5','@dr["SiblingDiscountId"]')">Regenerate</a></li>
+                                        <li><a class="dropdown-item" style="cursor:pointer;" onclick="ApplySiblingDiscount('2','@dr["SiblingDiscountId"]')">Apply</a></li>
+                                        <li class="dropdown-divider"></li>
+                                        <li><a class="dropdown-item" style="cursor:pointer;" onclick="DeleteGeneratedSiblingDiscount('6','@dr["SiblingDiscountId"]')">Delete</a></li>
+                                    </ul>
+                                </div>
+                            }
+                            @if (Convert.ToInt32(dr["GenerateStatus"]) == 3)
+                            {
+                               @*  <div class="dropdown">
+                                    <a href="javascript:void(0);" class="btn btn-light btn-icon" id="dropdownMenuLink1" data-bs-toggle="dropdown" aria-expanded="true">
+                                        <i class="ri-equalizer-fill"></i>
+                                    </a>
+                                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuLink1" data-popper-placement="bottom-end" style="position: absolute; inset: 0px 0px auto auto; margin: 0px; transform: translate(0px, 23px);">
+                                        <li><a class="dropdown-item" style="cursor:pointer;" onclick="GeneratedSiblingDiscount('5','@dr["SiblingDiscountId"]')">Regenerate</a></li>
+                                    </ul>
+                                </div> *@
+                            }
+                            @if (Convert.ToInt32(dr["GenerateStatus"]) == 4)
+                            {
+                                <div class="dropdown">
+                                    <a href="javascript:void(0);" class="btn btn-light btn-icon" id="dropdownMenuLink1" data-bs-toggle="dropdown" aria-expanded="true">
+                                        <i class="ri-equalizer-fill"></i>
+                                    </a>
+                                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuLink1" data-popper-placement="bottom-end" style="position: absolute; inset: 0px 0px auto auto; margin: 0px; transform: translate(0px, 23px);">
+                                        <li><a class="dropdown-item" style="cursor:pointer;" onclick="GeneratedSiblingDiscount('5','@dr["SiblingDiscountId"]')">Regenerate</a></li>
+                                    </ul>
+                                </div>
+                            }
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+</div>
+<script>
+    $("#tblGenerateSiblingDiscountActivityData").DataTable({
+        language: {
+            search: "<i class='ri-search-line search-icon'></i>",
+            searchPlaceholder: "Search ..."
+        },
+        pageLength: 50,
+        searching: true,
+        bFilter: true,
+        bSort: true,
+    });
+    $('#tblGenerateSiblingDiscountActivityData').DataTable().on('draw.dt', function () {
+        var info = $('#tblGenerateSiblingDiscountActivityData').DataTable().page.info();
+        $('#tblGenerateSiblingDiscountActivityData').DataTable().column(0, { search: 'applied', order: 'applied' }).nodes().each(function (cell, i) {
+            console.log('check value- i'+ i+'- 1-' + 1+'- info' + info.start);
+            // cell.innerHTML = i + 1;// cell.innerHTML = i + 1 + info.start;
+            cell.innerHTML = i + 1 ;
+        });
+    });
+</script>

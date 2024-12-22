@@ -1,0 +1,81 @@
+﻿
+<style>
+	.backlog-filter-btn button {
+		padding: 6px 10px;
+	}
+</style>
+<div class="row mb-3 align-items-center  label-row">
+	<div class="col-md-12 mb-5">
+		<div class="row">
+			<div class="col-md-12 p-3">
+				<div class="row">
+					<div class="col-lg-6">
+						<div class="single-filter">
+						<label for="filterParentId" class="form-label">Parent Id</label>
+						<select id="filterParentId" class="form-select" aria-label="Parent Id" asp-items="@(new SelectList(ViewBag.ParentDropdown,"Value", "Text"))">
+						</select>
+						</div>
+					</div>
+					<div class="col-lg-6">
+						<div class="single-filter">
+						<label for="filterParentName" class="form-label">Parent Name</label>
+						<input type="text" class="form-control" id="filterParentName" placeholder="Enter Parent Name" />
+						</div>
+					</div>
+					<div class="col-lg-6">
+						<div class="single-filter">
+						<label for="filterFatherIqama" class="form-label">Father Iqama</label>
+						<input type="text" class="form-control" id="filterFatherIqama" placeholder="Enter Father Iqama" />
+					</div>
+					</div>
+					<div class="col-lg-6">
+						<div class="single-filter">
+						<label for="filterStudentName" class="form-label">Student Name</label>
+						<input type="text" class="form-control" id="filterStudentName" placeholder="Enter Student Name" />
+					</div>
+					</div>
+					<div class="col-lg-6">
+						<div class="single-filter">
+						<label for="filterAcademicYear" class="form-label">Academic Year</label>
+						<select id="filterAcadmicYear" class="form-select" aria-label="Academic Year"
+								asp-items="@(new SelectList(ViewBag.AcademicYearDropDown,"Value", "Text"))">
+						</select>
+					</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-lg-6">
+						<div class="single-filter">
+						<label for="StartDate" class="form-label">Start Date</label>
+						<input class="form-control datepicker" id="filterStartDate" value="@DateTime.Now.AddMonths(-1).ToString("dd/MM/yyyy")" />
+						</div>
+					</div>
+					<div class="col-lg-6">
+						<div class="single-filter">
+						<label for="EndDate" class="form-label">End Date</label>
+						<input class="form-control datepicker" id="filterEndDate" value="@DateTime.Now.ToString("dd/MM/yyyy")" />
+					</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="col-md-12 btn-col">
+		<div class="row">
+			<div class="col-md-12">
+				<div class="d-flex backlog-btn-row">
+					<div class="backlog-filter-btn">
+						<button type="button" class="btn btn-primary" onclick="loadDiscountReportByFilter();">
+							Search
+						</button>
+					</div>
+					<div class="backlog-filter-btn">
+						<button type="button" class="btn btn-secondary" onclick="RefreshSearch();">
+							Refresh
+						</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

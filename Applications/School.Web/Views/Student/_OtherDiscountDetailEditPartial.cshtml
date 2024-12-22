@@ -1,0 +1,70 @@
+﻿@using School.Models.WebModels.StudentModels;
+@model OtherDiscountDetailModel
+<div class="row">
+	<div class="col-md-12">
+		<div class="cform row gy-3">
+			<input type="hidden" id="StudentId" name="StudentId" asp-for="StudentId" />
+			<input type="hidden" id="StudentOtherDiscountDetailId" name="StudentOtherDiscountDetailId" asp-for="StudentOtherDiscountDetailId" />
+			<div class="col-xxl-6 col-md-6">
+				<div>
+					<label class="form-label">Academic Year</label>
+					<select id="OtherDiscountAcademicId" class="form-select" asp-for="AcademicYearId" aria-label="Type"
+							asp-items="@(new SelectList(ViewBag.AcademicYearDropDown,"Value", "Text")) ">
+					</select>
+				</div>
+			</div>
+			<div class="col-xxl-6 col-md-6">
+				<div>
+					<label class="form-label">Discount Name</label>
+					<input type="text" class="form-control" id="DiscountName" name="DiscountName" asp-for="DiscountName" placeholder="Discount Name">
+				</div>
+			</div>
+
+			<div class="col-xxl-6 col-md-6">
+				<div>
+					<label class="form-label">Discount Amount</label>
+					<input type="text" class="form-control" id="DiscountAmount" name="DiscountAmount" asp-for="DiscountAmount" placeholder="Discount Amount">
+				</div>
+			</div>
+			<div class="col-md-12 text-center">
+				<button class="btn btn-success theme-btn" type="button" onclick="BindOtherDiscountDetailData()">@(Model.StudentOtherDiscountDetailId > 0 ? "Update" : "Add")</button>
+				<button class="btn btn-secondary" type="button" onclick="bootbox.hideAll();">Cancel</button>
+			</div>
+		</div>
+	</div>
+</div>
+<script>
+	function BindOtherDiscountDetailData() {
+		var dataObj = {
+			StudentId: $("#StudentId").val(),
+			StudentOtherDiscountDetailId: $("#StudentOtherDiscountDetailId").val(),
+			AcademicYearId: $("#OtherDiscountAcademicId").val(),
+			DiscountName: $("#DiscountName").val(),
+			DiscountAmount: $("#DiscountAmount").val(),
+		};
+		if (ValidationOtherDiscountDetail(dataObj)) {
+			SaveOtherDiscountDetailDetail(dataObj);
+		}
+	}
+	function ValidationOtherDiscountDetail(dataObj) {
+		var isError = false;
+		if (dataObj["AcademicYearId"] == 0) {
+			$app.notify.validate("OtherDiscountAcademicId", "Academic is required");
+			isError = true;
+		}
+		if (dataObj["DiscountName"] == '') {
+			$app.notify.validate("DiscountName", "Discount Name is required");
+			isError = true;
+		}
+		if (dataObj["DiscountAmount"] == 0) {
+			$app.notify.validate("DiscountAmount", "Discount Amount is required");
+			isError = true;
+		}
+		if (isError) {
+			return false;
+		}
+		else {
+			return true;
+		}
+	}
+</script>

@@ -1,0 +1,83 @@
+﻿@{
+    ViewData["Title"] = "Payment Method Category";
+}
+
+<div class="row">
+    <div class="col-12">
+        <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+            <div class="page-title d-flex align-items-center justify-content-between">
+                <ol class="breadcrumb m-0">
+                    <li class="breadcrumb-item">Setup</li>
+                    <li class="breadcrumb-item active">Payment Method Category List</li>
+                </ol>
+                @* <div>
+                <button type="button" class="btn btn-dark btn-set-task w-sm-100" onclick="Create()">
+                <i class="fa-solid fa-plus"></i> Add
+                </button>
+                </div> *@
+            </div>
+        </div>
+    </div>
+</div>
+<div class="card">
+    <div class="card-body">
+        @* @Html.Partial("_GenderFilterPartial") *@
+        <div class="row g-3">
+            <div class="col-lg-12 col-md-12">
+                <div class="tab-content screen-list">
+                    <div class="tab-pane fade show active" id="payment-method-category-load">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section scripts {
+    <script>
+        $(function () {
+            loadPaymentMethodCategoryByFilter();
+        });
+        function RefreshSearch() {
+            $("#filterSearch").val("");
+            $("#filterIsActive").val("true");
+            loadPaymentMethodCategoryByFilter();
+        }
+        function loadPaymentMethodCategoryByFilter() {
+            var filterDataObj = {
+                FilterSearch: $("#filterSearch").val(),
+                FilterIsActive: $("#filterIsActive").val()
+            };
+            PaymentMethodCategoryLoad(filterDataObj);
+        }
+        function PaymentMethodCategoryLoad(filterDataObj) {
+            $('#payment-method-category-load').empty();
+            $('#payment-method-category-load').html('<div class="row"> <div class="col-xl-12"><div class="card order-card"><span class="text-center no-text" style="color:#212529;"><img src="@Url.Content("~/images/loding.gif")"  /></span></div></div></div>');
+            var urlToCall = baseUrl + 'Setup/PaymentMethodCategoryDataPartial';
+            $app.post(urlToCall, filterDataObj).then(function (response) {
+                $('#payment-method-category-load').html(response);
+            });
+        }
+        function Edit(paymentMethodCategoryId) {
+            var op = { title: 'Update Payment Method Category' }
+            var url = '@Url.Action("PaymentMethodCategoryEditPartial", "Setup")';
+            url = url + '?paymentMethodCategoryId=' + paymentMethodCategoryId;
+            $app.openViewDialog(url, op);
+        }
+        function Save(dataModel) {
+            var urlToCall = '@Url.Action("SavePaymentMethodCategory", "Setup")';
+            $app.post(urlToCall, dataModel).then(function (response) {
+                if (response.result == 0) {
+                    bootbox.hideAll();
+                    $app.notify.success("Data has been saved!");
+                    loadPaymentMethodCategoryByFilter();
+                }
+                else if (response.result == -2) {
+                    $app.notify.error("Data already exists!");
+                }
+                else {
+                    $app.notify.error("Error in saving!");
+                }
+            });
+        }
+    </script>
+}

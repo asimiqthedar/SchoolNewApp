@@ -1,0 +1,96 @@
+﻿@using School.Models.WebModels.DiscountModels
+@model DiscountModel
+
+<div class="row">
+	<div class="col-md-12">
+		<div class="cform row gy-3">
+			<input type="hidden" id="DiscountId" name="DiscountId" asp-for="DiscountId" />
+			<div class="col-xxl-6 col-md-6">
+				<div>
+					<label class="form-label">Children No</label>
+					<input type="text" class="form-control" id="ChildrenNo" name="ChildrenNo" asp-for="ChildrenNo"
+						   placeholder="Children No" />
+				</div>
+			</div>
+			<div class="col-xxl-6 col-md-6">
+				<div>
+					<label class="form-label">Discount Percent</label>
+					<input type="text" class="form-control" id="DiscountPercent" name="DiscountPercent" asp-for="DiscountPercent" placeholder="Discount Percent" />
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-xxl-6 col-md-6">
+					<div>
+						<label class="form-label">Staff Discount Percent</label>
+						<input type="text" class="form-control" id="StaffDiscountPercent" name="StaffDiscountPercent" asp-for="StaffDiscountPercent" placeholder="Staff Discount Percent" />
+					</div>
+				</div>
+			</div>
+			<div class="col-md-12 text-center">
+				<button class="btn btn-success theme-btn" id="btnSave" type="button">@(Model.DiscountId > 0 ? "Update" : "Add")</button>
+				<button class="btn btn-secondary" type="button" onclick="bootbox.hideAll();">Cancel</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script>
+	$(document).ready(function () {
+		$("#btnSave").click(function () {
+			BindData();
+		})
+		function BindData() {
+			var dataObj = {
+				DiscountId: $("#DiscountId").val(),
+				ChildrenNo: $("#ChildrenNo").val(),
+				DiscountPercent: $("#DiscountPercent").val(),
+				StaffDiscountPercent: $("#StaffDiscountPercent").val()
+			};
+			if (Validation(dataObj)) {
+				if (dataObj["DiscountId"] == "0") {
+					Save(dataObj);
+				}
+				else {
+					var dlg_updatePromo = bootbox.dialog({
+						message: 'Are you sure! you want to update the record?',
+						title: 'Confirm',
+						buttons: {
+							ok: {
+								label: "Yes",
+								className: 'btn-primary',
+								callback: function () {
+									Save(dataObj);
+								}
+							},
+							cancel: {
+								label: "No",
+								className: 'btn-danger',
+								callback: function () {
+									$(dlg_updatePromo).modal('hide');
+								}
+							}
+						}
+					});
+					dlg_updatePromo.find('.modal-header').css('background-color', '#dc3545').css('border-bottom', '1px solid #dc3545');
+				}
+			}
+		}
+		function Validation(dataObj) {
+			var isError = false;
+			if (!dataObj["ChildrenNo"] || !dataObj["ChildrenNo"].trim()) {
+				$app.notify.validate("ChildrenNo", "Children No is required");
+				isError = true;
+			}
+			if (!dataObj["DiscountPercent"] || !dataObj["DiscountPercent"].trim()) {
+				$app.notify.validate("DiscountPercent", "Discount Percent is required");
+				isError = true;
+			}
+			if (isError) {
+				return false;
+			}
+			else {
+				return true;
+			}
+		}
+	});
+</script>

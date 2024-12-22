@@ -1,0 +1,219 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <Name>School.DatabaseQuery</Name>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectVersion>4.1</ProjectVersion>
+    <ProjectGuid>{34bc4be4-6ac1-4ff4-abc9-e90a17c62bc6}</ProjectGuid>
+    <DSP>Microsoft.Data.Tools.Schema.Sql.Sql160DatabaseSchemaProvider</DSP>
+    <OutputType>Database</OutputType>
+    <RootPath />
+    <RootNamespace>School.DatabaseQuery</RootNamespace>
+    <AssemblyName>School.DatabaseQuery</AssemblyName>
+    <ModelCollation>1033, CI</ModelCollation>
+    <DefaultFileStructure>BySchemaAndSchemaType</DefaultFileStructure>
+    <DeployToDatabase>True</DeployToDatabase>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <TargetLanguage>CS</TargetLanguage>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <SqlServerVerification>False</SqlServerVerification>
+    <IncludeCompositeObjects>True</IncludeCompositeObjects>
+    <TargetDatabaseSet>True</TargetDatabaseSet>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <OutputPath>bin\Release\</OutputPath>
+    <BuildScriptName>$(MSBuildProjectName).sql</BuildScriptName>
+    <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <DefineDebug>false</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <OutputPath>bin\Debug\</OutputPath>
+    <BuildScriptName>$(MSBuildProjectName).sql</BuildScriptName>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <DefineDebug>true</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">11.0</VisualStudioVersion>
+    <SSDTExists Condition="Exists('$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\SSDT\Microsoft.Data.Tools.Schema.SqlTasks.targets')">True</SSDTExists>
+    <VisualStudioVersion Condition="'$(SSDTExists)' == ''">11.0</VisualStudioVersion>
+  </PropertyGroup>
+  <Import Condition="'$(SQLDBExtensionsRefPath)' != ''" Project="$(SQLDBExtensionsRefPath)\Microsoft.Data.Tools.Schema.SqlTasks.targets" />
+  <Import Condition="'$(SQLDBExtensionsRefPath)' == ''" Project="$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\SSDT\Microsoft.Data.Tools.Schema.SqlTasks.targets" />
+  <ItemGroup>
+    <Folder Include="Properties" />
+    <Folder Include="dbo" />
+    <Folder Include="dbo\Database Query" />
+    <Folder Include="dbo\April_3_2024" />
+    <Folder Include="Data" />
+    <Folder Include="Hotfix" />
+    <Folder Include="dbo\OpenApply" />
+    <Folder Include="Hotfix\Delievered" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="dbo\Database Query\Create_Database_Query.sql" />
+    <None Include="dbo\Database Query\Create_Table_Insert.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="dbo\Database Query\Create_SP.sql" />
+    <None Include="dbo\Database Query\Create_Table.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="dbo\Database Query\OpenApply_Table.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="dbo\Database Query\OpenApply_SP.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="dbo\April_3_2024\SP.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="dbo\April_3_2024\Table_Data.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Data\INS_tblMenu.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Data\INS_tblCostCenterMaster.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Data\INS_tblGenderTypeMaster.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Data\INS_tblGradeMaster.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Data\INS_tblRole.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Data\INS_tblNotificationTypeMaster.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Data\INS_tblRoleMenuMapping.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="view_sp.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Table.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="table_data.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <Build Include="dbo\OpenApply\Create_Table.sql" />
+    <Build Include="dbo\OpenApply\SP.sql" />
+    <None Include="Hotfix\Delievered\HotFix_1.sql" />
+    <None Include="Hotfix\Delievered\HotFix_10_ALS_live_SP.sql" />
+    <None Include="Hotfix\Delievered\HotFix_11_ALS_live_SP.sql" />
+    <None Include="Hotfix\Delievered\HotFix_11_ZATCA_TABLE.sql" />
+    <None Include="Hotfix\Delievered\HotFix_12_ALS_live_SP.sql" />
+    <None Include="Hotfix\Delievered\HotFix_12_ALS_live_SP_notdelievred.sql" />
+    <None Include="Hotfix\Delievered\HotFix_13_ALS_live_SP.sql" />
+    <None Include="Hotfix\Delievered\HotFix_13_ALS_live_Table.sql" />
+    <None Include="Hotfix\Delievered\HotFix_14_ALS_live_SP.sql" />
+    <None Include="Hotfix\Delievered\HotFix_15_ALS_live_SP_Delivered.sql" />
+    <None Include="Hotfix\Delievered\HotFix_15_ALS_live_TABLE_Delivered.sql" />
+    <None Include="Hotfix\Delievered\HotFix_2_SP.sql" />
+    <None Include="Hotfix\Delievered\HotFix_2_table.sql" />
+    <None Include="Hotfix\Delievered\HotFix_3_SP_als_live.sql" />
+    <None Include="Hotfix\Delievered\HotFix_3_SP_Zatca_live.sql" />
+    <None Include="Hotfix\Delievered\HotFix_3_table_ALS_LIVE.sql" />
+    <None Include="Hotfix\Delievered\HotFix_3_table_Zatca_live.sql" />
+    <None Include="Hotfix\Delievered\HotFix_4_SP_ALS_live.sql" />
+    <Build Include="Hotfix\Delievered\HotFix_5_SP_ALS_live.sql" />
+    <None Include="Hotfix\Delievered\HotFix_16_ALS_live_OpenApply_SP.sql" />
+    <None Include="Hotfix\Delievered\HotFix_16_ALS_live_OpenApply_TABLE.sql" />
+    <None Include="Hotfix\Delievered\HotFix_16_ALS_live_SP.sql" />
+    <None Include="Hotfix\Delievered\HotFix_16_ALS_live_TABLE.sql" />
+    <None Include="Hotfix\Delievered\HotFix_17_ALS_live_SP.sql" />
+    <None Include="Hotfix\Delievered\HotFix_17_ALS_live_Table.sql" />
+    <None Include="Hotfix\Delievered\HotFix_21_TWO_SP.sql" />
+    <None Include="Hotfix\Delievered\HotFix_18_ALS_live_SP.sql" />
+    <None Include="Hotfix\Delievered\HotFix_18_ALS_live_TABLE.sql" />
+    <None Include="Hotfix\Delievered\HotFix_18_ALS_live_TABLE_DATA.sql" />
+    <None Include="Hotfix\Delievered\HotFix_19_ALS_live_SP.sql" />
+    <None Include="Hotfix\Delievered\HotFix_19_ALS_live_SP_ALL.sql" />
+    <None Include="Hotfix\Delievered\HotFix_19_ALS_live_TABLE.sql" />
+    <None Include="Hotfix\Delievered\HotFix_19_ALS_live_UDF_VIEW.sql" />
+    <None Include="Hotfix\Delievered\HotFix_20_ALS_LIVE_SP.sql" />
+    <None Include="Hotfix\Delievered\HotFix_20_ALS_LIVE_TABLE.sql" />
+    <None Include="Hotfix\Delievered\HotFix_20_ALS_LIVE_TABLE_DATA.sql" />
+    <None Include="Hotfix\Delievered\HotFix_20_TEMPDB_TABLE.sql" />
+    <None Include="Hotfix\Delievered\HotFix_20_TWO_SP.sql" />
+    <None Include="Hotfix\Delievered\HotFix_21_ALS_LIVE_SP.sql" />
+    <None Include="Hotfix\Delievered\HotFix_21_ALS_LIVE_TABLE.sql" />
+    <None Include="Hotfix\Delievered\HotFix_22_ALS_LIVE_SP.sql" />
+    <None Include="Hotfix\Delievered\HotFix_22_ALS_LIVE_TABLE_DATA.sql" />
+    <None Include="Hotfix\Delievered\HotFix_24_ALS_live_TABLE_Data_Advance.sql" />
+    <None Include="Hotfix\Delievered\HotFix_23_ALS_live_SP.sql" />
+    <None Include="Hotfix\Delievered\HotFix_23_ALS_live_TABLE_DATA.sql" />
+    <None Include="Hotfix\Delievered\HotFix_24_ALS_live_SP.sql" />
+    <None Include="Hotfix\Delievered\HotFix_24_ALS_live_TABLE.sql" />
+    <None Include="Hotfix\Delievered\HotFix_24_ALS_live_TABLE_Advance.sql" />
+    <None Include="Hotfix\Delievered\HotFix_25_ALS_live_SP.sql" />
+    <None Include="Hotfix\Delievered\HotFix_26_ALS_live_SP.sql" />
+    <None Include="Hotfix\Delievered\HotFix_26_ALS_live_TABLE.sql" />
+    <None Include="Hotfix\Delievered\HotFix_27_ALS_live_SP.sql" />
+    <None Include="Hotfix\Delievered\HotFix_27_ALS_live_TABLE.sql" />
+    <None Include="Hotfix\Delievered\HotFix_28_ALS_live_SP.sql" />
+    <None Include="Hotfix\Delievered\HotFix_28_ALS_live_TABLE.sql" />
+    <None Include="Hotfix\Delievered\HotFix_29_ALS_live_SP.sql" />
+    <None Include="Hotfix\Delievered\HotFix_29_ALS_live_VIEW.sql" />
+    <None Include="Hotfix\Delievered\HotFix_30_ALS_live_SP.sql" />
+    <None Include="Hotfix\Delievered\HotFix_30_ALS_live_TABLE_ADVANCE.sql" />
+    <None Include="Hotfix\Delievered\HotFix_30_ALS_live_TABLE_DATA.sql" />
+    <None Include="Hotfix\Delievered\HotFix_31_ALS_live_SP.sql" />
+    <None Include="Hotfix\Delievered\HotFix_32_ALS_live_SP.sql" />
+    <None Include="Hotfix\Delievered\HotFix_32_ALS_live_TABLE_DATA.sql" />
+    <None Include="Hotfix\Delievered\HotFix_33_ALS_live_SP.sql" />
+    <None Include="Hotfix\Delievered\HotFix_33_ALS_live_TABLE_DATA.sql" />
+    <None Include="Hotfix\Delievered\HotFix_34_ALS_live_SP.sql" />
+    <None Include="Hotfix\HotFix_41_ALS_live_SP.sql" />
+    <None Include="Hotfix\HotFix_41_Zatca_live_View.sql" />
+    <None Include="Hotfix\HotFix_41_ALS_live_VIEW.sql" />
+    <None Include="Hotfix\HotFix_42_ALS_live_SP.sql" />
+    <None Include="Hotfix\HotFix_43_ALS_live_TABLE.sql" />
+    <None Include="Hotfix\Delievered\HotFix_40_ALS_live_SP.sql" />
+    <None Include="Hotfix\Delievered\HotFix_35_ALS_live_SP.sql" />
+    <None Include="Hotfix\Delievered\HotFix_36_ALS_live_SP.sql" />
+    <None Include="Hotfix\Delievered\HotFix_36_ALS_live_Table_Data.sql" />
+    <None Include="Hotfix\Delievered\HotFix_37_ALS_live_SP.sql" />
+    <None Include="Hotfix\Delievered\HotFix_38_Zatca_live_View.sql" />
+    <None Include="Hotfix\Delievered\HotFix_39_ALS_live_SP.sql" />
+    <None Include="Hotfix\HotFix_43_ALS_live_SP.sql" />
+    <None Include="Hotfix\HotFix_44_ALS_live_SP.sql" />
+    <None Include="Hotfix\HotFix_45_ALS_live_SP.sql" />
+    <None Include="Hotfix\HotFix_45_ALS_live_VIEW.sql" />
+    <None Include="Hotfix\HotFix_46_ALS_live_SP.sql" />
+    <None Include="Hotfix\HotFix_47_ALS_live_SP.sql" />
+    <None Include="Hotfix\HotFix_48_ALS_live_SP.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Hotfix\Delievered\HotFix_6_ALS_live_SP.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Hotfix\Delievered\HotFix_6_ALS_live_table.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Hotfix\Delievered\HotFix_7_ALS_live_table.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Hotfix\Delievered\HotFix_8_Zatca_table.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Hotfix\Delievered\HotFix_9_ALS_live_SP.sql" />
+  </ItemGroup>
+</Project>

@@ -1,0 +1,7 @@
+sellerdata_script add two tables 
+"SellerMaster","SellerDeviceConfigurations"
+
+
+
+
+keep in mind the data will be changes in live version

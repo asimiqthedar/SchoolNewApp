@@ -1,0 +1,548 @@
+﻿@model School.Models.WebModels.ParentModels.ParentModel
+@{
+	ViewData["Title"] = "Parent";
+}
+<div class="row">
+	<div class="col-12">
+		<div class="page-title-box d-sm-flex align-items-center justify-content-between">
+			<div class="page-title d-flex align-items-center justify-content-between">
+				<ol class="breadcrumb m-0">
+					<li class="breadcrumb-item">Parent</li>
+					<li class="breadcrumb-item active">View Parent</li>
+				</ol>
+				<div>
+					<button type="button" class="btn btn-dark btn-set-task w-sm-100">
+						<a class="breadcrumb-item FeeTypeAction" href="@Url.Action("parentlist","parent")">Back To List</a>
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<input type="hidden" id="ParentId" value="@Model.ParentId" />
+
+<div class="profile-foreground position-relative mx-n4 mt-n4">
+	<div class="profile-wid-bg">
+		<img src="@Url.Content("~/images/login-bg.jpg")" class="profile-wid-img">
+	</div>
+</div>
+<div class="mb-4">
+	<div class="row g-4">
+		<div class="col-auto">
+			<div class="avatar-lg">
+				@{
+					var imgPath = "~/images/users/avatar-2.png";
+					if (!string.IsNullOrEmpty(Convert.ToString(Model.ParentImage)))
+					{
+						imgPath = Convert.ToString(Model.ParentImage);
+					}
+					<img src="@Url.Content(imgPath)" id="previewImage" class="img-thumbnail rounded-circle" style="width:100px;height:100%" />
+				}
+			</div>
+		</div>
+		<div class="col profile-col">
+			<div class="p-4">
+				<h3 class="text-white">@Model.ParentCode</h3>
+				<h3 class="text-white">@Model.FatherName</h3>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="row">
+	<div class="col-lg-12">
+		<div>
+			<div class="d-flex">
+				<ul class="nav nav-pills animation-nav profile-nav gap-2 gap-lg-3 flex-grow-1" role="tablist">
+					<li class="nav-item" role="presentation">
+						<a class="nav-link fs-14 active" data-bs-toggle="tab" href="#overview-tab" role="tab" aria-selected="true">
+							<i class="ri-airplay-fill d-inline-block d-md-none"></i> <span class="d-none d-md-inline-block">Overview</span>
+						</a>
+					</li>
+					<li class="nav-item" role="presentation">
+						<a class="nav-link fs-14" data-bs-toggle="tab" href="#accountInfo" role="tab" aria-selected="false" tabindex="-1">
+							<i class="ri-folder-4-line d-inline-block d-md-none"></i> <span class="d-none d-md-inline-block"> Account details</span>
+						</a>
+					</li>
+					<li class="nav-item" role="presentation">
+						<a class="nav-link fs-14" data-bs-toggle="tab" href="#documents" role="tab" aria-selected="false" tabindex="-1">
+							<i class="ri-folder-4-line d-inline-block d-md-none"></i> <span class="d-none d-md-inline-block">Documents</span>
+						</a>
+					</li>
+					<li class="nav-item" role="presentation">
+						<a class="nav-link fs-14" data-bs-toggle="tab" href="#childrens" role="tab" aria-selected="false" tabindex="-1">
+							<i class="ri-folder-4-line d-inline-block d-md-none"></i> <span class="d-none d-md-inline-block">Childrens</span>
+						</a>
+					</li>
+					<li class="nav-item" role="presentation">
+						<a class="nav-link fs-14" data-bs-toggle="tab" href="#fee-statement" role="tab" aria-selected="false" tabindex="-1">
+							<i class="ri-folder-4-line d-inline-block d-md-none"></i> <span class="d-none d-md-inline-block">Fee Statement</span>
+						</a>
+					</li>
+				</ul>
+				<div class="flex-shrink-0">
+					<button type="button" class="btn btn-dark" onclick="Edit('@Model.ParentId')"><i class="ri-edit-box-line align-bottom"></i> Edit Parent</button>
+				</div>
+			</div>
+			<div class="tab-content pt-4 text-muted profile-tab">
+				<div class="tab-pane active show" id="overview-tab" role="tabpanel">
+					<div class="row">
+						<div class="col-xxl-12 col-md-12 col-lg-12">
+							<div class="card">
+								<div class="card-body">
+									<h5 class="card-title mb-3">Father Info</h5>
+									<div class="table-responsive">
+										<table class="table table-borderless mb-0">
+											<tbody>
+												<tr>
+													<th class="ps-0" scope="row" width="30%">Father Name :</th>
+													<td>@Model.FatherName</td>
+												</tr>
+												<tr>
+													<th class="ps-0" scope="row" width="30%">Father Arabic Name :</th>
+													<td>@Model.FatherArabicName</td>
+												</tr>
+												<tr>
+													<th class="ps-0" scope="row">Father Nationality:</th>
+													<td>@Model.FatherCountryName</td>
+												</tr>
+												<tr>
+													<th class="ps-0" scope="row">Father Email :</th>
+													<td>@Model.FatherEmail</td>
+												</tr>
+												<tr>
+													<th class="ps-0" scope="row">Father Mobile :</th>
+													<td>@Model.FatherMobile</td>
+												</tr>
+												<tr>
+													<th class="ps-0" scope="row">Father Iqama No :</th>
+													<td>@Model.FatherIqamaNo</td>
+												</tr>
+												<tr>
+													<th class="ps-0" scope="row">Staff :</th>
+													<td>@(Model.IsFatherStaff ? "Yes" : "No")</td>
+												</tr>
+											</tbody>
+										</table>
+									</div>
+								</div>
+							</div>
+							<div class="card">
+								<div class="card-body">
+									<h5 class="card-title mb-3">Mother Info</h5>
+									<div class="table-responsive">
+										<table class="table table-borderless mb-0">
+											<tbody>
+												<tr>
+													<th class="ps-0" scope="row" width="30%">Mother Name :</th>
+													<td>@Model.MotherName</td>
+												</tr>
+												<tr>
+													<th class="ps-0" scope="row" width="30%">Mother Arabic Name :</th>
+													<td>@Model.MotherArabicName</td>
+												</tr>
+												<tr>
+													<th class="ps-0" scope="row">Mother Nationality:</th>
+													<td>@Model.MotherCountryName</td>
+												</tr>
+												<tr>
+													<th class="ps-0" scope="row">Mother Email :</th>
+													<td>@Model.MotherEmail</td>
+												</tr>
+												<tr>
+													<th class="ps-0" scope="row">Mother Mobile :</th>
+													<td>@Model.MotherMobile</td>
+												</tr>
+												<tr>
+													<th class="ps-0" scope="row">Mother Iqama No :</th>
+													<td>@Model.MotherIqamaNo</td>
+												</tr>
+												<tr>
+													<th class="ps-0" scope="row">Staff :</th>
+													<td>@(Model.IsMotherStaff ? "Yes" : "No")</td>
+												</tr>
+											</tbody>
+										</table>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="tab-pane fade" id="accountInfo" role="tabpanel">
+					@if (Model.ParentId > 0 && Model.AccountModel != null)
+					{
+						<div class="row">
+							<div class="col-xxl-12 col-md-12 col-lg-12">
+								<div class="card">
+									<div class="card-body">
+										<div class="table-responsive">
+											<table class="table table-borderless mb-0">
+												<tbody>
+													<tr>
+														<th class="ps-0" scope="row" style="width:30%">Receivable Account :</th>
+														<td>@Model.AccountModel.ReceivableAccount</td>
+													</tr>
+													<tr>
+														<th class="ps-0" scope="row">Advance Account :</th>
+														<td>@Model.AccountModel.AdvanceAccount</td>
+													</tr>
+												</tbody>
+											</table>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					}
+					else
+					{
+						<div class="row">
+							<div class="col-xxl-12 col-md-12 col-lg-12">
+								<div class="card">
+									<div class="card-body">
+										No account detail found!
+									</div>
+								</div>
+							</div>
+						</div>
+					}
+				</div>
+				<div class="tab-pane fade" id="documents" role="tabpanel">
+					<div class="card">
+						<div class="card-body">
+							<div class="row">
+								<div class="col-lg-12">
+									<div class="table-responsive" id="dvAttachments">
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="tab-pane fade" id="childrens" role="tabpanel">
+					<div class="card">
+						<div class="card-body">
+							<div class="row">
+								<div class="col-lg-12">
+									<table class="table align-middle table-nowrap mb-0" id="tblParentChildrenList">
+										<thead class="text-muted">
+											<tr>
+												<th width="2%">S.No</th>
+												<th>Student ID</th>
+												<th>Parent ID</th>
+												<th>Name</th>
+												<th>Arabic Name</th>
+												<th>Nationality</th>
+												<th>Gender</th>
+												<th>Grade</th>
+											</tr>
+										</thead>
+										<tbody class="list form-check-all">
+											@if (Model.ParentId > 0 && Model.StudentModelList != null && Model.StudentModelList.Count > 0)
+											{
+												int i = 0;
+												foreach (var item in Model.StudentModelList)
+												{
+													i++;
+													<tr>
+														<td>@i</td>
+														<td>
+															<a id="View" onclick="View('@item.StudentId')" style="cursor:pointer" class="fw-medium link-primary">
+																@{
+																	var imgPathChild = "~/images/users/avatar-2.png";
+																	if (!string.IsNullOrEmpty(Convert.ToString(@item.StudentImage)))
+																	{
+																		imgPathChild = Convert.ToString(@item.StudentImage);
+																	}
+																	<img class="avatar sm rounded-circle me-2" style="cursor:pointer" src="@Url.Content(imgPathChild)" />
+																}
+																<span>@item.StudentCode</span>
+															</a>
+														</td>
+														<td> @item.ParentCode</td>
+														<td>@item.StudentName</td>
+														<td>@item.StudentArabicName</td>
+														<td>@item.CountryName</td>
+														<td>@item.GenderTypeName</td>
+														<td>@item.GradeName</td>
+													</tr>
+												}
+											}
+										</tbody>
+									</table>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="tab-pane fade" id="fee-statement" role="tabpanel">
+					<div class="row">
+						<div class="col-lg-12">
+							<div class="card">
+								<div class="card-body">
+									<div>
+										@Html.Partial("_StudentFeeStatementFilterPartial")
+									</div>
+								</div>
+							</div>
+							<div class="table-responsive" id="statement-fee-load">
+							</div>
+
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+@section scripts {
+	<script src="~/js/working/document.js" asp-append-version="true"></script>
+	<script>
+		$(document).ready(function () {
+			LoadAttachments(parseInt($("#ParentId").val()), '@((int)School.Common.DocFor.Parent)');
+
+			$("#tblParentChildrenList").DataTable({
+				language: {
+					search: "<i class='ri-search-line search-icon'></i>",
+					searchPlaceholder: "Search ..."
+				},
+				//searching: false,
+				//info: false,
+				//dom: 'rtip',
+				//scrollX: true,
+				//bFilter: true,
+				//bSort: true,
+				//bPaginate: true,
+				//destroy: true,
+				//orderCellsTop: true,
+				//fixedHeader: true
+			});
+
+			loadParentStudentStatementReportByFilter();
+		});
+		function Edit(parentId) {
+			var url = '@Url.Action("AddEditParent", "Parent")';
+			url = url + '?parentId=' + parentId;
+			window.location.href = url;
+		}
+		function View(studentId) {
+			var url = '@Url.Action("ViewStudent", "Student")';
+			url = url + '?studentId=' + studentId;
+			//window.location.href = url;
+			window.open(url, "_blank");
+		}
+		function RefreshSearch() {			
+			//$("#filterAcademicYear").val(0);
+			loadParentStudentStatementReportByFilter();
+		}
+
+		function loadParentStudentStatementReportByFilter() {
+			var filterDataObj = {
+				ParentId: '@Model.ParentId',
+				ParentName: '',
+				FatherIqama: '',
+				FatherMobile: '',
+				AcademicYear: $("#filterAcademicYear").val()
+			};
+			ParentStudentStatementReportLoad(filterDataObj);
+		}
+
+		function ParentStudentStatementReportLoad(filterDataObj) {
+			$('#statement-fee-load').empty();
+			$('#statement-fee-load').html('<div class="row"> <div class="col-xl-12"><div class="card order-card"><span class="text-center no-text" style="color:#212529;"><img src="@Url.Content("~/images/loding.gif")"  /></span></div></div></div>');
+			var urlToCall = baseUrl + 'Report/ParentStudentStatementReportDataPartial';
+			$app.post(urlToCall, filterDataObj).then(function (response) {
+				$('#statement-fee-load').html(response);
+			});
+		}
+		function ExportExcelStatement() {
+		  var filterDataObj = {
+			  reportName: "Parent Statement",
+			  parentId: '@Model.ParentId', // Default to 0 if empty
+			  parentName: "",
+				fatherIqama:  "",
+			  fatherMobile: "",
+			  academicYear:$("#filterAcademicYear").val() // Default to 0 if empty
+		  };
+
+			var urlToCall = baseUrl + 'Report/ExportParentStudentStatemetToExcel';
+
+		  fetch(urlToCall, {
+			  method: 'POST',
+			  headers: {
+				  'Content-Type': 'application/json'
+			  },
+				body: JSON.stringify(filterDataObj)
+		  })
+			.then(response => {
+			  if (!response.ok) {
+				  return response.text().then(text => {
+						throw new Error(text || 'Network error');
+				   });
+				}
+				return response.blob(); // Get the response as a Blob
+			})
+			.then(blob => {
+				var link = document.createElement('a');
+				link.href = window.URL.createObjectURL(blob);
+				link.download = filterDataObj.reportName + ".xlsx";
+				link.click();
+				window.URL.revokeObjectURL(link.href);
+			})
+			.catch(error => {
+				console.error("Error exporting report:", error);
+				alert("An error occurred while exporting the report: " + error.message);
+			});
+		}
+
+		function ExportPdfStatement() {
+			var AcademicYear = $("#filterAcademicYear").val();
+			var filterDataObj = {
+				reportName: "Parent Statement",
+				parentId: @Model.ParentId, // Default to 0 if empty
+				parentName: '@Model.FatherName',
+				fatherIqama: '',
+				fatherMobile: '',
+				academicYear: AcademicYear,
+			};
+
+			// Validation
+			if (!filterDataObj.parentId && !filterDataObj.parentName &&
+				!filterDataObj.fatherIqama && !filterDataObj.fatherMobile) {
+				alert("Please select at least one filter.");
+				return;
+			}
+
+			var urlToCall = baseUrl + 'Report/ExportParentStudentStatemetToPdf';
+
+			fetch(urlToCall, {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify(filterDataObj)
+			})
+				.then(response => {
+					if (!response.ok) {
+						return response.text().then(text => {
+							throw new Error(text || 'Network error');
+						});
+					}
+					return response.blob(); // Get the response as a Blob
+				})
+				.then(blob => {
+					var link = document.createElement('a');
+					link.href = window.URL.createObjectURL(blob);
+					link.download = filterDataObj.reportName + ".pdf";
+					link.click();
+					window.URL.revokeObjectURL(link.href);
+				})
+				.catch(error => {
+					console.error("Error exporting report:", error);
+					alert("An error occurred while exporting the report: " + error.message);
+				});
+		}
+
+		function ExportSummaryPdfStatement() {
+			var AcademicYear = $("#filterAcademicYear").val();
+			var filterDataObj = {
+				reportName: "Parent Statement",
+				parentId: @Model.ParentId, // Default to 0 if empty
+				parentName: '@Model.FatherName',
+				fatherIqama: '',
+				fatherMobile: '',
+				academicYear: AcademicYear,
+			};
+
+			// Validation
+			if (!filterDataObj.parentId && !filterDataObj.parentName &&
+				!filterDataObj.fatherIqama && !filterDataObj.fatherMobile) {
+				alert("Please select at least one filter.");
+				return;
+			}
+
+			var urlToCall = baseUrl + 'Report/ExportParentStudentStatemetToSummaryPdf';
+
+			fetch(urlToCall, {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify(filterDataObj)
+			})
+				.then(response => {
+					if (!response.ok) {
+						return response.text().then(text => {
+							throw new Error(text || 'Network error');
+						});
+					}
+					return response.blob(); // Get the response as a Blob
+				})
+				.then(blob => {
+					var link = document.createElement('a');
+					link.href = window.URL.createObjectURL(blob);
+					link.download = filterDataObj.reportName + ".pdf";
+					link.click();
+					window.URL.revokeObjectURL(link.href);
+				})
+				.catch(error => {
+					console.error("Error exporting report:", error);
+					alert("An error occurred while exporting the report: " + error.message);
+				});
+		}
+
+
+
+		function ExportSummaryPdfStatementEnAr(type) {
+			
+			var AcademicYear = $("#filterAcademicYear").val();
+			var filterDataObj = {
+				type: type,
+				reportName: "Parent Statement",
+				parentId: @Model.ParentId, // Default to 0 if empty
+				parentName: '@Model.FatherName',
+				fatherIqama: '',
+				fatherMobile: '',
+				academicYear: AcademicYear,
+			};
+
+			// Validation
+			if (!filterDataObj.parentId && !filterDataObj.parentName &&
+				!filterDataObj.fatherIqama && !filterDataObj.fatherMobile) {
+				alert("Please select at least one filter.");
+				return;
+			}
+
+			var urlToCall = baseUrl + 'Report/ExportParentStudentStatemetToSummaryPdfEnAr';
+
+			fetch(urlToCall, {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify(filterDataObj)
+			})
+				.then(response => {
+					if (!response.ok) {
+						return response.text().then(text => {
+							throw new Error(text || 'Network error');
+						});
+					}
+					return response.blob(); // Get the response as a Blob
+				})
+				.then(blob => {
+					var link = document.createElement('a');
+					link.href = window.URL.createObjectURL(blob);
+					link.download = filterDataObj.reportName + ".pdf";
+					link.click();
+					window.URL.revokeObjectURL(link.href);
+				})
+				.catch(error => {
+					console.error("Error exporting report:", error);
+					alert("An error occurred while exporting the report: " + error.message);
+				});
+		}
+
+	</script>
+}

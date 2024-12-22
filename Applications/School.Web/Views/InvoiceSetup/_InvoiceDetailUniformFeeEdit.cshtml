@@ -1,0 +1,576 @@
+﻿@using School.Models.WebModels.InvoiceSetupModels;
+@model InvInvoiceDetailUniformFeeModel
+
+<div class="row">
+	<input type="hidden" id="InvoiceDetailId" name="InvoiceDetailId" asp-for="InvoiceDetailId" value="@Model.InvoiceDetailId" />
+	<input type="hidden" id="ExcludedCountryCount" name="ExcludedCountryCount" />
+	<input type="hidden" id="VatID" name="VatID" />
+	<input type="type" hidden asp-for="SessionKey" name="name" value="@Model.SessionKey" />
+	<div class="row">
+		<div class="col-lg-6">
+			<div class="mb-3">
+				<label for="ParentId" class="form-label">Parent ID</label>
+				<div class="input-group">
+					<select id="ParentId" class="form-select " asp-for="ParentId" aria-label="Parent"
+							asp-items="@(new SelectList(ViewBag.ParentDropdown,"Value", "Text",Model.ParentId))">
+					</select>
+					<a class="search-lookup" onclick="ParentLookup();"><i class="fa-solid fa-magnifying-glass"></i></a>
+				</div>
+			</div>
+		</div>
+		<div class="col-lg-6">
+			<div class="mb-3">
+				<label for="FatherName" class="form-label"> Father Name</label>
+				<input type="text" id="ParentName" class="form-control" value="Cash Customer" asp-for="ParentName" placeholder="Father Name" />
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-lg-6">
+			<div class="mb-3">
+				<label for="FatherIqama" class="form-label">Father Iqama Number</label>
+				<input type="text" class="form-control" id="IqamaNumber" asp-for="IqamaNumber" placeholder="Father Iqama Number">
+			</div>
+		</div>
+		<div class="col-lg-6">
+			<div class="mb-3">
+				<label for="FatherMobile" class="form-label">Father Mobile</label>
+				<input type="text" class="form-control" id="FatherMobile" asp-for="FatherMobile" placeholder="Father Mobile ">
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-lg-6">
+			<div class="mb-3 autoselect-dropdown">
+				<label for="ItemCode" class="form-label">Item Code</label>
+				<input type="text" id="ItemCode" class="form-control" asp-for="ItemCode" placeholder="Enter char to search item code">
+				<i class="fa-solid fa-angle-down input-icon"></i>
+			</div>
+		</div>
+		<div class="col-lg-6">
+			<div class="mb-3">
+				<label for="Description" class="form-label">Description</label>
+				<input type="text" id="Description" class="form-control" asp-for="Description" placeholder="Description">
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-lg-6">
+			<div class="mb-3">
+				<label for="Nationality" class="form-label">Nationality</label>
+				<div class="input-group">
+					<select id="NationalityId" class="form-select" aria-label="NationalityId" disabled="@Model.ParentId"
+							asp-items="@(new SelectList(ViewBag.CountryDropDown,"Value", "Text", Model.NationalityId))">
+					</select>
+				</div>
+			</div>
+		</div>
+		<div class="col-lg-6">
+			<div class="mb-3">
+				<label for="UnitPrice" class="form-label"> Unit Price</label>
+				<input type="text" id="UnitPrice" class="form-control" readonly asp-for="UnitPrice" placeholder="Unit Price">
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-lg-6">
+			<div class="mb-3">
+				<label for="AvailableQuantity" class="form-label">Available Quantity</label>
+				<input type="text" id="AvailableQuantity" class="form-control" readonly placeholder="Available Quantity" value="@Model.AvailableQuantity">
+
+			</div>
+		</div>
+		<div class="col-lg-6">
+			<div class="mb-3">
+				<label for="Quantity" class="form-label">Quantity</label>
+				<input type="text" id="Quantity" class="form-control" asp-for="Quantity" value="@Model.Quantity" placeholder="Quantity">
+			</div>
+		</div>
+
+	</div>
+	<div class="row">
+		<div class="col-lg-6">
+			<div class="mb-3">
+				<label for="TaxRate" class="form-label">VAT %</label>
+				<input type="text" id="TaxRate" class="form-control" value="0" asp-for="TaxRate" readonly placeholder="VAT">
+			</div>
+		</div>
+		<div class="col-lg-6">
+			<div class="mb-3">
+				<label for="TotalVat" class="form-label">VAT Amount</label>
+				<input type="text" id="TaxAmount" class="form-control" asp-for="TaxAmount" placeholder="Total Vat">
+			</div>
+		</div>
+		@* <div class="col-lg-6">
+			<div class="mb-3">
+				<label for="Discount" class="form-label">Discount</label>
+				<input type="text" id="Discount" class="form-control" asp-for="Discount" placeholder="Discount">
+			</div>
+		</div> *@
+	</div>
+	<div class="row">
+		<div class="col-lg-4">
+			<div class="mb-3">
+				<label for="Total With Vat" class="form-label">Total With Vat</label>
+				<input type="text" id="Totalwithvat" class="form-control" readonly placeholder="Total With Vat">
+			</div>
+		</div>
+		<div class="col-lg-4">
+			<div class="mb-3">
+				<label for="Total After Discount" class="form-label">Total After Discount</label>
+				<input type="text" id="TotalAfterDiscount" class="form-control" readonly placeholder="Total After Discount">
+			</div>
+		</div>
+		<div class="col-lg-4">
+			<div class="mb-3">
+				<label for="Total" class="form-label">Total</label>
+				<input type="text" id="ItemSubtotal" class="form-control" asp-for="ItemSubtotal" readonly placeholder="Total">
+			</div>
+		</div>
+	</div>
+	<div class="col-md-12 text-center">
+		<button class="btn btn-success theme-btn" type="button" onclick="BindDataSave()">@(Model.InvoiceDetailId > 0 ? "Update" : "Add")</button>
+		<button class="btn btn-secondary" type="button" onclick="bootbox.hideAll();">Cancel</button>
+	</div>
+</div>
+<script>
+	var ItemCodeAutoSelect = [];
+	$(document).ready(function () {
+		$('.textCapital').keyup(function () {
+			$(this).val($(this).val().toUpperCase());
+		});
+		$('.numeric').keyup(function () {
+			this.value = this.value.replace(/[^0-9.]/g, '');
+		});
+		//getVatDetails();
+		getItemRecords();
+		var isEditMode = '@Model.IsEditMode' == 'True' ? true : false;
+		if (isEditMode == 'undefined' || isEditMode == null) {
+			isEditMode = false;
+		}
+		if (isEditMode) {
+			getUniformByItemCode();
+		}
+		$('#ItemCode').on('input change', function () {
+			var itemCode = $(this).val().toUpperCase();
+			if (ItemCodeAutoSelect.includes(itemCode)) {
+				$app.notify.validate("ItemCode", "", true);
+				getUniformByItemCode();
+			}
+		});
+
+		$('#ItemCode').on('paste', function (e) {
+			setTimeout(() => {
+				var itemCode = $(this).val().toUpperCase();
+				$(this).val(itemCode);
+				if (ItemCodeAutoSelect.includes(itemCode)) {
+					$app.notify.validate("ItemCode", "", true);
+					getUniformByItemCode();
+					// calculateTotal();
+					// BindData(false);
+					// bootbox.hideAll();
+				}
+			}, 1000);
+		});
+
+		$('#Quantity, #UnitPrice').on('input', function () {
+			calculateTotal();;
+		});
+
+		$('#ParentId').change(function () {
+			var parentId = $(this).val();
+			if (parentId) {
+				LoadParentControl(parentId);
+			}
+		});
+
+		$(document).on('shown.bs.modal', '.modal', function () {
+			$('#FatherMobile').focus();
+		});
+
+		$('#NationalityId').on('input change', function () {
+
+			// var nationalityId = $(this).val();
+			// GetVATDetail(nationalityId);
+			$app.notify.validate("NationalityId", "", true);
+			getUniformByItemCode();
+		});
+
+		$('#UnitPrice').val(formatNumber($('#UnitPrice').val()));
+		// $('#Discount').val(formatNumber($('#Discount').val()));
+	});
+
+	function checkAndBindData() {
+		var itemCode = $('#ItemCode').val();
+		var quantity = parseFloat($('#Quantity').val());
+		var excludedCountryCount = $('#ExcludedCountryCount').val();
+		if (itemCode && quantity > 0 && excludedCountryCount == 0) {
+			calculateTotal();
+			// BindData(false);
+		}
+	}
+
+	function getItemRecords() {
+		$.ajax({
+			url: '@Url.Action("GetItemCodeRecords", "InvoiceSetup")',
+			type: 'GET',
+			success: function (data) {
+				ItemCodeAutoSelect = data.map((record) => record.ItemCode);
+
+				$("#ItemCode").autocomplete({
+					source: ItemCodeAutoSelect,
+					minLength: 0,
+					position: {
+						my: "left top+2",
+						at: "left bottom",
+						collision: "none"
+					},
+					appendTo: ".modal",
+					open: function (event, ui) {
+						$(".ui-autocomplete").css("max-height", "200px");
+						$(".ui-autocomplete").css("overflow-y", "auto");
+						$(".ui-autocomplete").css("cursor", "pointer");
+					},
+					select: function (event, ui) {
+						$(this).val(ui.item.value).change();
+						return false;
+					}
+				}).focus(function () {
+					$(this).autocomplete("search", "");
+				});
+			},
+			error: function (xhr, status, error) {
+				console.error("Error fetching item records:", error);
+			}
+		});
+	}
+
+	function getUniformByItemCode() {
+		var itemCode = $('#ItemCode').val();
+		var nationalId = $("#NationalityId").val();
+		nationalId = nationalId == null || nationalId == undefined ? 0 : nationalId;
+
+		if (itemCode == null || itemCode == undefined || itemCode == "") {
+			$app.notify.validate("ItemCode", "ItemCode is required");
+			return;
+		} else {
+			$app.notify.validate("ItemCode", "", true);
+		}
+
+		if (itemCode) {
+			var url = '@Url.Action("GetUniformByItemCode", "InvoiceSetup")';
+			//url = url + "?itemCode=" + itemCode + "&nationalId=" + nationalId;
+			nationalId = nationalId.trim();
+			$.ajax({
+				url: url,
+				type: 'GET',
+				data: { itemCode: itemCode, nationalId: nationalId},
+				success: function (data) {
+					var isEditMode = '@Model.IsEditMode' == 'True' ? true : false;
+					if (isEditMode == 'undefined' || isEditMode == null) {
+						isEditMode = false;
+					}
+					if (data.length > 0) {
+						CheckAndRemoveValidation();
+						var quantity = 1;
+						if (parseInt("@Model.Quantity") > 0) {
+							quantity = parseInt("@Model.Quantity");
+						}
+						$('#Quantity').val(quantity);
+						$('#Description').val(data[0].ItemDescription);
+						$('#UnitPrice').val(formatNumber(data[0].CurrentPrice));
+						$('#AvailableQuantity').val(data[0].AvailableQuantity); 
+						$('#TaxRate').val(data[0].VatPercent);
+						if (data[0].CurrentPrice > 0) {
+							$app.notify.validate("UnitPrice", "", true);
+						}
+						if (data[0].AvailableQuantity <= 0) {
+							$('#Quantity').prop('disabled', true);
+							$('#Quantity').val(0);
+						} else {
+							$('#Quantity').prop('disabled', false);
+							$app.notify.validate("AvailableQuantity", "", true);
+						}
+						$('#ExcludedCountryCount').val(data[0].ExcludedCountryCount);
+						$('#VatID').val(data[0].VatID);
+						calculateTotal();
+
+						if (data[0].ExcludedCountryCount > 0) {
+							if (nationalId == null || nationalId == undefined || nationalId == "" || nationalId == "0") {
+								$app.notify.validate("NationalityId", "Nationality is required");
+								return;
+							} else {
+								$app.notify.validate("NationalityId", "", true);
+								//BindData(!isEditMode);
+							}
+						} else {
+							$app.notify.validate("NationalityId", "", true);
+							//BindData(!isEditMode);
+						}
+
+						//checkAndBindData();
+					} else {
+						$('#UnitPrice').val('');
+						$('#AvailableQuantity').val(0);
+						$('#Quantity').val(0);
+						$('#Description').val('');
+						$('#TaxRate').val('');
+						$('#ExcludedCountryCount').val(0);
+						$('#VatID').val(0);
+						calculateTotal();
+					}
+				}
+			});
+		} else {
+			$('#UnitPrice').val('');
+			$('#AvailableQuantity').val(0);
+			$('#Quantity').val(0);
+			$('#Description').val('');
+			$('#TaxRate').val('');
+			calculateTotal();
+		}
+	}
+
+	function LoadParentControl(parentId) {
+		if (parentId) {
+			$.ajax({
+				url: '@Url.Action("GetParentById", "InvoiceSetup")',
+				type: 'GET',
+				data: { parentId: parentId },
+				success: function (data) {
+					$('#ParentName').val(data[0].FatherName);
+					$('#IqamaNumber').val(data[0].FatherIqamaNo);
+					$('#NationalityId').val(data[0].FatherNationalityId).trigger('change');
+					$('#FatherMobile').val(data[0].FatherMobile)
+					$app.notify.validate("FatherMobile", "", true);
+					$app.notify.validate("NationalityId", "", true);
+					$app.notify.validate("ItemSubtotal", "", true);
+				}
+			});
+		} else {
+			$('#ParentName').val('');
+			$('#IqamaNumber').val('');
+			$('#NationalityId').val('');
+			$('#FatherMobile').val('');
+		}
+	}
+
+	function ParentLookup() {
+		var op = { title: 'Search Parent' }
+		var url = '@Url.Action("ParentLookupPartial", "Student")';
+		$app.openViewDialog(url, op);
+	}
+
+	function formatNumber(num) {
+		return (parseFloat(num) || 0).toFixed(2);
+	}
+
+	function GetVATDetail(nationalityId) {
+		debugger;
+		$.ajax({
+			url: '@Url.Action("GetVATDetail", "InvoiceSetup")',
+			type: 'GET',
+			data: { invoiceTypeName: "Uniform Fee", nationalId: nationalityId },
+			success: function (data) {
+				$("#TaxRate").val(data.vatTaxPercent);
+				calculateVate();
+			}
+		});
+	}
+
+	function getVatDetails() {
+		$.ajax({
+			url: '@Url.Action("GetVATDetail", "InvoiceSetup")',
+			type: 'GET',
+			data: { invoiceTypeName: "Uniform Fee" },
+			success: function (data) {
+				$("#TaxRate").val(data.vatTaxPercent);
+				calculateTotal();
+			}
+		});
+	}
+
+	function calculateVate() {
+		var unitPrice = parseFloat($('#UnitPrice').val()) || 0;
+		var vat = parseFloat($("#TaxRate").val()) || 0;
+		var total = unitPrice + (unitPrice * vat) / 100;
+		var finalTotal = total.toFixed(2);
+		$('#ItemSubtotal').val(formatNumber(finalTotal));
+		$('#UnitPrice').val(formatNumber(unitPrice));
+	}
+	function calculateTotal() {
+		var quantity = parseFloat($('#Quantity').val()) || 0;
+		var unitPrice = parseFloat($('#UnitPrice').val()) || 0;
+		var discount = 0;
+		var vat = parseFloat($('#TaxRate').val()) || 0;
+		var totalvat = ((unitPrice * quantity) - discount) * vat / 100;
+		var totalwithvat = ((quantity * unitPrice) - discount) + totalvat;
+		var totalAfterDiscount = (quantity * unitPrice) - discount;
+		$('#TaxAmount').val(totalvat.toFixed(2));
+		$('#TotalAfterDiscount').val(totalAfterDiscount.toFixed(2));
+		$('#Totalwithvat').val(totalwithvat.toFixed(2));
+		$('#ItemSubtotal').val(totalwithvat.toFixed(2));
+	}
+
+
+	function BindDataSave() {
+		BindData(true);
+	}
+	function BindData(isCallFromSave) {
+		var sessionKey = "@Model.SessionKey";
+		var isEditMode = "@Model.IsEditMode";
+
+		// if (!isCallFromSave) {
+		// 	isCallFromSave = isEditMode == "False";
+		// }
+		// if (!isCallFromSave)
+		// 	isCallFromSave = false;// Do not close auto popup
+
+		if (isCallFromSave) {
+			var dataObj = {
+				InvoiceType: "Uniform Fee",
+				InvoiceDetailId: $("#InvoiceDetailId").val(),
+				ParentId: $("#ParentId").val(),
+				ItemCode: $("#ItemCode").val(),
+				Description: $("#Description").val(),
+				IqamaNumber: $("#IqamaNumber").val(),
+				FatherMobile: $("#FatherMobile").val(),
+				ParentName: $("#ParentName").val(),
+				NationalityId: $("#NationalityId").val(),
+				UnitPrice: $("#UnitPrice").val(),
+				UnitPriceAvailable: $("#UnitPriceAvailable").val(),
+				Quantity: $("#Quantity").val(),
+				AvailableQuantity: $("#AvailableQuantity").val(),
+				Discount: $("#Discount").val() || 0,
+				TaxAmount: $("#TaxAmount").val(),
+				TaxableAmount: 0,
+				TaxRate: $("#TaxRate").val(),
+				ItemSubtotal: $("#ItemSubtotal").val(),
+				SessionKey: $("#SessionKey").val(),
+			};
+			if (Validation(dataObj)) {
+				if (dataObj["InvoiceDetailId"] == "0") {
+					SaveUniformFee(dataObj);
+				}
+				else {
+					var dlg_updatePromo = bootbox.dialog({
+						message: 'Are you sure! you want to update the record?',
+						title: 'Confirm',
+						buttons: {
+							ok: {
+								label: "Yes",
+								className: 'btn-primary',
+								callback: function () {
+									SaveUniformFee(dataObj);
+								}
+							},
+							cancel: {
+								label: "No",
+								className: 'btn-danger',
+								callback: function () {
+									$(dlg_updatePromo).modal('hide');
+								}
+							}
+						}
+					});
+					dlg_updatePromo.find('.modal-header').css('background-color', '#dc3545').css('border-bottom', '1px solid #dc3545');
+				}
+			}
+		}
+	}
+	function Validation(dataObj) {
+		var isError = false;
+		if (!dataObj["ItemCode"] || !dataObj["ItemCode"].trim()) {
+			$app.notify.validate("ItemCode", "ItemCode is required");
+			isError = true;
+		}
+		if (parseFloat(dataObj["TaxRate"]) <= 0) {
+			if (!dataObj["IqamaNumber"] || !dataObj["IqamaNumber"].trim()) {
+				$app.notify.validate("IqamaNumber", "IqamaNumber is required");
+				isError = true;
+			}
+		}
+
+		if (parseInt($('#ExcludedCountryCount').val()) > 0) {
+			if (!dataObj["NationalityId"] || !dataObj["NationalityId"].trim()) {
+				$app.notify.validate("NationalityId", "Nationality is required");
+				isError = true;
+			}
+		}
+
+		if (!dataObj["FatherMobile"] || !dataObj["FatherMobile"].trim()) {
+			$app.notify.validate("FatherMobile", "Father Mobile is required");
+			isError = true;
+		}
+		if (!dataObj["AvailableQuantity"] || !dataObj["AvailableQuantity"].trim() || parseInt(dataObj["AvailableQuantity"].trim()) <= 0) {
+			$app.notify.validate("AvailableQuantity", "Available Quantity Should Be Greater Than Zero.");
+			isError = true;
+		}
+		if (!dataObj["UnitPrice"] || !dataObj["UnitPrice"].trim() || dataObj["UnitPrice"] == "0" || parseFloat(dataObj["UnitPrice"].trim()) <= 0) {
+			$app.notify.validate("UnitPrice", "Unit Price Cannot be Zero.");
+			isError = true;
+		}
+
+		if (!dataObj["ItemSubtotal"] || !dataObj["ItemSubtotal"].trim() || dataObj["ItemSubtotal"] == "0" || parseFloat(dataObj["ItemSubtotal"].trim()) <= 0) {
+			$app.notify.validate("ItemSubtotal", "Total Price Cannot be Zero.");
+			isError = true;
+		}
+
+		// if (dataObj["FatherMobile"].replace(/\s+/g, '').replace('+96', '').length>10) {
+		// 	$app.notify.validate("FatherMobile", "Father Mobile should not exceed 10 digits ");
+		// 	isError = true;
+		// }
+		if (isError) {
+			return false;
+		}
+		else {
+			return true;
+		}
+	}
+	function CheckAndRemoveValidation() {
+		var dataObj = {
+			InvoiceType: "Uniform Fee",
+			InvoiceDetailId: $("#InvoiceDetailId").val(),
+			ParentId: $("#ParentId").val(),
+			ItemCode: $("#ItemCode").val(),
+			Description: $("#Description").val(),
+			IqamaNumber: $("#IqamaNumber").val(),
+			FatherMobile: $("#FatherMobile").val(),
+			ParentName: $("#ParentName").val(),
+			NationalityId: $("#NationalityId").val(),
+			UnitPrice: $("#UnitPrice").val(),
+			UnitPriceAvailable: $("#UnitPriceAvailable").val(),
+			Quantity: $("#Quantity").val(),
+			AvailableQuantity: $("#AvailableQuantity").val(),
+			Discount: 0,
+			TaxAmount: $("#TaxAmount").val(),
+			TaxableAmount: 0,
+			TaxRate: $("#TaxRate").val(),
+			ItemSubtotal: $("#ItemSubtotal").val(),
+			SessionKey: $("#SessionKey").val(),
+		};
+
+		var isError = false;
+		if (!(!dataObj["ItemCode"] || !dataObj["ItemCode"].trim())) {
+			$app.notify.validate("ItemCode", "", true);
+		}
+
+		if (!(!dataObj["NationalityId"] || !dataObj["NationalityId"].trim() || dataObj["NationalityId"] == "0")) {
+			$app.notify.validate("NationalityId", "", true);
+		}
+
+		if (!(!dataObj["FatherMobile"] || !dataObj["FatherMobile"].trim())) {
+			$app.notify.validate("FatherMobile", "", true);
+		}
+		if (!(!dataObj["AvailableQuantity"] || !dataObj["AvailableQuantity"].trim() || parseInt(dataObj["AvailableQuantity"].trim()) <= 0)) {
+			$app.notify.validate("AvailableQuantity", "", true);
+		}
+		if (!(!dataObj["UnitPrice"] || !dataObj["UnitPrice"].trim() || dataObj["UnitPrice"] == "0" || parseFloat(dataObj["UnitPrice"].trim()) <= 0)) {
+			$app.notify.validate("UnitPrice", "", true);
+		}
+
+		if (!(!dataObj["ItemSubtotal"] || !dataObj["ItemSubtotal"].trim() || dataObj["ItemSubtotal"] == "0" || parseFloat(dataObj["ItemSubtotal"].trim()) <= 0)) {
+			$app.notify.validate("ItemSubtotal", "", true);
+		}
+	}
+</script>

@@ -1,0 +1,101 @@
+﻿@{
+    ViewData["Title"] = "Fee Structure";
+}
+
+<div class="row">
+    <div class="col-12">
+        <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+            <div class="page-title d-flex align-items-center justify-content-between">
+                <ol class="breadcrumb m-0">
+                    <li class="breadcrumb-item">Fee</li>
+                    <li class="breadcrumb-item active">Fee Structure</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="card">
+    <div class="card-body">
+        <div class="cform row gy-3 align-items-center">
+            <div class="col-lg-4">
+                <div class="mb-3">
+                    <label for="AdmissionYear" class="form-label">Academic Year</label>
+                    <div class="input-group">
+                        <select id="AdmissionYear" class="form-select" aria-label="Academic Year"
+                                asp-items="@(new SelectList(ViewBag.TermYear,"Value", "Text"))">
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <div id="feeStucture">
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <script>
+        $(function () {
+            $('#AdmissionYear').on('change', function () {
+                if (this.value != 0)
+                    LoadFeeStucture(this.value);
+                else
+                    $('#feeStucture').html("");
+
+            });
+        });
+        function LoadFeeStucture(admissionYear) {
+            var urlToCall = baseUrl + 'Fee/GetFeeStructureDataPartial?academicYear=' + admissionYear;
+            $app.get(urlToCall).then(function (response) {
+                $('#feeStucture').html(response);
+            });
+        }
+
+        function SaveFeeStructure(feeObjList, gwObjList) {
+            var dlg_updatePromo = bootbox.dialog({
+                message: 'Are you sure! you want to save fee structure for academic year ' + $('#AdmissionYear').val() + '?',
+                title: 'Confirm',
+                buttons: {
+                    ok: {
+                        label: "Yes",
+                        className: 'btn-primary',
+                        callback: function () {
+                            var formData = new FormData();
+                            formData.append('FeeStructureWithoutGradwiseList', JSON.stringify(feeObjList));
+                            formData.append('FeeStructureWithGradwiseList', JSON.stringify(gwObjList));
+                            var urlToCall = '@Url.Action("SaveFeeStructure", "Fee")';
+                            $.post({
+                                url: urlToCall,
+                                data: formData,
+                                processData: false,
+                                contentType: false,
+                                success: function (response) {
+                                    if (response.result == 0) {
+                                        bootbox.hideAll();
+                                        $app.notify.success("Data has been saved!");
+                                    }
+                                    else {
+                                        bootbox.hideAll();
+                                        $app.notify.error("Error in saving!");
+                                    }
+                                },
+                                error: function (jqXHR, textStatus, errorThrown) {
+                                    bootbox.hideAll();
+                                    $app.notify.error("Error in saving!");
+                                }
+                            });
+                        }
+                    },
+                    cancel: {
+                        label: "No",
+                        className: 'btn-danger',
+                        callback: function () {
+                            $(dlg_updatePromo).modal('hide');
+                        }
+                    }
+                }
+            });
+        }
+    </script>
+}

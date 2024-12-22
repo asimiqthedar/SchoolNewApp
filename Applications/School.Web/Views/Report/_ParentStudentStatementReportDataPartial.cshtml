@@ -1,0 +1,229 @@
+﻿@using System.Data;
+@model DataSet;
+@if (Model != null && Model.Tables.Count > 0 && Model.Tables[0].Rows.Count > 0)
+{
+	decimal FeeAmount = 0;
+	decimal PaidAmount = 0;
+	decimal TotalDiscount = 0;
+	foreach (DataTable dt in Model.Tables)
+	{
+		<div class="card mt-2">
+			<div class="card-body">
+				<div class="row">
+					@* <div class="col-md-12" style="border-bottom: solid 1px #dbdbdb;    margin-bottom: 10px;">
+			<label for="filterParentId" class="form-label" style="font-weight: bold;">@dt.Rows[0]["StudentName"]</label>
+			</div> *@
+					<div class="col-md-12">
+						<div class="table-responsive">
+							@if (dt.Rows.Count >= 2)
+							{
+								<table class="table align-middle table-nowrap mb-0">
+									<tbody>
+										<tr>
+											<td class="" style="font-weight: bold;">Student Name: @dt.Rows[1]["StudentName"]</td>
+											<td class="" style="font-weight: bold;"></td>
+											<td class="" style="font-weight: bold;">
+												Student Code:
+												<a id="View" onclick="View('@dt.Rows[1]["StudentId"]')" style="cursor:pointer" class="fw-medium link-primary">
+													@dt.Rows[1]["StudentCode"]
+												</a>
+											</td>
+											<td class="" style="font-weight: bold;"></td>
+											<td class="" style="font-weight: bold;">Grade: @dt.Rows[1]["GradeName"]</td>
+											<td class="" style="font-weight: bold;"></td>
+											<td class="" style="font-weight: bold;"></td>
+											<td class="" style="font-weight: bold;"></td>
+											<td class="" style="font-weight: bold;"></td>
+										</tr>
+									</tbody>
+								</table>
+							}
+							else
+							{
+								<table class="table align-middle table-nowrap mb-0">
+									<tbody>
+										<tr>
+											<td class="" style="font-weight: bold;">Student Name</td>
+											<td class="" style="font-weight: bold;">@dt.Rows[0]["StudentName"]</td>
+											<td class="" style="font-weight: bold;"></td>
+											<td class="" style="font-weight: bold;">Student Code</td>
+											<td class="" style="font-weight: bold;">
+												<a id="View" onclick="View('@dt.Rows[0]["StudentId"]')" style="cursor:pointer" class="fw-medium link-primary">
+													@dt.Rows[0]["StudentCode"]
+												</a>
+											</td>
+											<td class="" style="font-weight: bold;"></td>
+											<td class="" style="font-weight: bold;">Grade</td>
+											<td class="" style="font-weight: bold;">@dt.Rows[0]["GradeName"]</td>
+											<td class="" style="font-weight: bold;"></td>
+										</tr>
+									</tbody>
+								</table>
+							}
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-12">
+						<div class="table-responsive">
+							<table class="table align-middle table-nowrap mb-0" id="tblStudentStatement_@dt.Rows[0]["StudentId"]">
+								<thead class="table-light text-muted">
+									<tr>
+										<th class="text-center" style="width: 5%">S.No</th>
+										<th>Academic Year</th>
+										<th>Student Name</th>
+										<th>Invoice No</th>
+										<th>Date</th>
+										<th>Payment Method</th>
+										<th width="50px">Fee Type</th>
+										<th class="text-end">Fee Amount</th>
+										<th class="text-end">Paid Amount</th>
+									</tr>
+								</thead>
+								<tbody class="list form-check-all">
+									@if (Model != null && Model.Tables.Count > 0 && Model.Tables[0].Rows.Count > 0)
+									{
+										int i = 0;
+										foreach (DataRow dr in dt.Rows)
+										{
+											FeeAmount = FeeAmount + Convert.ToDecimal(dr["FeeAmount"]);
+											PaidAmount = PaidAmount + Convert.ToDecimal(dr["PaidAmount"]);
+											if (Convert.ToString(dr["FeeTypeName"]).ToLower().Contains("discount"))
+											{
+												TotalDiscount = TotalDiscount + Convert.ToDecimal(dr["PaidAmount"]);
+											}
+
+											i++;
+											<tr>
+												<td class="text-center">@i</td>
+												<td>@dr["AcademicYear"]</td>
+												<td>@dr["StudentName"]</td>
+												<td>
+													@if (string.IsNullOrWhiteSpace(dr["InvoiceNo"].ToString()) || dr["InvoiceNo"].ToString() == "0")
+													{
+
+													}
+													else
+													{
+														<a id="View" onclick="Print('@dr["InvoiceNo"]')" style="cursor:pointer" class="fw-medium link-primary">
+
+															<span> @dr["InvoiceNo"]</span>
+														</a>
+													}
+												</td>
+												<td>@((string.IsNullOrEmpty(Convert.ToString(dr["RecordDate"])) || Convert.ToDateTime(dr["RecordDate"]).Date == Convert.ToDateTime("01/01/1900").Date || Convert.ToDateTime(dr["RecordDate"]) == DateTime.MinValue) ? "" : Convert.ToDateTime(dr["RecordDate"]).ToString("dd/MM/yyyy"))</td>
+												<td>@dr["PaymentMethod"]</td>
+												<td>@dr["FeeTypeName"]</td>
+												<td class="text-end">@Convert.ToDecimal(dr["FeeAmount"]).ToTwoDecimalString()</td>
+												<td class="text-end">@Convert.ToDecimal(dr["PaidAmount"]).ToTwoDecimalString()</td>
+
+											</tr>
+										}
+									}
+								</tbody>
+								<tfoot>
+									<tr>
+										<th colspan="8" class="text-end font-weight-bold">Total Balance:</th>
+										<th class="text-end font-weight-bold" id="totalBalanceAmount_@dt.Rows[0]["StudentId"]"></th>
+									</tr>
+								</tfoot>
+							</table>
+						</div>
+
+						<script>
+							$(document).ready(function () {
+								var table = $('#tblStudentStatement_@dt.Rows[0]["StudentId"]').DataTable({
+									// language: {
+									// 	search: "<i class='ri-search-line search-icon'></i>",
+									// 	searchPlaceholder: "Search ..."
+									// },
+									searching: false,
+									pageLength: 10,
+									paging: false, // Disable pagination
+									info: false,   // Disable the info display
+									ordering: true,
+									responsive: true,
+									columnDefs: [
+										{ orderable: false, targets: 0 }
+									],
+									drawCallback: function (settings) {
+										var api = this.api();
+										var info = api.page.info();
+										api.column(0, { search: 'applied', order: 'applied' }).nodes().each(function (cell, i) {
+											cell.innerHTML = i + 1;// cell.innerHTML = i + 1 + info.start;
+										});
+										// Calculate and display totals
+										var totalFeeAmount = api
+											.column(7, { search: 'applied' })
+											.data()
+											.reduce(function (a, b) {
+												return parseFloat(a) + parseFloat(b.replace(/[^\d.-]/g, ''));
+											}, 0);
+
+										var totalPaidAmount = api
+											.column(8, { search: 'applied' })
+											.data()
+											.reduce(function (a, b) {
+												return parseFloat(a) + parseFloat(b.replace(/[^\d.-]/g, ''));
+											}, 0);
+
+										var totalPaidAmount = api
+											.column(8, { search: 'applied' })
+											.data()
+											.reduce(function (a, b) {
+												return parseFloat(a) + parseFloat(b.replace(/[^\d.-]/g, ''));
+											}, 0);
+
+										var totalBalance = totalFeeAmount - totalPaidAmount
+										$('#totalBalanceAmount_@dt.Rows[0]["StudentId"]').html(totalBalance.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }));
+									}
+								});
+							});
+						</script>
+					</div>
+				</div>
+			</div>
+		</div>
+	}
+	<div class="card mt-2">
+		<div class="card-body">
+			<div class="row">
+				<div class="col-md-12">
+					<div class="table-responsive">
+						<table class="table align-middle table-nowrap mb-0">
+							<tbody>
+								<tr>
+									<td class="text-center" style="font-weight: bold;">Grand Total</td>
+									<td class="text-center"></td>
+									<td class="text-center"></td>
+									<td class="text-center"></td>
+									<td class="text-center"></td>
+									<td class="text-end font-weight-bold"></td>
+									<td class="text-end" style="font-weight: bold;">
+										Total Fee: @Convert.ToDecimal(FeeAmount).ToTwoDecimalString()
+									</td>
+									<td class="text-end" style="font-weight: bold;">Total Discount: @Convert.ToDecimal(TotalDiscount).ToTwoDecimalString()</td>
+									<td class="text-end" style="font-weight: bold;">Total Payment: @Convert.ToDecimal(PaidAmount - TotalDiscount).ToTwoDecimalString()</td>
+									<td class="text-end" style="font-weight: bold;">Total Balance: @Convert.ToDecimal(FeeAmount - PaidAmount).ToTwoDecimalString()</td>
+
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+}
+else
+{
+	<div class="card mt-2">
+		<div class="card-body">
+			<div class="row">
+				<div class="col-md-12">
+					<p style="color:red">No Student found!</p>
+				</div>
+			</div>
+		</div>
+	</div>
+}

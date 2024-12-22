@@ -1,0 +1,513 @@
+﻿@model School.Models.WebModels.DashboardModels.AdminDashboardModel
+@{
+	ViewData["Title"] = "Admin";
+
+	var firstDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
+	var endDate = DateTime.Now;
+
+	var yearWiseStudentValue = Model.YearWiseStudent.Select(s => s.KeyValue).ToArray();
+	var yearWiseStudentName = Model.YearWiseStudent.Select(s => s.KeyName.Trim()).ToArray();
+
+	var gradeWiseStudentValueFemale = Model.GradeWiseStudent.Where(s => s.Gender == "Female").Select(s => s.KeyValue).ToArray();
+	var gradeWiseStudentValueMale = Model.GradeWiseStudent.Where(s => s.Gender == "Male").Select(s => s.KeyValue).ToArray();
+	var gradeWiseStudentName = Model.GradeWiseStudent.Select(s => s.KeyName.Trim()).Distinct().ToArray();
+
+	var jsonYearWiseStudentValue = System.Text.Json.JsonSerializer.Serialize(yearWiseStudentValue);
+	var jsonYearWiseStudentName = System.Text.Json.JsonSerializer.Serialize(yearWiseStudentName);
+
+	var jsonGradeWiseStudentValueFemale = System.Text.Json.JsonSerializer.Serialize(gradeWiseStudentValueFemale);
+	var jsonGradeWiseStudentValueMale = System.Text.Json.JsonSerializer.Serialize(gradeWiseStudentValueMale);
+	var jsonGradeWiseStudentName = System.Text.Json.JsonSerializer.Serialize(gradeWiseStudentName);
+
+	var MonthNameNow = DateTime.Now.ToString("MMMM");
+	string monthName = MonthNameNow.ToUpper();
+}
+
+<div class="row">
+	<div class="col-12">
+		<div class="page-title-box d-sm-flex align-items-center justify-content-between">
+			<div class="page-title d-flex align-items-center justify-content-between">
+				<ol class="breadcrumb m-0">
+					<li class="breadcrumb-item active">Admin Dashboard</li>
+				</ol>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="row">
+	<div class="col-xxl-3 col-sm-6">
+		<div class="card card-animate">
+			<div class="card-body">
+				<div class="d-flex justify-content-between">
+					<div class="">
+						<p class="fw-medium text-muted mb-0">STUDENTS</p>
+						<h2 class="mt-3 ff-secondary fw-semibold">
+							<span class="counter-value" data-target="@Model.TotalStudent">@Model.TotalStudent</span>
+						</h2>
+					</div>
+					<div>
+						<p class="fw-medium text-muted mb-3 text-center">STUDENT STATUS</p>
+						<div class="d-flex flex-wrap justify-content-around">
+							@foreach (var status in Model.StudentStatus)
+							{
+								<div class="text-center px-2">
+									<span class="d-block fw-semibold">@status.StatusCount</span>
+									<small class="text-muted">@status.StatusName</small>
+								</div>
+							}
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!--end col-->
+	<div class="col-xxl-3 col-sm-6">
+		<div class="card card-animate">
+			<div class="card-body">
+				<div class="d-flex justify-content-between">
+					<div>
+						<p class="fw-medium text-muted mb-0"> @monthName UNIFORM COLLECTIONS </p>
+						<h2 class="mt-4 ff-secondary fw-semibold"><span class="counter-value" data-target="@Model.MonthlyUniformRevenue">@Convert.ToDecimal(@Model.MonthlyUniformRevenue).ToTwoDecimalString()</span></h2>
+					</div>
+				</div>
+			</div>
+			<!-- end card body -->
+		</div>
+	</div>
+	<!--end col-->
+	<div class="col-xxl-3 col-sm-6">
+		<div class="card card-animate">
+			<div class="card-body">
+				<div class="d-flex justify-content-between">
+					<div>
+						<p class="fw-medium text-muted mb-0"> @monthName TUITION COLLECTIONS </p>
+						<h2 class="mt-4 ff-secondary fw-semibold"><span class="counter-value" data-target="@Model.MonthlyTutitionRevenue">@Convert.ToDecimal(@Model.MonthlyTutitionRevenue).ToTwoDecimalString()</span></h2>
+					</div>
+				</div>
+			</div>
+			<!-- end card body -->
+		</div>
+	</div>
+
+	<!--end col-->
+	<div class="col-xxl-3 col-sm-6">
+		<div class="card card-animate">
+			<div class="card-body">
+				<div class="d-flex justify-content-between">
+					<div>
+						<p class="fw-medium text-muted mb-0"> @monthName ENTRANCE COLLECTIONS </p>
+						<h2 class="mt-4 ff-secondary fw-semibold"><span class="counter-value" data-target="@Model.MonthlyEntranceRevenue">@Convert.ToDecimal(@Model.MonthlyEntranceRevenue).ToTwoDecimalString()</span></h2>
+					</div>
+				</div>
+			</div>
+			<!-- end card body -->
+		</div>
+	</div>
+	<!--end col-->
+</div>
+
+<!--Year revenue div-->
+
+<div class="row">	
+	<div class="col-xxl-3 col-sm-6">
+		<div class="card card-animate">
+			<div class="card-body">
+				<div class="d-flex justify-content-between">
+					<div>
+						<p class="fw-medium text-muted mb-0"> TOTAL FEES </p>
+						<h2 class="mt-4 ff-secondary fw-semibold"><span class="counter-value" data-target="@Model.TotalYearlyAppliedFee">@Convert.ToDecimal(@Model.TotalYearlyAppliedFee).ToTwoDecimalString()</span></h2>
+					</div>
+				</div>
+			</div>
+			<!-- end card body -->
+		</div>
+	</div>
+	<!--end col-->
+	<div class="col-xxl-3 col-sm-6">
+		<div class="card card-animate">
+			<div class="card-body">
+				<div class="d-flex justify-content-between">
+					<div>
+						<p class="fw-medium text-muted mb-0"> YEARLY UNIFORM COLLECTIONS </p>
+						<h2 class="mt-4 ff-secondary fw-semibold"><span class="counter-value" data-target="@Model.YearlyUniformRevenue">@Convert.ToDecimal(@Model.YearlyUniformRevenue).ToTwoDecimalString()</span></h2>
+					</div>
+				</div>
+			</div>
+			<!-- end card body -->
+		</div>
+	</div>
+	<!--end col-->
+	<div class="col-xxl-3 col-sm-6">
+		<div class="card card-animate">
+			<div class="card-body">
+				<div class="d-flex justify-content-between">
+					<div>
+						<p class="fw-medium text-muted mb-0"> YEARLY TUITION COLLECTIONS </p>
+						<h2 class="mt-4 ff-secondary fw-semibold"><span class="counter-value" data-target="@Model.YearlyTuitionRevenue">@Convert.ToDecimal(@Model.YearlyTuitionRevenue).ToTwoDecimalString()</span></h2>
+					</div>
+				</div>
+			</div>
+			<!-- end card body -->
+		</div>
+	</div>
+
+	<!--end col-->
+	<div class="col-xxl-3 col-sm-6">
+		<div class="card card-animate">
+			<div class="card-body">
+				<div class="d-flex justify-content-between">
+					<div>
+						<p class="fw-medium text-muted mb-0"> YEARLY ENTRANCE COLLECTIONS </p>
+						<h2 class="mt-4 ff-secondary fw-semibold"><span class="counter-value" data-target="@Model.YearlyEntranceRevenue">@Convert.ToDecimal(@Model.YearlyEntranceRevenue).ToTwoDecimalString()</span></h2>
+					</div>
+				</div>
+			</div>
+			<!-- end card body -->
+		</div>
+	</div>
+	<!--end col-->
+</div>
+
+<!--Chart Div-->
+<div class="row">
+
+	<div class="col-md-6">
+		<div class="card card-h-100">
+			<div class="card-body">
+				<h2>Yearly Revenue</h2>
+				<div id="yearly-bar-chart"></div>
+			</div>
+		</div>
+	</div>
+	<div class="col-md-6">
+		<div class="card card-h-100">
+			<div class="card-body">
+				<h2>Gradewise Student</h2>
+				<div id="column-chart"></div>
+			</div>
+		</div>
+	</div>
+	<div class="col-md-6">
+		<div class="card card-h-100">
+			<div class="card-body">
+				<h2>Cost Center Revenue</h2>
+				<div id="costcenter-column-chart"></div>
+			</div>
+		</div>
+	</div>
+	<div class="col-md-6">
+		<div class="card card-h-100">
+			<div class="card-body">
+				<h2>Grade Revenue</h2>
+				<div id="grade-column-chart"></div>
+			</div>
+		</div>
+	</div>
+
+</div>
+
+
+@section scripts {
+	<script>
+		//          var firstDate= new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
+		// var endDate = DateTime.Now;
+		$(document).ready(function () {
+			fetchcostCenterRevenueData();
+			fetchgradeRevenueData();
+			fetchInvoiceDataYearly();
+		});
+
+		function fetchInvoiceDataYearly() {
+			console.log("Working")
+			var urlToCall = '@Url.Action("GetInvoiceDataYearly", "Home")';
+
+			$app.get(urlToCall).then(function (response) {
+				console.log("response is", response);
+				loadYearlyRevenueChart(response);
+			});
+		}
+
+
+		var yearWiseStudentValue = @Html.Raw(jsonYearWiseStudentValue);
+		var yearWiseStudentName = @Html.Raw(jsonYearWiseStudentName);
+
+		var gradeWiseStudentValueFemale = @Html.Raw(jsonGradeWiseStudentValueFemale);
+		var gradeWiseStudentValueMale = @Html.Raw(jsonGradeWiseStudentValueMale);
+		var gradeWiseStudentName = @Html.Raw(jsonGradeWiseStudentName);
+
+
+
+		var optionsPie = {
+			series: yearWiseStudentValue,
+			chart: {
+				width: 380,
+				type: 'pie',
+				height: 430
+			},
+			labels: yearWiseStudentName,
+			responsive: [{
+				breakpoint: 480,
+				options: {
+					chart: {
+						width: 200,
+						height: 430
+					},
+					legend: {
+						position: 'bottom'
+					}
+				}
+			}]
+		};
+
+		var chart = new ApexCharts(document.querySelector("#simple-pie-chart"), optionsPie);
+		chart.render();
+
+
+		var optionsColumn = {
+			series: [{
+				name: 'Female',
+				data: gradeWiseStudentValueFemale
+			}, {
+				name: 'Male',
+				data: gradeWiseStudentValueMale
+			}],
+			chart: {
+				type: 'bar',
+				height: 430,
+			},
+			plotOptions: {
+				bar: {
+					horizontal: false,
+					columnWidth: '55%',
+					endingShape: 'rounded'
+				},
+			},
+			dataLabels: {
+				enabled: false
+			},
+			stroke: {
+				show: true,
+				width: 2,
+				colors: ['transparent']
+			},
+			xaxis: {
+				categories: gradeWiseStudentName,
+			},
+			yaxis: {
+				title: {
+					text: 'Number'
+				}
+			},
+			fill: {
+				opacity: 1
+			},
+			tooltip: {
+				y: {
+					formatter: function (val) {
+						return "Total " + val
+					}
+				}
+			}
+		};
+
+		var chart = new ApexCharts(document.querySelector("#column-chart"), optionsColumn);
+		chart.render();
+
+
+		function loadYearlyRevenueChart(response) {
+			console.log("func", response)
+			var MonthNames = response.map(item => item.monthNames);
+			var MonthlyUniformRevenue = response.map(item => item.monthlyUniformRevenue);
+			var MonthlyEntranceRevenue = response.map(item => item.monthlyEntranceRevenue);
+			var MonthlyTutitionRevenue = response.map(item => item.monthlyTutitionRevenue);
+
+			var optionsBar = {
+				series: [{
+					name: 'Uniform Revenue',
+					data: MonthlyUniformRevenue
+				}, {
+					name: 'Entrance Revenue',
+					data: MonthlyEntranceRevenue
+				}, {
+					name: 'Tuition Revenue',
+					data: MonthlyTutitionRevenue
+				}],
+				chart: {
+					type: 'bar',
+					height: 430
+				},
+				plotOptions: {
+					bar: {
+						horizontal: false,
+						columnWidth: '55%',
+						endingShape: 'rounded'
+					},
+				},
+				dataLabels: {
+					enabled: false
+				},
+				stroke: {
+					show: true,
+					width: 2,
+					colors: ['transparent']
+				},
+				xaxis: {
+					categories: MonthNames,
+				},
+				fill: {
+					opacity: 1
+				},
+				tooltip: {
+					y: {
+						formatter: function (val) {
+							return val;
+						}
+					}
+				}
+			};
+
+			var chart = new ApexCharts(document.querySelector("#yearly-bar-chart"), optionsBar);
+			chart.render();
+		}
+
+		//cost center revenue  chart
+
+		function fetchcostCenterRevenueData() {
+			var urlToCall = '@Url.Action("GetCostRevenue", "Home")';
+
+			$app.get(urlToCall).then(function (response) {
+				console.log("response is cost", response);
+				loadCostCenterRevenueChart(response);
+			});
+		}
+
+		function loadCostCenterRevenueChart(response) {
+
+			var costCenterName = response.map(item => item.costCenterName);
+			var totalAppliedFee = response.map(item => item.totalAppliedFee);
+			var totalPaidAmount = response.map(item => item.totalPaidAmount);
+
+			var costCenterOptionsColumn = {
+				series: [{
+					name: 'TotalAppliedFee',
+					data: totalAppliedFee
+				}, {
+					name: 'TotalPaidAmount',
+					data: totalPaidAmount
+				}],
+				chart: {
+					type: 'bar',
+					height: 430,
+				},
+				plotOptions: {
+					bar: {
+						horizontal: false,
+						columnWidth: '55%',
+						endingShape: 'rounded'
+					},
+				},
+				dataLabels: {
+					enabled: false
+				},
+				stroke: {
+					show: true,
+					width: 2,
+					colors: ['transparent']
+				},
+				xaxis: {
+					categories: costCenterName,
+				},
+				yaxis: {
+					title: {
+						text: 'Number'
+					}
+				},
+				fill: {
+					opacity: 1
+				},
+				tooltip: {
+					y: {
+						formatter: function (val) {
+							return "Total " + val
+						}
+					}
+				}
+			};
+
+			var costcenterchart = new ApexCharts(document.querySelector("#costcenter-column-chart"), costCenterOptionsColumn);
+			costcenterchart.render();
+
+		}
+
+		//grade revenue chart
+
+		function fetchgradeRevenueData() {
+			var urlToCall = '@Url.Action("GetGradeRevenue", "Home")';
+
+			$app.get(urlToCall).then(function (response) {
+				console.log("response is", response);
+				loadGradeRevenueChart(response);
+			});
+		}
+
+		function loadGradeRevenueChart(response) {
+
+			var gradeName = response.map(item => item.gradeName);
+			var totalAppliedFee = response.map(item => item.totalAppliedFee);
+			var totalPaidAmount = response.map(item => item.totalPaidAmount);
+
+			var gradeOptionsColumn = {
+				series: [{
+					name: 'TotalAppliedFee',
+					data: totalAppliedFee
+				}, {
+					name: 'TotalPaidAmount',
+					data: totalPaidAmount
+				}],
+				chart: {
+					type: 'bar',
+					height: 430,
+				},
+				plotOptions: {
+					bar: {
+						horizontal: false,
+						columnWidth: '55%',
+						endingShape: 'rounded'
+					},
+				},
+				dataLabels: {
+					enabled: false
+				},
+				stroke: {
+					show: true,
+					width: 2,
+					colors: ['transparent']
+				},
+				xaxis: {
+					categories: gradeName,
+				},
+				yaxis: {
+					title: {
+						text: 'Number'
+					}
+				},
+				fill: {
+					opacity: 1
+				},
+				tooltip: {
+					y: {
+						formatter: function (val) {
+							return "Total " + val
+						}
+					}
+				}
+			};
+
+			var graderevenuechart = new ApexCharts(document.querySelector("#grade-column-chart"), gradeOptionsColumn);
+			graderevenuechart.render();
+
+		}
+	</script>
+}

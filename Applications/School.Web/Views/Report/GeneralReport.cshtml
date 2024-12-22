@@ -1,0 +1,141 @@
+﻿@{
+	ViewData["Title"] = "General Report";
+}
+<style>
+	.backlog-filter-btn button {
+		padding: 6px 10px;
+	}
+</style>
+
+<div class="row">
+	<div class="col-12">
+		<div class="page-title-box d-sm-flex align-items-center justify-content-between">
+			<div class="page-title d-flex align-items-center justify-content-between">
+				<ol class="breadcrumb m-0">
+					<li class="breadcrumb-item">Report</li>
+					<li class="breadcrumb-item active">General Report</li>
+				</ol>
+				<div>
+					<button type="button" class="btn btn-secondary" onclick="ExportCSVStatement()">
+						<i class="fa-solid fa-file-excel"></i> Export to Excel
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="card">
+	<div class="card-body">
+		<div style="margin-bottom:10px;">
+			<button class="btn btn-dark btn-warning w-sm-100" type="button" data-bs-toggle="collapse" data-bs-target="#filterCollapse" aria-expanded="false" aria-controls="filterCollapse">
+				<i class="mx-1 fa-solid fa-filter"></i>Filter
+			</button>
+		</div>
+		<div class="collapse" id="filterCollapse">
+			<div class="row mb-3 align-items-center  label-row">
+				<div class="col-md-12 mb-5">
+					<div class="row">
+						<div class="col-md-12 p-3">
+							<div class="row">
+								<div class="col-lg-6">
+									<label for="filterAcademicYear" class="form-label">Academic Year</label>
+									<select id="filterAcademicYear" class="form-select" aria-label="Academic Year"
+											asp-items="@(new SelectList(ViewBag.AcademicYearDropDown,"Value", "Text"))">
+									</select>
+								</div>
+								<div class="col-lg-6">
+									<label for="filterCostCenter" class="form-label">Cost Center</label>
+									<select id="filterCostCenter" class="form-select" aria-label="CostCenter"
+											asp-items="@(new SelectList(ViewBag.CostCenterDropdown,"Value", "Text"))">
+									</select>
+								</div>
+								<div class="col-lg-6">
+									<label for="filterGrade" class="form-label">Grade</label>
+									<select id="filterGrade" class="form-select" aria-label="Grade"
+											asp-items="@(new SelectList(ViewBag.GradeDropdown,"Value", "Text"))">
+									</select>
+								</div>
+								<div class="col-lg-6">
+									<label for="filterGender" class="form-label">Gender</label>
+									<select id="filterGender" class="form-select" aria-label="Gender"
+											asp-items="@(new SelectList(ViewBag.GenderDropdown,"Value", "Text"))">
+									</select>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="col-md-12 btn-col">
+					<div class="row">
+						<div class="col-md-12">
+							<div class="d-flex backlog-btn-row">
+								<div class="backlog-filter-btn">
+									<button type="button" class="btn btn-primary" onclick="LoadGeneralReportByFilter();">
+										Search
+									</button>
+								</div>
+								<div class="backlog-filter-btn">
+									<button type="button" class="btn btn-secondary" onclick="RefreshSearch();">
+										Refresh
+									</button>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="row g-3">
+			<div class="col-lg-12 col-md-12">
+				<div class="tab-content screen-list">
+					<div class="tab-pane fade show active" id="general-report-load">
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+@section scripts {
+	<script>
+		$(function () {
+			$("#filterAcademicYear").prop("selectedIndex", 1);
+			LoadGeneralReportByFilter();
+		});
+		function RefreshSearch() {
+			$("#filterAcademicYear").val(0),
+			$("#filterCostCenter").val(0),
+			$("#filterGrade").val(0),
+			$("#filterGender").val(0),
+			LoadGeneralReportByFilter();
+		}
+		function LoadGeneralReportByFilter() {
+			var filterDataObj = {
+				AcademicYear: $("#filterAcademicYear").val(),
+				CostCenter: $("#filterCostCenter").val(),
+				Grade: $("#filterGrade").val(),
+				Gender: $("#filterGender").val()
+			};
+			LoadGeneralReport(filterDataObj);
+		}
+		function LoadGeneralReport(filterDataObj) {
+			$('#general-report-load').empty();
+			$('#general-report-load').html('<div class="row"> <div class="col-xl-12"><div class="card order-card"><span class="text-center no-text" style="color:#212529;"><img src="@Url.Content("~/images/loding.gif")"  /></span></div></div></div>');
+			var urlToCall = baseUrl + 'Report/GeneralReportDataPartial';
+			$app.post(urlToCall, filterDataObj).then(function (response) {
+				$('#general-report-load').html(response);
+			});
+		}
+
+		function ExportCSVStatement() {
+			var reportKey = 'generalreportexport';
+			var reportName = 'General Report';			
+			var AcademicYearParam = "AcademicYear: " + $("#filterAcademicYear").val();
+			var CostCenterParam = "CostCenter: " + $("#filterCostCenter").val();
+			var GradeParam = "Grade: " + $("#filterGrade").val();
+			var GenderParam = "Gender: " + $("#filterGender").val();
+			var parameters = AcademicYearParam + '|' + CostCenterParam + '|' + GradeParam + '|' + GenderParam;
+			this.ExportCSVWithParam(reportKey, reportName, parameters);
+		}
+	</script>
+}
+

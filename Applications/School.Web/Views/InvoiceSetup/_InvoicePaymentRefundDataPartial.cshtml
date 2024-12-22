@@ -1,0 +1,212 @@
+﻿@using System.Data;
+@using School.Models.WebModels.InvoiceSetupModels
+@model InvInvoiceSummaryRefundModel
+@{
+	string formattedDate = Model.InvoiceDate.HasValue ? Model.InvoiceDate.Value.ToString("yyyy-MM-dd") : string.Empty;
+	var isDisableField = Model.Status.ToLower() == "posted";
+}
+
+<div class="table-responsive table-card order-tabel" style="width:100%">
+	<table class="table align-middle table-nowrap mb-0" id="tblPaymentActivityData">
+		<thead class="table-light text-muted">
+			<tr>
+				<th width="5%">S.No</th>
+				<th>Original Payment Method</th>
+				<th>Payment Method</th>
+				<th>Payment Reference No.</th>
+				<th>Refundable Amount</th>
+				<th>Refund Amount</th>
+			</tr>
+		</thead>
+		<tbody class="list form-check-all">
+			@if (Model != null && Model.InvoicePaymentList.Count > 0)
+			{
+				int i = 0;
+				foreach (var dr in Model.InvoicePaymentList)
+				{
+					i++;
+					<tr>
+						<td>@i</td>
+						<td>@dr.OriginalPaymentMethod</td>
+						<td>
+							<div class="input-group">
+								<select id="PaymentMethod_@i" name="PaymentMethod_@i" class="form-select PaymentMethod" aria-label="Doc Type"
+										data-Index="@i" data-SessionKey="@dr.SessionKey" data-InvoiceNo="@dr.InvoiceNo"
+										data-InvoiceSessionKey="@dr.InvoiceSessionKey"
+										asp-items="@(new SelectList(ViewBag.PaymentMethodDropdownList ,"Value", "Text",dr.PaymentMethod))">
+								</select>
+							</div>
+						</td>
+						<td>
+							<input type="text" id="PaymentReferenceNumber_@i" name="PaymentReferenceNumber_@i"
+								   data-Index="@i" data-SessionKey="@dr.SessionKey" data-InvoiceNo="@dr.InvoiceNo"
+								   data-InvoiceSessionKey="@dr.InvoiceSessionKey"
+								   class="form-control PaymentReferenceNumber" placeholder="Payment Reference Number" value="@dr.PaymentReferenceNumber">
+						</td>
+						<td>@dr.AvailablePaymentAmount</td>
+						<td>
+							@{
+								string disabled = dr.RefundablePaymentAmount == dr.RefundedPaymentAmount ? "disabled" : "";
+								if (Model.Status.ToLower() == "posted")
+								{
+									disabled = "disabled";
+								}
+							}
+							<input type="text" id="PaymentAmount_@i" name="PaymentAmount_@i" data-Index="@i" data-SessionKey="@dr.SessionKey" data-InvoiceNo="@dr.InvoiceNo"
+								   data-InvoiceSessionKey="@dr.InvoiceSessionKey" class="form-control numeric PaymentAmount" placeholder="Refund Amount" value="@dr.PaymentAmount" @disabled>
+						</td>
+					</tr>
+				}
+			}
+		</tbody>
+		<tfoot>
+			<tr>
+				<td colspan="4" style="text-align: right;"><strong> Refund Amount:</strong></td>
+				<td> <strong id="totalRefundPaymentAmount">0.00</strong> </td>
+
+			</tr>
+		</tfoot>
+	</table>
+</div>
+
+<script>
+	$(document).ready(function () {
+		$('#tblPaymentActivityData tbody tr').each(function () {
+			const paymentMethodSelect = $(this).find('#PaymentMethod');
+			loadPaymentMethodOptions(paymentMethodSelect);
+		});
+	});
+	$("#tblPaymentActivityData").DataTable({
+		bSort: false,
+		searching: false,
+		paging: false,
+		drawCallback: function (settings) {
+			var api = this.api();
+			var info = api.page.info();
+
+			api.column(0, { search: 'applied', order: 'applied' }).nodes().each(function (cell, i) {
+				cell.innerHTML = i + 1;// cell.innerHTML = i + 1 + info.start;
+			});
+			calculateRefundPaymentAmount();
+		}
+	});
+
+	$('#tblPaymentActivityData').on('input', '.PaymentAmount', function () {
+		calculateRefundPaymentAmount();
+	});
+
+	$('.numeric').keyup(function () {
+		this.value = this.value.replace(/[^0-9.]/g, '');
+	});
+
+	var initialRefundValue = null;
+	$('#tblPaymentActivityData').on('focusout', '.PaymentAmount', function () {
+		if (initialRefundValue !== $(this).val()) { // Check if the value has changed
+			refundPayment(this);
+		}
+	});
+	
+	$('#tblPaymentActivityData').on('keypress', '.PaymentAmount', function (e) {
+		if (e.which == 13 || e.which == 9) {
+			if (initialRefundValue !== $(this).val()) { // Check if the value has changed
+				refundPayment(this);
+			}
+			e.preventDefault();
+			$(this).blur();
+		}
+
+		$('.numeric').keyup(function () {
+			this.value = this.value.replace(/[^0-9.]/g, '');
+		});
+	});
+
+	$('#tblPaymentActivityData').on('focusout', '.PaymentAmount', function () {
+		if (initialRefundValue !== $(this).val()) { // Check if the value has changed
+			refundPayment(this);
+		}
+	});
+
+	$('#tblPaymentActivityData').on('focusout', '.PaymentMethod', function () {
+		refundPayment(this);
+	});
+
+	$('#tblPaymentActivityData').on('focusout', '.PaymentReferenceNumber', function () {
+		refundPayment(this);
+	});
+
+	function refundPayment(element) {
+		var dataIndex = element.attributes["data-Index"].value
+
+		var invoiceSessionKey = element.attributes["data-invoicesessionkey"].value
+		var sessionKey = element.attributes["data-sessionkey"].value
+		var invoiceNo = element.attributes["data-invoiceno"].value		
+
+		var paymentMethod = $("#PaymentMethod_" + dataIndex).val();
+		var paymentReferenceNumber = $("#PaymentReferenceNumber_" + dataIndex).val();
+		var paymentAmount = $("#PaymentAmount_" + dataIndex).val();
+
+		refundPaymentWithModel(invoiceSessionKey, sessionKey, invoiceNo, paymentMethod, paymentReferenceNumber, paymentAmount, element);
+	}
+
+	function refundPaymentWithModel(invoiceSessionKey, sessionKey, invoiceNo, paymentMethod, paymentReferenceNumber, paymentAmount, element) {
+		var dataModel = {
+			InvoiceSessionKey: invoiceSessionKey,
+			SessionKey: sessionKey,
+			InvoiceNo: invoiceNo,
+			
+			PaymentMethod: paymentMethod,
+			PaymentReferenceNumber: paymentReferenceNumber,
+			PaymentAmount: paymentAmount,
+			Amount: parseFloat(paymentAmount)
+		};
+		var urlToCall = '@Url.Action("RefundPayment", "InvoiceSetup")';
+		$app.post(urlToCall, dataModel).then(function (response) {
+			if (response.result == 0) {
+				$app.notify.success("Data has been saved!");
+				calculateTotalRefundAmount();
+			} else if (response.result == -2) {
+				$(element).val(0);
+				$app.notify.error("Payment cannot refund more than refundable amount!");
+				calculateRefundPaymentAmount();
+			} else if (response.result == -3) {
+				$(element).val(0);
+				$app.notify.error("Totol Payment cannot refund more than total refundable amount!");
+				calculateRefundPaymentAmount();
+			} else {
+				$(element).val(0);
+				$app.notify.error("Error in saving!");
+			}
+		})
+	}
+	
+	function calculateRefundPaymentAmount() {
+		// var inputvalue = $('#RefundAmount').val();
+		// console.log("Refund", inputvalue);
+		var totalRefundAmount = 0;
+		$('#tblPaymentActivityData tbody tr').each(function () {
+			var refundAmount = parseFloat($(this).find('#PaymentAmount').val()) || 0;
+			totalRefundAmount += refundAmount;
+		});
+		console.log("totalRefundPaymentAmount", totalRefundAmount);
+		$('#totalRefundPaymentAmount').html(totalRefundAmount.toFixed(2));
+	}
+
+	function loadPaymentMethodOptions(selectElement) {
+		const selectedMethod = selectElement.data('selected-method');
+		$.ajax({
+			url: '@Url.Action("GetPaymentMethod", "InvoiceSetup")',
+			type: 'GET',
+			success: function (data) {
+				console.log(data);
+				selectElement.empty();
+				selectElement.append('<option value="">--Select--</option>');
+				data.forEach(function (record) {
+					var isSelected = record.PaymentMethodId == selectedMethod ? 'selected' : '';
+					selectElement.append('<option value="' + record.PaymentMethodId + '" data-name="' + record.PaymentMethodName + '" ' + isSelected + '>' + record.PaymentMethodName + '</option>');
+				});
+				selectElement.change();
+				$app.notify.validate("PaymentMethod", "", true);
+			}
+		});
+	}
+</script>

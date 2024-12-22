@@ -1,0 +1,273 @@
+﻿@using School.Models.WebModels.FeetypeModels;
+@model FeeTermDetailModel
+
+<div class="row">
+    <div class="col-12">
+        <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+            <div class="page-title d-flex align-items-center justify-content-between">
+                <ol class="breadcrumb m-0">
+                    <li class="breadcrumb-item">Invoice Type</li>
+                    <li class="breadcrumb-item active">Invoice Type Detail</li>
+                </ol>
+                <div class="d-flex">
+                    <div class="mx-2">
+                        <input type="hidden" id="FeeTypeId" name="FeeTypeId" asp-for="FeeTypeId" />
+                        <button type="button" class="btn btn-dark btn-set-task w-sm-100">
+                            <a class="breadcrumb-item FeeTypeAction" href="@Url.Action("FeeType","Fee")">Back To List</a>
+                        </button>
+                    </div>
+                    <div>
+                        <button type="button" class="btn btn-dark btn-set-task w-sm-100" onclick="Create()">
+                            <i class="fa-solid fa-plus"></i> Add
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="card" style="margin:10px;">
+    <div class="card-body">
+        <div class="row g-3">
+            <div class="col-lg-12 col-md-12">
+                <div class="tab-content screen-list">
+                    <div class="tab-pane fade show active" id="fee-type-detail-load">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section scripts {
+    <script>
+        $(document).ready(function () {
+            $('.textCapital').keyup(function () {
+                $(this).val($(this).val().toUpperCase());
+            });
+            $('.numeric').keyup(function () {
+                this.value = this.value.replace(/[^0-9.]/g, '');
+            });
+            // $("#Grades").select2();
+            FeeTypeDetailLoad();
+
+            // var choiceAssignedRule = new Choices('#TDiscountRules', {
+            //     removeItemButton: true,
+            //     shouldSort: false,
+            // });
+            // var choices = new Choices('.choices');
+            // // Close the dropdown on mouse out
+            // $('.choices').mouseout(function () {
+            //     // choices.close();
+            //     $('.choices__list--dropdown').attr('aria-expanded', 'false');
+            // });
+
+            // BindAssignedRules();
+
+            // function BindAssignedRules() {
+            //     $('#TDiscountRules').empty();
+            //     choiceAssignedRule.clearChoices();
+            //     choiceAssignedRule.removeActiveItems();
+            //     const arrRules = 'selectedRules';
+            //     const arrChangeTolabel = arrRules.replace(/(&quot\;)/g, "\"");
+            //     var _val = 'rules';
+            //     var _value = JSON.parse(_val.replace(/(&quot\;)/g, "\""));
+            //     var choiceValue;
+            //     var choiceArr = [];
+            //     var choiceSelectedArr = [];
+            //     $.each(_value, function (index, value) {
+            //         if (@Model.TermList.Count > 0) {
+            //             if (!(arrChangeTolabel.indexOf(value['Text']) > -1)) {
+            //                 choiceArr.push({ value: value['Value'], text: value['Text'] });
+            //                 $('#TDiscountRules').append('<option value="' + value['Value'] + '">' + value['Text'] + '</option>');
+            //             }
+            //             else {
+
+            //                 choiceSelectedArr.push({ value: value['Value'], label: value['Text'] });
+            //             }
+            //         }
+            //         else {
+            //             choiceArr.push({ value: value['Value'], text: value['Text'] });
+            //             $('#TDiscountRules').append('<option value="' + value['Value'] + '">' + value['Text'] + '</option>');
+            //         }
+
+            //     });
+
+            //     choiceAssignedRule.setChoices(choiceArr, 'value', 'text', false);
+
+            //     if (@Model.GradeId != 0) {
+            //         choiceAssignedRule.setValue(choiceSelectedArr);
+            //     }
+            // }
+
+            // $("#btnSave").click(function () {
+            //     BindData();
+            // })
+
+            // function BindData() {
+            //     var selectedChoices = choiceAssignedRule.getValue(true).toString();
+
+            //     var dataObj = {
+            //         AcademicYearId: $("#AcademicYear").val(),
+            //         // AcademicYearName: $("#AcademicYear").text(),
+
+            //         FeeTypeId: $("#FeeTypeId").val(),
+            //         FeeTypeName: $("#FeeTypeName").val(),
+
+            //         FeeTypeDetailId: $("#FeeTypeDetailId").val(),
+
+            //         IsTermPlan: $("#IsTermPlan").val(),
+            //         IsPaymentPlan: $("#IsPaymentPlan").val(),
+            //         TermFeeAmount: $("#TermFeeAmount").val(),
+            //         StaffFeeAmount: $("#StaffFeeAmount").val(),
+            //         GradeRules: selectedChoices,
+            //         IsGradeWise: "@Model.IsGradeWise"
+            //     };
+            //     if (Validation(dataObj)) {
+            //         if (dataObj["FeeTypeDetailId"] == "0") {
+            //             Save(dataObj);
+            //         }
+            //         else {
+            //             var dlg_updatePromo = bootbox.dialog({
+            //                 message: 'Are you sure! you want to update the record?',
+            //                 title: 'Confirm',
+            //                 buttons: {
+            //                     ok: {
+            //                         label: "Yes",
+            //                         className: 'btn-primary',
+            //                         callback: function () {
+            //                             Save(dataObj);
+            //                         }
+            //                     },
+            //                     cancel: {
+            //                         label: "No",
+            //                         className: 'btn-danger',
+            //                         callback: function () {
+            //                             $(dlg_updatePromo).modal('hide');
+            //                         }
+            //                     }
+            //                 }
+            //             });
+            //             dlg_updatePromo.find('.modal-header').css('background-color', '#dc3545').css('border-bottom', '1px solid #dc3545');
+            //         }
+            //     }
+            // }
+
+        });
+
+        // function Validation(dataObj) {
+        //     var isError = false;
+        //     if (!dataObj["FeeTypeId"] || !dataObj["FeeTypeId"].trim() || dataObj["FeeTypeId"].trim() == "0") {
+        //         $app.notify.validate("FeeTypeId", "Fee Type Id is required");
+        //         isError = true;
+        //     }
+        //     else if (dataObj["IsGradeWise"].trim() == "True" && (!dataObj["GradeRules"] || !dataObj["GradeRules"].trim())) {
+        //         $app.notify.validate("TDiscountRules", "Grade is required");
+        //         isError = true;
+        //     }
+        //     if (isError) {
+        //         return false;
+        //     }
+        //     else {
+        //         return true;
+        //     }
+        // }
+
+        function TermPlanDetail(feeTypeId, feeTypeDetailId) {
+            var url = '@Url.Action("TermPlanDetail", "Fee")';
+            url = url + '?feeTypeId=' + feeTypeId;
+            url = url + '&feeTypeDetailId=' + feeTypeDetailId;
+            //window.location.href = url;// (url, "_blank");
+
+            var op = { title: 'Term Detail' }
+
+            $app.openViewDialog(url, op);
+        }
+
+        function PaymentPlanDetail(feeTypeId, feeTypeDetailId) {
+            var url = '@Url.Action("FeePaymentPlanPartial", "Fee")';
+            url = url + '?feeTypeId=' + feeTypeId;
+            url = url + '&feeTypeDetailId=' + feeTypeDetailId;
+            var op = { title: 'Payment Plan' }
+            $app.openViewDialog(url, op);
+        }
+
+        function Delete(feeTypeId) {
+            var dlg_removePromo = bootbox.dialog({
+                message: 'Are you sure! you want to delete the record?',
+                title: 'Remove',
+                buttons: {
+                    ok: {
+                        label: "Yes",
+                        className: 'btn-primary',
+                        callback: function () {
+                            var urlToCall = '@Url.Action("DeleteFeeTypeDetail", "Fee")';
+                            urlToCall = urlToCall + '?feeTypeDetailId=' + feeTypeId;
+
+                            $app.get(urlToCall).then(function (response) {
+                                if (response.result == 0) {
+                                    bootbox.hideAll();
+                                    $app.notify.success("Data has been deleted!");
+                                    FeeTypeDetailLoad();
+                                }
+                                else {
+                                    $app.notify.error("Error in deleting!");
+                                }
+                            });
+                        }
+                    },
+                    cancel: {
+                        label: "No",
+                        className: 'btn-danger',
+                        callback: function () {
+                            $(dlg_removePromo).modal('hide');
+                        }
+                    }
+                }
+            });
+            dlg_removePromo.find('.modal-header').css('background-color', '#dc3545').css('border-bottom', '1px solid #dc3545');
+        }
+
+        function Create() {
+            var op = { title: 'Add Fee Type Detail' }
+            var feeTypeId = $("#FeeTypeId").val();
+            var url = '@Url.Action("FeeTypeDetailEditPartial", "Fee")';
+            url = url + '?feeTypeId=' + feeTypeId;
+            $app.openViewDialog(url, op);
+        }
+        function Edit(feeTypeDetailId) {
+            var op = { title: 'Update Fee Type Detail' }
+            var feeTypeId = $("#FeeTypeId").val();
+            var url = '@Url.Action("FeeTypeDetailEditPartial", "Fee")';
+            url = url + '?feeTypeId=' + feeTypeId;
+            url = url + '&feeTypeDetailId=' + feeTypeDetailId;
+            $app.openViewDialog(url, op);
+        }
+
+        function Save(dataModel) {
+            var urlToCall = '@Url.Action("SaveFeeTypeDetail", "Fee")';
+            $app.post(urlToCall, dataModel).then(function (response) {
+                if (response.result == 0) {
+                    bootbox.hideAll();
+                    $app.notify.success("Data has been saved!");
+                    FeeTypeDetailLoad();
+                }
+                else if (response.result == -2) {
+                    $app.notify.error("Data already exists!");
+                }
+                else {
+                    $app.notify.error("Error in saving!");
+                }
+            });
+        }
+
+        function FeeTypeDetailLoad() {
+            $('#fee-type-detail-load').empty();
+            $('#fee-type-detail-load').html('<div class="row"> <div class="col-xl-12"><div class="card order-card"><span class="text-center no-text" style="color:#212529;"><img src="@Url.Content("~/images/loding.gif")"  /></span></div></div></div>');
+            var urlToCall = baseUrl + 'Fee/FeeTypeDataDetailPartial';
+            urlToCall = urlToCall + '?feeTypeId=' + @Model.FeeTypeId;
+            $app.post(urlToCall).then(function (response) {
+                $('#fee-type-detail-load').html(response);
+            });
+        }
+    </script>
+}

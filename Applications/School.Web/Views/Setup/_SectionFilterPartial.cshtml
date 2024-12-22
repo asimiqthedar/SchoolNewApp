@@ -1,0 +1,45 @@
+﻿<div class="row mb-3 align-items-center  label-row">
+    <div class="col-md-11">
+        <div class="row mb-3">
+            <div class="col-md-8">
+                <div class="search-box">
+                    <input type="text" id="filterSearch" class="form-control search bg-light border-light" placeholder="Search....">
+                    <i class="ri-search-line search-icon"></i>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="row">                     
+                    <div class="col" style="display:none">
+                        <div class="single-filter">
+                            <label>Active</label>
+                            <select class="form-select" id="filterIsActive" aria-label="Active">
+                                <option value=true>Active</option>
+                                <option value=false>In-Active</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-1 btn-col">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="d-flex backlog-btn-row">
+                    <div class="backlog-filter-btn">
+                        <button type="button" class="btn btn-secondary" onclick="loadSectionByFilter();">
+                            <i class="ri-filter-line"></i>
+                        </button>
+                    </div>
+                    <div class="backlog-filter-btn">
+                        <button type="button" class="btn btn-secondary" onclick="RefreshSearch();">
+                            <i class="ri-refresh-line"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

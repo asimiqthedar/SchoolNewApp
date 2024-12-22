@@ -1,0 +1,179 @@
+﻿@using School.Models.WebModels.InvoiceSetupModels;
+@model InvInvoiceDetailEntranceFeeModel;
+
+<div class="row">
+            <input type="hidden" id="InvoiceDetailId" name="InvoiceDetailId" asp-for="InvoiceDetailId" value="@Model.InvoiceDetailId" />
+            <input type="type" hidden asp-for="SessionKey" name="name" value="@Model.SessionKey" />
+            <div class="row">
+                <div class="col-xxl-6 col-md-6">
+                    <div class="mb-3">
+                    <label for="AcademicYear" class="form-label">Academic Year</label>
+                    <div class="input-group">
+                    <select id="AcademicYear" class="form-select" aria-label="Academic Year"
+                                    asp-items="@(new SelectList(ViewBag.AcademicYearDropDown,"Value", "Text"))">
+                        </select>
+                    </div>    
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="mb-3">
+                        <label for="FatherIqama" class="form-label">Father Iqama Number</label>
+                        <input type="text" class="form-control" asp-for="IqamaNumber" placeholder="Father Iqama Number">
+                    </div>
+                </div>
+            </div>   
+            <div class="row">
+                <div class="col-lg-4">
+                    <div class="mb-3">
+                        <label for="FatherName" class="form-label"> Father Name</label>
+                        <input type="text" class="form-control" asp-for="ParentName" placeholder="Father Name">
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                <div class="mb-3">
+                    <label for="StudentName" class="form-label"> Student Name</label>
+                    <input type="text" class="form-control" asp-for="StudentName" placeholder="Student Name">
+                </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="mb-3">
+                        <label for="Grade" class="form-label">Grade</label>
+                        <div class="input-group">
+                            <select id="GradeId" class="form-select" aria-label="Grade"
+                                    asp-items="@(new SelectList(ViewBag.GradeDropDown,"Value", "Text"))">
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-4">
+                    <div class="mb-3">
+                        <label for="Amount" class="form-label">Amount</label>
+                         <input type="text" id="UnitPrice" class="form-control" readonly asp-for="UnitPrice" placeholder="Amount">
+            </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="mb-3">
+                        <label for="Vat" class="form-label">Vat</label>
+                <input type="text" id="TaxRate" class="form-control" asp-for="TaxRate" readonly placeholder="Vat">
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="mb-3">
+                        <label for="Total" class="form-label">Total</label>
+                     <input type="text" id="ItemSubtotal" class="form-control" asp-for="ItemSubtotal" readonly placeholder="Total">
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-12 text-center">
+                <button class="btn btn-success theme-btn" type="button" onclick="BindData()">@(Model.InvoiceDetailId > 0 ? "Update" : "Add")</button>
+                <button class="btn btn-secondary" type="button" onclick="bootbox.hideAll();">Cancel</button>
+            </div>
+
+   
+</div>
+<script>
+    $(document).ready(function () {
+        $('.textCapital').keyup(function () {
+            $(this).val($(this).val().toUpperCase());
+        });
+        $.ajax({
+            url: '@Url.Action("GetVATDetail", "InvoiceReturn")',
+            type: 'GET',
+            data: { invoiceTypeName: "Entrance Fee" },
+            success: function (data) {
+                $("#TaxRate").val(data.vatTaxPercent);
+                calculateVate();
+            }
+        });
+        $('#AcademicYear').change(function () {
+            var academicYearId = $(this).val();
+            $.ajax({
+                url: '@Url.Action("GetFeeAmount", "InvoiceReturn")',
+                type: 'GET',
+                data: {
+                    academicYearId: academicYearId,
+                    invoiceTypeName: "ENTRANCE",
+                    studentId: 0,
+                },
+                success: function (data) {
+                    $("#UnitPrice").val(data.finalFeeAmount);
+                    calculateVate();
+                }
+            });
+        });
+
+        $('#TaxRate', '#UnitPrice').on('input', function () {
+                calculateVate();
+        });
+
+       function calculateVate(){
+            var unitPrice = parseFloat($('#UnitPrice').val()) || 0;
+            var vat = parseFloat($("#TaxRate").val()) || 0;
+           var total =unitPrice + ( unitPrice * vat) / 100;
+            $('#ItemSubtotal').val(total.toFixed(2));
+       }
+    });
+
+    function BindData() {
+        var dataObj = {
+            InvoiceType:"Entrance Fee",
+            InvoiceDetailId: $("#InvoiceDetailId").val(),
+            AcademicYear: $("#AcademicYear").val(),
+            IqamaNumber: $("#IqamaNumber").val(),
+            ParentName: $("#ParentName").val(),
+            StudentName: $("#StudentName").val(),
+            GradeId: $("#GradeId").val(),
+            Discount: 0,
+            UnitPrice: $("#UnitPrice").val(),
+            TaxRate: $("#TaxRate").val(),
+            TaxableAmount:0,
+            TaxAmount:0,
+            ItemSubTotal: $("#ItemSubtotal").val(),
+            SessionKey: $("#SessionKey").val(),
+        };
+        if (Validation(dataObj)) {
+            if (dataObj["InvoiceDetailId"] == "0") {
+                SaveEntranceFee(dataObj);
+
+            }
+            else {
+                var dlg_updatePromo = bootbox.dialog({
+                    message: 'Are you sure! you want to update the record?',
+                    title: 'Confirm',
+                    buttons: {
+                        ok: {
+                            label: "Yes",
+                            className: 'btn-primary',
+                            callback: function () {
+                                SaveEntranceFee(dataObj);
+                            }
+                        },
+                        cancel: {
+                            label: "No",
+                            className: 'btn-danger',
+                            callback: function () {
+                                $(dlg_updatePromo).modal('hide');
+                            }
+                        }
+                    }
+                });
+                dlg_updatePromo.find('.modal-header').css('background-color', '#dc3545').css('border-bottom', '1px solid #dc3545');
+            }
+        }
+    }
+    function Validation(dataObj) {
+        var isError = false;
+        if (!dataObj["ParentName"] || !dataObj["ParentName"].trim()) {
+            $app.notify.validate("ParentName", "Parent Name is required");
+            isError = true;
+        }
+        if (isError) {
+            return false;
+        }
+        else {
+            return true;
+        }
+    }
+</script>

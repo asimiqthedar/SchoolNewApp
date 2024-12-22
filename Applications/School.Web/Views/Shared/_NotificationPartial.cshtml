@@ -1,0 +1,20 @@
+﻿@using School.Models.WebModels.SectionModels;
+@using System.Text.Json;
+@using System.Text.Json.Serialization;
+
+<div id="notification-load">
+</div>
+
+<script>
+    $(function () {
+        LoadNotification();
+    });
+    function LoadNotification() {
+        $('#notification-load').empty();
+        //$('#notification-load').html('<div class="row"> <div class="col-xl-12"><div class="card order-card"><span class="text-center no-text" style="color:#212529;"><img src="@Url.Content("~/images/loding.gif")"  /></span></div></div></div>');
+        var urlToCall = baseUrl + 'Home/GetNotificationInfo';
+        $app.get(urlToCall).then(function (response) {
+            $('#notification-load').html(response);
+        });
+    }
+</script>

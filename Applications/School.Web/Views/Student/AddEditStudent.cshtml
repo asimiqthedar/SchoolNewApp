@@ -1,0 +1,1230 @@
+﻿@using School.Models.WebModels.StudentModels
+@model School.Models.WebModels.StudentModels.StudentModel
+@{
+	ViewData["Title"] = "Student";
+
+}
+
+<style>
+	.arabicText {
+		text-align: right;
+	}
+</style>
+
+<div class="row">
+	<div class="col-12">
+		<div class="page-title-box d-sm-flex align-items-center justify-content-between">
+			<div class="page-title d-flex align-items-center justify-content-between">
+				<ol class="breadcrumb m-0">
+					<li class="breadcrumb-item">Student</li>
+					<li class="breadcrumb-item active">Add/Edit Student</li>
+				</ol>
+				<div>
+					<button type="button" class="btn btn-dark btn-set-task w-sm-100">
+						<a class="breadcrumb-item FeeTypeAction" href="@Url.Action("studentlist","student")">Back To List</a>
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="position-relative mx-n4 mt-n4">
+	@* <div class="profile-wid-bg profile-setting-img">
+	<img src="@Url.Content("~/images/login-bg.jpg")" class="profile-wid-img">
+	</div> *@
+</div>
+<input type="hidden" id="StudentId" value="@Model.StudentId" />
+<div class="row">
+	<div class="col-xxl-2 col-md-2 col-lg-2 edit-profile">
+		<div class="card mt-5">
+			<div class="card-body">
+				<div class="text-center">
+					<div class="profile-user position-relative d-inline-block mx-auto  mb-4">
+						@{
+							var imgPath = "~/images/users/avatar-2.png";
+							if (!string.IsNullOrEmpty(Convert.ToString(Model.StudentImage)))
+							{
+								imgPath = Convert.ToString(Model.StudentImage);
+							}
+							<img src="@Url.Content(imgPath)" id="previewImage" class="rounded-circle avatar-xl img-thumbnail user-profile-image" />
+						}
+						<div class="avatar-xs p-0 rounded-circle profile-photo-edit">
+							<input id="profile-img-file-input" type="file" class="profile-img-file-input">
+							<label for="profile-img-file-input" class="profile-photo-edit avatar-xs">
+								<span class="avatar-title rounded-circle bg-light text-body">
+									<i class="ri-camera-fill"></i>
+								</span>
+							</label>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="col-xxl-10 col-md-10 col-lg-10 pro-tab">
+		<div class="card mt-5">
+			<div class="card-header">
+				<ul class="nav nav-tabs-custom rounded card-header-tabs border-bottom-0" role="tablist">
+					<li class="nav-item" role="presentation">
+						<a class="nav-link active" data-bs-toggle="tab" href="#studentDetails" role="tab" aria-selected="true">
+							Student Details
+						</a>
+					</li>
+					@if (Model.StudentId > 0)
+					{
+						<li class="nav-item" role="presentation">
+							<a class="nav-link" data-bs-toggle="tab" href="#uploadDocuments" role="tab" aria-selected="false" tabindex="-1">
+								Documents
+							</a>
+						</li>
+					}
+					@if (Model.StudentId > 0)
+					{
+						<li class="nav-item" role="presentation">
+							<a class="nav-link" data-bs-toggle="tab" href="#parents" role="tab" aria-selected="false" tabindex="-1">
+								Parents
+							</a>
+						</li>
+					}
+					@if (Model.StudentId > 0)
+					{
+						<li class="nav-item" role="presentation">
+							<a class="nav-link fs-14" data-bs-toggle="tab" href="#siblings" role="tab" aria-selected="false" tabindex="-1">
+								<i class="ri-folder-4-line d-inline-block d-md-none"></i> <span class="d-none d-md-inline-block">Siblings</span>
+							</a>
+						</li>
+					}
+					@if (Model.StudentId > 0)
+					{
+						<li class="nav-item" role="presentation">
+							<a class="nav-link fs-14" data-bs-toggle="tab" href="#feedetails" role="tab" aria-selected="false" tabindex="-1">
+								<i class="ri-folder-4-line d-inline-block d-md-none"></i> <span class="d-none d-md-inline-block">Fee Detail</span>
+							</a>
+						</li>
+					}
+					@if (Model.StudentId > 0)
+					{
+						<li class="nav-item" role="presentation">
+							<a class="nav-link fs-14" data-bs-toggle="tab" href="#siblingDiscountDetail" role="tab" aria-selected="false" tabindex="-1">
+								<i class="ri-folder-4-line d-inline-block d-md-none"></i> <span class="d-none d-md-inline-block">Sibling Discount</span>
+							</a>
+						</li>
+					}
+					@if (Model.StudentId > 0)
+					{
+						<li class="nav-item" role="presentation">
+							<a class="nav-link fs-14" data-bs-toggle="tab" href="#otherDiscountDetail" role="tab" aria-selected="false" tabindex="-1">
+								<i class="ri-folder-4-line d-inline-block d-md-none"></i> <span class="d-none d-md-inline-block">Other Discount</span>
+							</a>
+						</li>
+					}
+					@if (Model.StudentId > 0)
+					{
+						<li class="nav-item" role="presentation">
+							<a class="nav-link fs-14" data-bs-toggle="tab" href="#fee-statement" role="tab" aria-selected="false" tabindex="-1">
+								<i class="ri-folder-4-line d-inline-block d-md-none"></i> <span class="d-none d-md-inline-block">Fee Statement</span>
+							</a>
+						</li>
+					}
+				</ul>
+
+			</div>
+			<div class="card-body p-4">
+				<div class="tab-content">
+					<div class="tab-pane active show" id="studentDetails" role="tabpanel">
+						<div class="row">
+							<div class="col-lg-6">
+								<div class="mb-3">
+									<label for="StudentCode" class="form-label">Student Code</label>
+									<div class="input-group">
+										<span class="input-group-text"><i class="fa-solid fa-id-badge"></i></span>
+										@if (Model.StudentId > 0)
+										{
+											<input type="text" class="form-control numeric" readonly="readonly" id="StudentCode" placeholder="Enter student id" asp-for="StudentCode" />
+										}
+										else
+										{
+											<input type="text" class="form-control numeric" id="StudentCode" placeholder="Enter student id" asp-for="StudentCode" />
+										}
+
+									</div>
+								</div>
+							</div>
+							<div class="col-lg-6">
+								<div class="mb-3">
+									<label for="ParentId" class="form-label">Parent ID</label>
+									<div class="input-group">
+										<select id="ParentId" class="form-select select2" asp-for="ParentId" aria-label="Parent"
+												asp-items="@(new SelectList(ViewBag.ParentDropdown,"Value", "Text"))">
+										</select>
+										<a class="search-lookup" onclick="ParentLookup();"><i class="fa-solid fa-magnifying-glass"></i></a>
+									</div>
+								</div>
+							</div>
+							<div class="col-lg-12">
+								<div class="mb-3">
+									<label for="StudentName" class="form-label">Student Name</label>
+									<div class="input-group">
+										<span class="input-group-text"><i class="fa-solid fa-person"></i></span>
+										<input type="text" class="form-control" id="StudentName" placeholder="Enter student name" asp-for="StudentName" />
+									</div>
+								</div>
+							</div>
+							<div class="col-lg-12">
+								<div class="mb-3">
+									<label for="StudentArabicName" class="form-label">Student Arabic Name</label>
+									<input type="text" class="form-control arabicText" id="StudentArabicName" placeholder="Enter student arabic name" asp-for="StudentArabicName" />
+								</div>
+							</div>
+							<div class="col-lg-6">
+								<div class="mb-3">
+									<label for="StudentEmail" class="form-label">Student Email</label>
+									<div class="input-group">
+										<span class="input-group-text"><i class="fa-solid fa-envelope"></i></span>
+										<input type="email" class="form-control" id="StudentEmail" placeholder="Enter student email" asp-for="StudentEmail" />
+									</div>
+								</div>
+							</div>
+							<div class="col-lg-6">
+								<div class="mb-3">
+									<label for="DOB" class="form-label">Date Of Birth</label>
+									<div class="input-group">
+										<span class="input-group-text"><i class="fa-solid fa-calendar-days"></i></span>
+										<input id="DOB" class="form-control datepicker"
+											   value="@(!string.IsNullOrEmpty(Convert.ToString(Model.DOB))?Convert.ToDateTime(Model.DOB).ToString("dd/MM/yyyy"):"")"
+											   placeholder="dd/MM/yyyy" />
+										@* <input type="date" class="form-control" id="DOB" placeholder="Enter DOB" asp-for="DOB" /> *@
+									</div>
+								</div>
+							</div>
+							<div class="col-lg-6">
+								<div class="mb-3">
+									<label for="IqamaNo" class="form-label">Iqama No</label>
+									<div class="input-group">
+										<input type="text" class="form-control" id="IqamaNo" placeholder="Enter iqama no" asp-for="IqamaNo" />
+									</div>
+								</div>
+							</div>
+							<div class="col-lg-6">
+								<div class="mb-3">
+									<label for="NationalityId" class="form-label">Nationality</label>
+									<div class="input-group">
+										<span class="input-group-text"><i class="fa-solid fa-globe"></i></span>
+										<select id="NationalityId" class="form-select" asp-for="NationalityId" aria-label="Nationality"
+												asp-items="@(new SelectList(ViewBag.CountryDropdown,"Value", "Text"))">
+										</select>
+									</div>
+								</div>
+							</div>
+							<div class="col-lg-6">
+								<div class="mb-3">
+									<label for="NationalityId" class="form-label">Gender</label>
+									<div class="input-group">
+										<select id="GenderId" class="form-select" asp-for="GenderId" aria-label="GenderId"
+												asp-items="@(new SelectList(ViewBag.GenderDropdown,"Value", "Text"))">
+										</select>
+									</div>
+								</div>
+							</div>
+							<div class="col-lg-6">
+								<div class="mb-3">
+									<label for="AdmissionDate" class="form-label">Admission Date</label>
+									<div class="input-group">
+										<span class="input-group-text"><i class="fa-solid fa-calendar-days"></i></span>
+										<input id="AdmissionDate" class="form-control datepicker"
+											   value="@(!string.IsNullOrEmpty(Convert.ToString(Model.AdmissionDate))?Convert.ToDateTime(Model.AdmissionDate).ToString("dd/MM/yyyy"):"")"
+											   placeholder="dd/MM/yyyy" />
+										@* <input type="date" class="form-control" id="AdmissionDate" placeholder="Enter admission date" asp-for="AdmissionDate" /> *@
+									</div>
+								</div>
+							</div>
+							<div class="col-lg-6">
+								<div class="mb-3">
+									<label for="CostCenterId" class="form-label">Cost Center</label>
+									<div class="input-group">
+										<select id="CostCenterId" class="form-select" asp-for="CostCenterId" aria-label="CostCenterId"
+												asp-items="@(new SelectList(ViewBag.CostCenterDropdown,"Value", "Text"))">
+										</select>
+									</div>
+								</div>
+							</div>
+							<div class="col-lg-6">
+								<div class="mb-3">
+									<label for="GradeId" class="form-label">Grade</label>
+									<div class="input-group">
+										@*   <select id="GradeId" asp-for="GradeId">
+										<option value="">Select Grade</option>
+										</select> *@
+										<select id="GradeId" class="form-select" asp-for="GradeId" aria-label="GradeId">
+										</select>
+									</div>
+								</div>
+							</div>
+							<div class="col-lg-6">
+								<div class="mb-3">
+									<label for="SectionId" class="form-label">Section</label>
+									<div class="input-group">
+										<select id="SectionId" class="form-select" asp-for="SectionId" aria-label="SectionId"
+												asp-items="@(new SelectList(ViewBag.SectionDropdown,"Value", "Text"))">
+										</select>
+									</div>
+								</div>
+							</div>
+							<div class="col-lg-6">
+								<div class="mb-3">
+									<label for="PassportNo" class="form-label">Passport No</label>
+									<div class="input-group">
+										<input type="text" class="form-control" id="PassportNo" placeholder="Enter passport no" asp-for="PassportNo" />
+									</div>
+								</div>
+							</div>
+							<div class="col-lg-6">
+								<div class="mb-3">
+									<label for="PassportExpiry" class="form-label">Passport Expiry</label>
+									<div class="input-group">
+										<span class="input-group-text"><i class="fa-solid fa-calendar-days"></i></span>
+										<input id="PassportExpiry" class="form-control datepicker"
+											   value="@(!string.IsNullOrEmpty(Convert.ToString(Model.PassportExpiry))?Convert.ToDateTime(Model.PassportExpiry).ToString("dd/MM/yyyy"):"")"
+											   placeholder="dd/MM/yyyy" />
+										@* <input type="date" class="form-control" id="PassportExpiry" placeholder="Enter passport expiry" asp-for="PassportExpiry" /> *@
+									</div>
+								</div>
+							</div>
+							<div class="col-lg-6">
+								<div class="mb-3">
+									<label for="Mobile" class="form-label">Mobile</label>
+									<div class="input-group">
+										<span class="input-group-text"><i class="fa-solid fa-mobile-screen-button"></i></span>
+										<input type="text" class="form-control" id="Mobile" placeholder="Enter mobile" asp-for="Mobile" />
+									</div>
+								</div>
+							</div>
+							<div class="col-lg-6">
+								<div class="mb-3">
+									<label for="StudentAddress" class="form-label">Student Address</label>
+									<div class="input-group">
+										<textarea class="form-control" id="StudentAddress" placeholder="Enter student address" asp-for="StudentAddress"></textarea>
+									</div>
+								</div>
+							</div>
+							<div class="col-lg-6">
+								<div class="mb-3">
+									<label for="StudentStatusId" class="form-label">Status</label>
+									<div class="input-group">
+										<select id="StudentStatusId" class="form-select" asp-for="StudentStatusId" aria-label="StudentStatusId"
+												asp-items="@(new SelectList(ViewBag.StudentStatusDropdown,"Value", "Text"))">
+										</select>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div id="withdrawData">
+							<div class="row">
+								<div class="col-lg-6">
+									<div class="mb-3">
+										<label for="WithdrawDate" class="form-label">Withdraw Date</label>
+										<div class="input-group">
+											<span class="input-group-text"><i class="fa-solid fa-calendar-days"></i></span>
+											<input id="WithdrawDate" class="form-control datepicker"
+												   value="@(!string.IsNullOrEmpty(Convert.ToString(Model.WithdrawDate))?Convert.ToDateTime(Model.WithdrawDate).ToString("dd/MM/yyyy"):"")"
+												   placeholder="dd/MM/yyyy" />
+											@* <input type="date" class="form-control" id="WithdrawDate" placeholder="Enter admission date" asp-for="WithdrawDate" /> *@
+										</div>
+									</div>
+								</div>
+								<div class="col-lg-6">
+									<div class="mb-3">
+										<label for="WithdrawAt" class="form-label">Withdraw At</label>
+										<div class="input-group">
+											<select id="WithdrawAt" class="form-select" asp-for="WithdrawAt" aria-label="Withdraw At"
+													asp-items="@(new SelectList(ViewBag.TermDropdown,"Value", "Text"))">
+											</select>
+										</div>
+									</div>
+								</div>
+								<div class="col-lg-6">
+									<div class="mb-3">
+										<label for="WithdrawYear" class="form-label">Withdraw Year</label>
+										<div class="input-group">
+											<select id="WithdrawYear" class="form-select" asp-for="WithdrawYear" aria-label="Withdraw Year"
+													asp-items="@(new SelectList(ViewBag.TermYear,"Value", "Text"))">
+											</select>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-lg-6">
+								<div class="mb-3">
+									<label for="Fees" class="form-label">Fees</label>
+									<div class="input-group">
+										<input type="text" class="form-control" id="Fees" placeholder="Enter fees" asp-for="Fees" />
+									</div>
+								</div>
+							</div>
+							<div class="col-lg-6">
+								<div class="mb-3">
+									<label for="IsGPIntegration" class="form-label">GPIntegration</label>
+									<select class="form-select" id="IsGPIntegration" asp-for="IsGPIntegration" aria-label="GPIntegration">
+										<option value=true>Yes</option>
+										<option value=false>No</option>
+									</select>
+								</div>
+							</div>
+							<div class="col-lg-6">
+								<div class="mb-3">
+									<label for="TermId" class="form-label">Term</label>
+									<div class="input-group">
+										<select id="TermId" class="form-select" asp-for="TermId" aria-label="Term"
+												asp-items="@(new SelectList(ViewBag.TermDropdown,"Value", "Text"))">
+										</select>
+									</div>
+								</div>
+							</div>
+							<div class="col-lg-6">
+								<div class="mb-3">
+									<label for="AdmissionYear" class="form-label">Admission Year</label>
+									<div class="input-group">
+										<select id="AdmissionYear" class="form-select" asp-for="AdmissionYear" aria-label="Admission Year"
+												asp-items="@(new SelectList(ViewBag.TermYear,"Value", "Text", Model.AdmissionYear))">
+										</select>
+									</div>
+								</div>
+							</div>
+							<div class="col-lg-6">
+								<div class="mb-3">
+									<label class="form-label">Prince Account</label>
+									<select class="form-select" id="PrinceAccount" asp-for="PrinceAccount" aria-label="Prince Account">
+										<option value=true>Yes</option>
+										<option value=false>No</option>
+									</select>
+								</div>
+							</div>
+
+							<div class="col-lg-6" style="display:none">
+								<div class="mb-3">
+									<label class="form-label">Active</label>
+									<select class="form-select" id="IsActive" asp-for="IsActive" aria-label="Active">
+										<option value=true>Active</option>
+										<option value=false>In-Active</option>
+									</select>
+								</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-lg-12">
+								<div class="hstack gap-2 justify-content-end">
+									<button type="button" id="btnSave" class="btn btn-primary">@(Model.StudentId == 0 ? "Add" : "Update")</button>
+									<a href="@Url.Action("Studentlist","Student")" class="btn btn btn-secondary">Cancel</a>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="tab-pane" id="uploadDocuments" role="tabpanel">
+						<div class="d-flex align-items-center mb-4">
+							<h5 class="flex-grow-1 mb-0">&nbsp;</h5>
+							<div class="flex-shrink-0">
+								<button type="button" onclick="OpenAttachmentPopUp('@((int)School.Common.DocFor.Student)')" class="btn btn-dark">
+									<i class="ri-upload-2-fill me-1 align-bottom"></i>Upload File
+								</button>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-lg-12">
+								<div class="table-responsive" id="dvAttachments">
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="tab-pane" id="parents" role="tabpanel">
+						<div class="row">
+							<div class="col-xxl-12 col-md-12 col-lg-12">
+								@if (Model.StudentId > 0 && Model.ParentModel != null)
+								{
+									<div class="card">
+										<div class="card-body">
+											<h5 class="card-title mb-3">Father Info</h5>
+											<div class="table-responsive">
+												<table class="table table-borderless mb-0">
+													<tbody>
+														<tr>
+															<th class="ps-0" scope="row" width="30%">Parent Code :</th>
+															<td><a class="link-primary" onclick="ViewParent('@Model.ParentId')" style="cursor:pointer">@Model.ParentModel.ParentCode</a></td>
+														</tr>
+														<tr>
+															<th class="ps-0" scope="row" width="30%">Father Name :</th>
+															<td>@Model.ParentModel.FatherName</td>
+														</tr>
+														<tr>
+															<th class="ps-0" scope="row" width="30%">Father Arabic Name :</th>
+															<td>@Model.ParentModel.FatherArabicName</td>
+														</tr>
+														<tr>
+															<th class="ps-0" scope="row">Father Email :</th>
+															<td>@Model.ParentModel.FatherEmail</td>
+														</tr>
+														<tr>
+															<th class="ps-0" scope="row">Father Mobile :</th>
+															<td>@Model.ParentModel.FatherMobile</td>
+														</tr>
+														<tr>
+															<th class="ps-0" scope="row">Staff :</th>
+															<td>@(Model.ParentModel.IsFatherStaff ? "Yes" : "No")</td>
+														</tr>
+													</tbody>
+												</table>
+											</div>
+										</div>
+									</div>
+									<br />
+									<div class="card">
+										<div class="card-body">
+											<h5 class="card-title mb-3">Mother Info</h5>
+											<div class="table-responsive">
+												<table class="table table-borderless mb-0">
+													<tbody>
+														<tr>
+															<th class="ps-0" scope="row" width="30%">Mother Name :</th>
+															<td>@Model.ParentModel.MotherName</td>
+														</tr>
+														<tr>
+															<th class="ps-0" scope="row" width="30%">Mother Arabic Name :</th>
+															<td>@Model.ParentModel.MotherArabicName</td>
+														</tr>
+														<tr>
+															<th class="ps-0" scope="row">Mother Email :</th>
+															<td>@Model.ParentModel.MotherEmail</td>
+														</tr>
+														<tr>
+															<th class="ps-0" scope="row">Mother Mobile :</th>
+															<td>@Model.ParentModel.MotherMobile</td>
+														</tr>
+														<tr>
+															<th class="ps-0" scope="row">Staff :</th>
+															<td>@(Model.ParentModel.IsMotherStaff ? "Yes" : "No")</td>
+														</tr>
+													</tbody>
+												</table>
+											</div>
+										</div>
+									</div>
+								}
+							</div>
+						</div>
+					</div>
+					<div class="tab-pane fade" id="siblings" role="tabpanel">
+						<div class="row">
+							<div class="col-xxl-12 col-md-12 col-lg-12">
+								@if (Model.StudentId > 0 && Model.StudentSiblingList != null && Model.StudentSiblingList.Count > 0)
+								{
+									foreach (StudentModel siblingModel in Model.StudentSiblingList)
+									{
+										<div class="card">
+											<div class="card-body">
+												<div class="table-responsive">
+													<table class="table table-borderless mb-0">
+														<tbody>
+															<tr>
+																<th class="ps-0" scope="row">Student Code :</th>
+																<td colspan="3"><a class="link-primary" onclick="ViewSibling('@siblingModel.StudentId')" style="cursor:pointer">@siblingModel.StudentCode</a></td>
+															</tr>
+															<tr>
+																<th class="ps-0" scope="row">Student Name :</th>
+																<td class="text" colspan="3">@siblingModel.StudentName</td>
+															</tr>
+															<tr>
+																<th class="ps-0" scope="row">Student Arabic Name :</th>
+																<td class="text" colspan="3">@siblingModel.StudentArabicName</td>
+															</tr>
+															<tr>
+																<th class="ps-0" scope="row">Student Email :</th>
+																<td class="text">@siblingModel.StudentEmail</td>
+																<th class="ps-0" scope="row">Date Of Birth :</th>
+																<td class="text">@Convert.ToDateTime(siblingModel.DOB).ToString("dd/MM/yyyy")</td>
+															</tr>
+															<tr>
+																<th class="ps-0" scope="row">Nationality :</th>
+																<td class="text">@siblingModel.CountryName</td>
+																<th class="ps-0" scope="row">Gender :</th>
+																<td class="text">@siblingModel.GenderTypeName</td>
+															</tr>
+															<tr>
+																<th class="ps-0" scope="row">IqamaNo :</th>
+																<td class="text">@siblingModel.IqamaNo</td>
+																<th class="ps-0" scope="row">CostCenter :</th>
+																<td class="text">@siblingModel.CostCenterName</td>
+															</tr>
+															<tr>
+																<th class="ps-0" scope="row">Grade :</th>
+																<td class="text">@siblingModel.GradeName</td>
+																<th class="ps-0" scope="row">Section :</th>
+																<td class="text">@siblingModel.SectionName</td>
+															</tr>
+														</tbody>
+													</table>
+												</div>
+											</div>
+										</div>
+									}
+
+								}
+							</div>
+						</div>
+					</div>
+					<div class="tab-pane fade" id="siblingDiscountDetail" role="tabpanel">
+						<div class="d-flex align-items-center mb-4">
+							<h5 class="flex-grow-1 mb-0">&nbsp;</h5>
+							<div class="flex-shrink-0">
+								<button type="button" onclick="AddSiblingDiscount()" class="btn btn-dark">
+									Add
+								</button>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-lg-12">
+								<div class="table-responsive" id="sibling-discount-detail-load">
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="tab-pane fade" id="otherDiscountDetail" role="tabpanel">
+						<div class="d-flex align-items-center mb-4">
+							<h5 class="flex-grow-1 mb-0">&nbsp;</h5>
+							<div class="flex-shrink-0">
+								<button type="button" onclick="AddOtherDiscount()" class="btn btn-dark">
+									Add
+								</button>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-lg-12">
+								<div class="table-responsive" id="other-discount-detail-load">
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="tab-pane fade" id="feedetails" role="tabpanel">
+						<div class="d-flex align-items-center mb-4">
+							<h5 class="flex-grow-1 mb-0">&nbsp;</h5>
+							<div class="flex-shrink-0">
+								<button type="button" onclick="CreateStudentFeeDetail()" class="btn btn-dark">
+									Add
+								</button>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-lg-12">
+								<div class="table-responsive" id="student-fee-load">
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="tab-pane fade" id="fee-statement" role="tabpanel">
+						<div class="row">
+							<div class="col-lg-12">
+								<div class="card">
+									<div class="card-body">
+										<div>
+											@Html.Partial("_StudentFeeStatementFilterPartial")
+										</div>
+										<div class="table-responsive" id="statement-fee-load">
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+@section scripts {
+	<script src="~/js/working/document.js" asp-append-version="true"></script>
+	<script>
+
+		$(document).ready(function () {
+			StudentFeeStatementLoad();
+			SiblingDiscountDetailLoad();
+			OtherDiscountDetailLoad();
+
+			$('.numeric').keyup(function () {
+				this.value = this.value.replace(/[^0-9.]/g, '');
+			});
+
+			$('.datepicker').datepicker({
+				format: "dd/mm/yyyy",
+				autoclose: "true"
+			});
+			$('.select2').select2();
+			const fileInput = document.getElementById('profile-img-file-input');
+			const imagePreview = document.getElementById('previewImage');
+			fileInput.addEventListener('change', function () {
+				const file = this.files[0];
+				if (file) {
+					const reader = new FileReader();
+					reader.onload = function (event) {
+						imagePreview.src = event.target.result;
+					}
+					reader.readAsDataURL(file);
+				} else {
+					imagePreview.src = '#';
+				}
+				if (parseInt($("#StudentId").val()) > 0 && file) {
+					UploadImage();
+				}
+			});
+
+			//Load control
+			LoadAttachments(parseInt($("#StudentId").val()), '@((int)School.Common.DocFor.Student)');
+			BindGrade(@Model.CostCenterId);
+			ShowWithdrawData(@Model.StudentStatusId);
+			SchoolFeeDetailLoad();
+
+			//Event
+			$("#btnSave").click(function () {
+				var formData = new FormData();
+				formData.append('StudentId', $("#StudentId").val());
+				formData.append('ParentId', $("#ParentId").val());
+				formData.append('StudentCode', $("#StudentCode").val());
+				formData.append('StudentName', $("#StudentName").val());
+				formData.append('StudentImage', $("#profile-img-file-input")[0].files[0]);
+				formData.append('StudentEmail', $("#StudentEmail").val());
+				formData.append('StudentArabicName', $("#StudentArabicName").val());
+				formData.append('DOB', GetDateFormat_MMMDDYYYY($("#DOB").val()));
+				//formData.append('DOB', $("#DOB").val());
+				formData.append('IqamaNo', $("#IqamaNo").val());
+				formData.append('NationalityId', $("#NationalityId").val());
+				formData.append('GenderId', $("#GenderId").val());
+				formData.append('AdmissionDate', GetDateFormat_MMMDDYYYY($("#AdmissionDate").val()));
+				//formData.append('AdmissionDate', $("#AdmissionDate").val());
+				formData.append('GradeId', $("#GradeId").val());
+				formData.append('CostCenterId', $("#CostCenterId").val());
+				formData.append('SectionId', $("#SectionId").val());
+				formData.append('PassportNo', $("#PassportNo").val());
+				formData.append('PassportExpiry', GetDateFormat_MMMDDYYYY($("#PassportExpiry").val()));
+				//formData.append('PassportExpiry', $("#PassportExpiry").val());
+				formData.append('Mobile', $("#Mobile").val());
+				formData.append('StudentAddress', $("#StudentAddress").val());
+				formData.append('StudentStatusId', $("#StudentStatusId").val());
+				formData.append('WithdrawDate', GetDateFormat_MMMDDYYYY($("#WithdrawDate").val()));
+				//formData.append('WithdrawDate', $("#WithdrawDate").val());
+				formData.append('WithdrawAt', $("#WithdrawAt").val());
+				formData.append('WithdrawYear', $("#WithdrawYear").val());
+				formData.append('Fees', $("#Fees").val());
+				formData.append('TermId', $("#TermId").val());
+				formData.append('AdmissionYear', $("#AdmissionYear").val());
+				formData.append('PrinceAccount', $("#PrinceAccount").val());
+				formData.append('IsActive', $("#IsActive").val());
+				if (ValidateForm(formData)) {
+					if (formData.get("StudentId") == "0") {
+						SaveStudent(formData);
+					}
+					else {
+						var dlg_updatePromo = bootbox.dialog({
+							message: 'Are you sure! you want to update the record?',
+							title: 'Confirm',
+							buttons: {
+								ok: {
+									label: "Yes",
+									className: 'btn-primary',
+									callback: function () {
+										SaveStudent(formData);
+									}
+								},
+								cancel: {
+									label: "No",
+									className: 'btn-danger',
+									callback: function () {
+										$(dlg_updatePromo).modal('hide');
+									}
+								}
+							}
+						});
+						dlg_updatePromo.find('.modal-header').css('background-color', '#dc3545').css('border-bottom', '1px solid #dc3545');
+					}
+				}
+			});
+			$('#CostCenterId').change(function () {
+				var costCenterId = $(this).val();
+				BindGrade(costCenterId);
+			});
+			$('#StudentStatusId').change(function () {
+				var studentStatusId = $(this).val();
+				ShowWithdrawData(studentStatusId);
+			});
+		});
+		function BindGrade(costCenterId) {
+			var urlToCall = '@Url.Action("GetGrade", "Student")';
+			$.ajax({
+				url: urlToCall,
+				type: 'GET',
+				dataType: 'json',
+				data: { costCenterId: costCenterId },
+				success: function (data) {
+					$('#GradeId').empty();
+					$.each(data.result, function (index, item) {
+						var option = $('<option>').val(item.gradeId).text(item.gradeName);
+						if (item.gradeId == @Model.GradeId) {
+							option.prop('selected', true);
+						}
+						$('#GradeId').append(option);
+					});
+				},
+				error: function (xhr, status, error) {
+					console.error('Error fetching grade data:', error);
+				}
+			});
+		}
+		function ShowWithdrawData(studentStatusId) {
+			if (studentStatusId == 2) {//Need Enum here
+				$("#withdrawData").css("display", "block");
+			}
+			else {
+				$("#withdrawData").css("display", "none");
+			}
+		}
+		function ValidateForm(formData) {
+			let isError = false;
+			if (!formData.get("StudentCode") || !formData.get("StudentCode").trim()) {
+				$app.notify.validate("StudentCode", "Student Id is required");
+				isError = true;
+			}
+			if (!formData.get("ParentId") || !formData.get("ParentId").trim() || formData.get("ParentId").trim() == "0") {
+				$app.notify.validateDD("ParentId", "Parent Id is required");
+				isError = true;
+			}
+			if (!formData.get("StudentName") || !formData.get("StudentName").trim()) {
+				$app.notify.validate("StudentName", "Student name is required");
+				isError = true;
+			}
+			if (!formData.get("StudentEmail") || !formData.get("StudentEmail").trim()) {
+				$app.notify.validate("StudentEmail", "Student email is required");
+				isError = true;
+			}
+			if (!formData.get("DOB") || !formData.get("DOB").trim() || formData.get("DOB") == "NaN") {
+				$app.notify.validateDD("DOB", "Date Of Birth is required");
+				isError = true;
+			}
+
+			if (!formData.get("AdmissionDate") || !formData.get("AdmissionDate").trim() || formData.get("AdmissionDate") == "NaN") {
+				$app.notify.validateDD("AdmissionDate", "Admission date is required");
+				isError = true;
+			}
+			if (!formData.get("IqamaNo") || !formData.get("IqamaNo").trim()) {
+				$app.notify.validate("IqamaNo", "Iqama no is required");
+				isError = true;
+			}
+			if (!formData.get("StudentAddress") || !formData.get("StudentAddress").trim()) {
+				$app.notify.validate("StudentAddress", "Address is required");
+				isError = true;
+			}
+			if (!formData.get("NationalityId") || !formData.get("NationalityId").trim() || formData.get("NationalityId").trim() == "0") {
+				$app.notify.validateDD("NationalityId", "Nationality is required");
+				isError = true;
+			}
+			if (!formData.get("GenderId") || !formData.get("GenderId").trim() || formData.get("GenderId").trim() == "0") {
+				$app.notify.validateDD("GenderId", "Gender is required");
+				isError = true;
+			}
+			if (!formData.get("AdmissionDate") || !formData.get("AdmissionDate").trim()) {
+				$app.notify.validateDD("AdmissionDate", "Admission date is required");
+				isError = true;
+			}
+			if (!formData.get("CostCenterId") || !formData.get("CostCenterId").trim() || formData.get("CostCenterId").trim() == "0") {
+				$app.notify.validateDD("CostCenterId", "Cost center is required");
+				isError = true;
+			}
+			if (!formData.get("GradeId") || !formData.get("GradeId").trim() || formData.get("GradeId").trim() == "0") {
+				$app.notify.validateDD("GradeId", "Grade is required");
+				isError = true;
+			}
+			if (!formData.get("TermId") || !formData.get("TermId").trim() || formData.get("TermId").trim() == "0") {
+				$app.notify.validateDD("TermId", "Term is required");
+				isError = true;
+			}
+			if (!formData.get("StudentStatusId") || !formData.get("StudentStatusId").trim() || formData.get("StudentStatusId").trim() == "0") {
+				$app.notify.validateDD("StudentStatusId", "Student status is required");
+				isError = true;
+			}
+
+			if (isError) {
+				return false;
+			}
+			else {
+				return true;
+			}
+		}
+		function SaveStudent(dataModel) {
+			var urlToCall = '@Url.Action("SaveStudent", "Student")';
+			$.post({
+				url: urlToCall,
+				data: dataModel,
+				processData: false,
+				contentType: false,
+				success: function (response) {
+					if (response.result > 0) {
+						$("#StudentId").val(response.result);
+						$app.messageBox.success("Data has been saved!", "Success", RedirectToEdit)
+					}
+					else if (response.result == -2) {
+						$app.notify.error("Data already exists!");
+					}
+					else {
+						$app.notify.error("Error in saving!");
+					}
+				},
+				error: function (jqXHR, textStatus, errorThrown) {
+					$app.notify.error("Error in saving!");
+				}
+			});
+		}
+		function UploadImage() {
+			var formData = new FormData();
+			formData.append('profilePic', $("#profile-img-file-input")[0].files[0]);
+			formData.append('StudentId', $("#StudentId").val());
+			var urlToCall = '@Url.Action("UploadProfilePicture", "Student")';
+			$.post({
+				url: urlToCall,
+				data: formData,
+				processData: false,
+				contentType: false,
+				success: function (response) {
+					if (response.result == 0) {
+					}
+					else if (response.result == -2) {
+						$app.notify.error("Error in upload!");
+					}
+					else {
+						$app.notify.error("Error in upload!");
+					}
+				},
+				error: function (jqXHR, textStatus, errorThrown) {
+					$app.notify.error("Error in saving!");
+				}
+			});
+		}
+		function RedirectToEdit() {
+
+			var url = '@Url.Action("AddEditStudent", "Student")';
+			url = url + "?studentId=" + $("#StudentId").val()
+			window.location.href = url;
+		}
+		function OpenAttachmentPopUp(DocFor) {
+			var op = { title: 'Upload Attachment' }
+			var url = baseUrl + 'Attachment/UploadAttachmentPartial?DocFor=' + parseInt(DocFor) + "&DocForId=" + parseInt($("#StudentId").val());
+			$app.openViewDialog(url, op);
+		}
+		function ParentLookup() {
+			var op = { title: 'Search Parent' }
+			var url = '@Url.Action("ParentLookupPartial", "Student")';
+			$app.openViewDialog(url, op);
+		}
+		function BindParent(parentId) {
+			$("#ParentId").val(parentId).trigger('change')
+		}
+
+		function CreateStudentFeeDetail() {
+			var op = { title: 'Add Student Fee Amount' }
+			var studentId = $("#StudentId").val();
+			var url = '@Url.Action("StudentFeeTypeDetailEditPartial", "Student")';
+			url = url + "?studentId=" + studentId + "&studentFeeDetailId=0";
+			$app.openViewDialog(url, op);
+		}
+		function EditFeeDetail(studentFeeDetailId) {
+			var op = { title: 'Edit Student Fee Amount' }
+			var studentId = $("#StudentId").val();
+			var url = '@Url.Action("StudentFeeTypeDetailEditPartial", "Student")';
+			url = url + "?studentId=" + studentId + "&studentFeeDetailId=" + studentFeeDetailId;
+			$app.openViewDialog(url, op);
+		}
+		function SchoolFeeDetailLoad() {
+			$('#student-fee-load').empty();
+			$('#student-fee-load').html('<div class="row"> <div class="col-xl-12"><div class="card order-card"><span class="text-center no-text" style="color:#212529;"><img src="@Url.Content("~/images/loding.gif")"  /></span></div></div></div>');
+			var urlToCall = baseUrl + 'Student/StudentFeeDetailDataPartial';
+			var studentId = $("#StudentId").val();
+			urlToCall = urlToCall + "?studentId=" + studentId;
+			urlToCall = urlToCall + "&isReadOnly=false";
+			$app.post(urlToCall).then(function (response) {
+				$('#student-fee-load').html(response);
+			});
+		}
+		function SaveStudentFeeTypeDetail(dataModel) {
+			var urlToCall = '@Url.Action("SaveStudentFeeTypeDetail", "Student")';
+			$app.post(urlToCall, dataModel).then(function (response) {
+				if (response.result == 0) {
+					bootbox.hideAll();
+					$app.notify.success("Data has been saved!");
+					SchoolFeeDetailLoad();
+				}
+				else if (response.result == -2) {
+					$app.notify.error("Data already exists!");
+				}
+				else if (response.result == -3) {
+					$app.notify.error("Discount already applied!");
+				}
+				else {
+					$app.notify.error("Error in saving!");
+				}
+			});
+		}
+		function DeleteStudentFee(studentFeeDetailId) {
+			var dlg_removePromo = bootbox.dialog({
+				message: 'Are you sure! you want to delete the record?',
+				title: 'Remove',
+				buttons: {
+					ok: {
+						label: "Yes",
+						className: 'btn-primary',
+						callback: function () {
+							var urlToCall = '@Url.Action("DeleteStudentFeeTypeDetail", "Student")';
+							urlToCall = urlToCall + '?studentFeeDetailId=' + studentFeeDetailId;
+
+							$app.get(urlToCall).then(function (response) {
+								if (response.result == 0) {
+									bootbox.hideAll();
+									$app.notify.success("Data has been deleted!");
+									SchoolFeeDetailLoad();
+								}
+								else if (response.result == -3) {
+									$app.notify.error("Discount already applied!");
+								}
+								else {
+									$app.notify.error("Error in deleting!");
+								}
+							});
+						}
+					},
+					cancel: {
+						label: "No",
+						className: 'btn-danger',
+						callback: function () {
+							$(dlg_removePromo).modal('hide');
+						}
+					}
+				}
+			});
+			dlg_removePromo.find('.modal-header').css('background-color', '#dc3545').css('border-bottom', '1px solid #dc3545');
+		}
+		function SchoolFeeStatementRefreshLoad() {
+			$("#filterStatementAcadmicYear").val("0");
+			StudentFeeStatementLoad();
+		}
+		function StudentFeeStatementLoad() {
+			var academicYearId = $("#filterStatementAcadmicYear").val();
+			$('#statement-fee-load').empty();
+			$('#statement-fee-load').html('<div class="row"> <div class="col-xl-12"><div class="card order-card"><span class="text-center no-text" style="color:#212529;"><img src="@Url.Content("~/images/loding.gif")"  /></span></div></div></div>');
+			var urlToCall = baseUrl + 'Student/StudentFeeStatementDataPartial';
+			urlToCall = urlToCall + "?studentId=" + @Model.StudentId + "&parentId=" + @Model.ParentId + "&academicYearId=" + academicYearId;
+			$app.post(urlToCall).then(function (response) {
+				$('#statement-fee-load').html(response);
+			});
+		}
+
+		function WithdrawStudent(studentId) {
+			var url = '@Url.Action("WithdrawStudent", "Student")';
+			url = url + '?studentId=' + studentId;
+			window.location.href = url;
+		}
+
+		function SiblingDiscountDetailLoad() {
+			$('#sibling-discount-detail-load').empty();
+			$('#sibling-discount-detail-load').html('<div class="row"> <div class="col-xl-12"><div class="card order-card"><span class="text-center no-text" style="color:#212529;"><img src="@Url.Content("~/images/loding.gif")"  /></span></div></div></div>');
+			var urlToCall = baseUrl + 'Student/SiblingDiscountDetailDataPartial';
+			urlToCall = urlToCall + "?studentId=" + @Model.StudentId;
+			$app.post(urlToCall).then(function (response) {
+				$('#sibling-discount-detail-load').html(response);
+			});
+		}
+
+
+		function EditSiblingDiscount(studentSiblingDiscountDetailId, academicYearId, discountPercent) {
+			var op = { title: 'Update Sibling Discount' }
+			var studentId = $("#StudentId").val();
+			var url = '@Url.Action("SiblingDiscountDetailEditPartial", "Student")';
+			url = url + "?studentId=" + studentId + "&studentSiblingDiscountDetailId=" + studentSiblingDiscountDetailId + "&academicYearId=" + academicYearId + "&discountPercent=" + discountPercent;
+			$app.openViewDialog(url, op);
+		}
+		function AddSiblingDiscount(studentSiblingDiscountDetailId) {
+			var op = { title: 'Add Sibling Discount' }
+			var studentId = $("#StudentId").val();
+			var url = '@Url.Action("SiblingDiscountDetailEditPartial", "Student")';
+			url = url + "?studentId=" + studentId + "&studentSiblingDiscountDetailId=" + studentSiblingDiscountDetailId + "&academicYearId=0&discountPercent=0";
+			$app.openViewDialog(url, op);
+		}
+		function DeleteSiblingDiscount(studentSiblingDiscountDetailId) {
+			var dlg_removePromo = bootbox.dialog({
+				message: 'Are you sure! you want to delete the record?',
+				title: 'Remove',
+				buttons: {
+					ok: {
+						label: "Yes",
+						className: 'btn-primary',
+						callback: function () {
+							var urlToCall = '@Url.Action("DeleteStudentSiblingDiscountDetail", "Student")';
+							urlToCall = urlToCall + '?studentSiblingDiscountDetailId=' + studentSiblingDiscountDetailId;
+
+							$app.get(urlToCall).then(function (response) {
+								if (response.result == 0) {
+									bootbox.hideAll();
+									$app.notify.success("Data has been deleted!");
+									SiblingDiscountDetailLoad();
+								}
+								else {
+									$app.notify.error("Error in deleting!");
+								}
+							});
+						}
+					},
+					cancel: {
+						label: "No",
+						className: 'btn-danger',
+						callback: function () {
+							$(dlg_removePromo).modal('hide');
+						}
+					}
+				}
+			});
+			dlg_removePromo.find('.modal-header').css('background-color', '#dc3545').css('border-bottom', '1px solid #dc3545');
+		}
+
+		function SaveSiblingDiscountDetailDetail(dataModel) {
+			var urlToCall = '@Url.Action("SaveSiblingDiscountDetail", "Student")';
+			$app.post(urlToCall, dataModel).then(function (response) {
+				if (response.result == 0) {
+					bootbox.hideAll();
+					$app.notify.success("Data has been saved!");
+					SiblingDiscountDetailLoad();
+				}
+				else if (response.result == -2) {
+					$app.notify.error("Data already exists!");
+				}
+				else {
+					$app.notify.error("Error in saving!");
+				}
+			});
+		}
+
+		function OtherDiscountDetailLoad() {
+			$('#other-discount-detail-load').empty();
+			$('#other-discount-detail-load').html('<div class="row"> <div class="col-xl-12"><div class="card order-card"><span class="text-center no-text" style="color:#212529;"><img src="@Url.Content("~/images/loding.gif")"  /></span></div></div></div>');
+			var urlToCall = baseUrl + 'Student/OtherDiscountDetailDataPartial';
+			urlToCall = urlToCall + "?studentId=" + @Model.StudentId;
+			$app.post(urlToCall).then(function (response) {
+				$('#other-discount-detail-load').html(response);
+			});			
+		}
+
+
+		function EditOtherDiscount(studentOtherDiscountDetailId, academicYearId, discountAmount, discountName) {
+			var op = { title: 'Update Other Discount' }
+			var studentId = $("#StudentId").val();
+			var url = '@Url.Action("OtherDiscountDetailEditPartial", "Student")';
+			url = url + "?studentId=" + studentId + "&studentOtherDiscountDetailId=" + studentOtherDiscountDetailId + "&academicYearId=" + academicYearId + "&discountAmount=" + discountAmount + "&discountName=" + discountName;
+			$app.openViewDialog(url, op);
+		}
+		function AddOtherDiscount(studentOtherDiscountDetailId) {
+			var op = { title: 'Add Other Discount' }
+			var studentId = $("#StudentId").val();
+			var url = '@Url.Action("OtherDiscountDetailEditPartial", "Student")';
+			url = url + "?studentId=" + studentId + "&studentOtherDiscountDetailId=" + studentOtherDiscountDetailId + "&academicYearId=0&discountAmount=0&discountName=";
+			$app.openViewDialog(url, op);
+		}
+		function DeleteOtherDiscount(studentOtherDiscountDetailId) {
+			var dlg_removePromo = bootbox.dialog({
+				message: 'Are you sure! you want to delete the record?',
+				title: 'Remove',
+				buttons: {
+					ok: {
+						label: "Yes",
+						className: 'btn-primary',
+						callback: function () {
+							var urlToCall = '@Url.Action("DeleteStudentOtherDiscountDetail", "Student")';
+							urlToCall = urlToCall + '?studentOtherDiscountDetailId=' + studentOtherDiscountDetailId;
+
+							$app.get(urlToCall).then(function (response) {
+								if (response.result == 0) {
+									bootbox.hideAll();
+									$app.notify.success("Data has been deleted!");
+									OtherDiscountDetailLoad();
+								}
+								else {
+									$app.notify.error("Error in deleting!");
+								}
+							});
+						}
+					},
+					cancel: {
+						label: "No",
+						className: 'btn-danger',
+						callback: function () {
+							$(dlg_removePromo).modal('hide');
+						}
+					}
+				}
+			});
+			dlg_removePromo.find('.modal-header').css('background-color', '#dc3545').css('border-bottom', '1px solid #dc3545');
+		}
+
+		function SaveOtherDiscountDetailDetail(dataModel) {
+			var urlToCall = '@Url.Action("SaveOtherDiscountDetail", "Student")';
+			$app.post(urlToCall, dataModel).then(function (response) {
+				if (response.result == 0) {
+					bootbox.hideAll();
+					$app.notify.success("Data has been saved!");
+					OtherDiscountDetailLoad();
+				}
+				else if (response.result == -2) {
+					$app.notify.error("Data already exists!");
+				}
+				else {
+					$app.notify.error("Error in saving!");
+				}
+			});
+		}
+
+		function DiscountStatusProcess(actionId, studentOtherDiscountDetailId) {
+			var urlToCall = '@Url.Action("UpdateOtherDiscountStatus", "Student")';
+			urlToCall = urlToCall + '?actionId=' + actionId + '&studentOtherDiscountDetailId=' + studentOtherDiscountDetailId;
+			$app.get(urlToCall).then(function (response) {
+				if (response.result == 0) {
+					bootbox.hideAll();
+					$app.notify.success("Status has been updated!");
+					OtherDiscountDetailLoad();
+					LoadNotificationGroup();
+				}
+				else {
+					$app.notify.error("Error!");
+				}
+			});
+
+		}
+
+		function SiblingDiscountStatusProcess(actionId, studentSiblingDiscountDetailId) {
+			var urlToCall = '@Url.Action("UpdateSiblingDiscountStatus", "Student")';
+			urlToCall = urlToCall + '?actionId=' + actionId + '&studentSiblingDiscountDetailId=' + studentSiblingDiscountDetailId;
+			$app.get(urlToCall).then(function (response) {
+				if (response.result == 0) {
+					bootbox.hideAll();
+					$app.notify.success("Status has been updated!");
+					SiblingDiscountDetailLoad();
+					LoadNotificationGroup();
+				}
+				else {
+					$app.notify.error("Error!");
+				}
+			});
+		}
+
+		function ExportCSVStatement(reportKey, reportName) {
+			var reportKey = 'StudentStatement';
+			var reportName = 'Student Report';
+			var StudentIdParam = "StudentId: " + @Model.StudentId;
+			var ParentIdParam = "ParentId: " + @Model.ParentId;
+			var AcademicYearIdParam = "AcademicYearId: " + $("#filterStatementAcadmicYear").val();
+			var parameters = StudentIdParam + '|' + ParentIdParam + '|' + AcademicYearIdParam;
+			this.ExportCSVWithParam(reportKey, reportName, parameters);
+		}
+	</script>
+}

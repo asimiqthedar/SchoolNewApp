@@ -1,0 +1,32 @@
+﻿@model School.Models.WebModels.ParentModels.ParentModel
+
+<div class="card chart-card">
+    <div class="user-profile-header">
+        <div class="single-user-info">
+            <img src="assets/images/avatar-1.jpg" alt="">
+            <div class="user-profile-name">
+                <h4>@Model.FatherName</h4>
+            </div>
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="user-profile-box">
+            <ul>
+                <li>Father Name</li>
+                <li>@Model.FatherName</li>
+
+                <li>Father Iqama Number</li>
+                <li>@Model.FatherIqamaNo</li>
+
+                <li>Father Mobile</li>
+                <li>@Model.FatherMobile</li>
+
+                <li>Father Email</li>                
+                <li>@Model.FatherEmail</li>    
+
+                <li>Father Country</li>
+                <li>@Model.FatherCountryName</li>
+            </ul>            
+        </div>
+    </div>
+</div>

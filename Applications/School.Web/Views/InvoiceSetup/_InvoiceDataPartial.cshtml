@@ -1,0 +1,187 @@
+﻿@using System.Data;
+@model DataSet
+
+<div class="table-responsive table-card order-tabel" style="width:100%">
+	<table class="table align-middle table-nowrap mb-0" id="tblActivityData">
+		<thead class="table-light text-muted">
+			<tr>
+				<th width="5%">S.No</th>
+				<th>Invoice No</th>
+				<th>Parent Code</th>
+				<th>Parent Name</th>
+				<th>Parent Mobile</th>
+				<th>Invoice Date</th>
+				<th>Total</th>
+				<th>Invoice Type</th>
+				<th>Status</th>
+				<th width="70px">Actions</th>
+			</tr>
+		</thead>
+		<tbody class="list form-check-all">
+			@if (Model != null && Model.Tables.Count > 0 && Model.Tables[0].Rows.Count > 0)
+			{
+				int i = 0;
+				foreach (DataRow dr in Model.Tables[0].Rows)
+				{
+					i++;
+					<tr>
+						<td>@i</td>
+						<td>@dr["InvoiceNo"]</td>
+
+						<td>@dr["ParentCode"]</td>
+						<td>@dr["ParentName"]</td>
+						<td>@dr["FatherMobile"]</td>
+
+						<td>@Convert.ToDateTime(dr["InvoiceDate"]).ToString("dd-MM-yyyy")</td>
+						<td width="80px" style="text-align:right; width:80px">@Convert.ToDecimal(dr["ItemSubtotal"]).ToTwoDecimalString()</td>
+						<td>
+							@if (dr["InvoiceType"].ToString().ToLower() == "invoice")
+							{
+								@dr["InvoiceTypeValue"]
+							}
+							else
+							{
+								<span style="color: white; background-color:red" class="btn btn-dark btn-set-task w-sm-100">
+									Return
+								</span>
+							}
+						</td>
+						<td>@dr["Status"]</td>
+						<td>
+							<table>
+								<tr>
+									@if (dr["Status"].ToString().ToLower() == "saved" || dr["Status"].ToString().ToLower() == "posted")
+									{
+										<td>
+
+											<button type="button" class="btn btn-outline-secondary edit-btn text-start" title="Edit" onclick="Edit('@dr["InvoiceNo"]','@dr["InvoiceType"]','@dr["InvoiceRefNo"]')">
+												<i class="fa-regular fa-pen-to-square text-success"></i>
+											</button>
+										</td>
+									}
+									@* @if (dr["Status"].ToString().ToLower() == "saved")
+									{
+										<td>
+
+											<button type="button" class="btn btn-outline-secondary deleterow  text-start" title="Delete" onclick="Delete('@dr["InvoiceId"]')">
+												<i class="fa-solid fa-trash-can text-danger"></i>
+											</button>
+
+										</td>
+									} *@
+
+									<td>
+										<div class="dropdown" style="float:right">
+											<a href="javascript:void(0);" class="btn btn-light btn-icon" id="dropdownMenuLink1" data-bs-toggle="dropdown" aria-expanded="true">
+												<i class="ri-equalizer-fill"></i>
+											</a>
+											<ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuLink1" data-popper-placement="bottom-end" style="position: absolute; inset: 0px 0px auto auto; margin: 0px; transform: translate(0px, 23px);">
+
+
+												<li>
+													<button type="button" class="btn btn-outline-secondary deleterow w-100 text-start" onclick="Print('@dr["InvoiceNo"]')" title="Print">
+														<i class="fa-solid fa-print"></i> Print
+													</button>
+												</li>
+												<li>
+													<button type="button" class="btn btn-outline-secondary deleterow w-100 text-start" onclick="openEmailModal('@dr["InvoiceId"]')" title="Email">
+														<i class="fa-solid fa-envelope"></i> Email
+													</button>
+												</li>
+
+
+
+												@if (dr["InvoiceType"].ToString().ToLower() == "invoice" && dr["Status"].ToString().ToLower() == "posted")
+												{
+													<li>
+														<button type="button" class="btn btn-outline-secondary edit-btn w-100 text-start" title="Return" onclick="ReturnInvoice('@dr["InvoiceNo"]','@dr["InvoiceRefNo"]')">
+															<i class="fa-regular fa-undo text-success"></i> Return
+														</button>
+													</li>
+												}
+
+											</ul>
+										</div>
+									</td>
+								</tr>
+							</table>
+
+
+							@*  <div class="btn-group" role="group" aria-label="Basic outlined example">
+					<button type="button" class="btn btn-outline-secondary deleterow" title="Email">
+					<i class="fa-solid fa-envelope"></i>
+					</button>
+					<button type="button" class="btn btn-outline-secondary deleterow" title="SMS">
+					<i class="fa-solid fa-comment-sms"></i>
+					</button>
+					<button type="button" class="btn btn-outline-secondary deleterow" title="Print" >
+					<i class="fa-solid fa-print"></i>
+					</button>
+					@if (dr["Status"].ToString().ToLower() != "posted")
+					{
+					<button type="button" class="btn btn-outline-secondary edit-btn" title="Edit" onclick="Edit('@dr["InvoiceNo"]','@dr["InvoiceType"]','@dr["InvoiceRefNo"]')">
+					<i class="fa-regular fa-pen-to-square  text-success"></i>
+					</button>
+					<button type="button" class="btn btn-outline-secondary deleterow" title="Delete" onclick="Delete('@dr["InvoiceId"]')">
+					<i class="fa-solid fa-trash-can text-danger"></i>
+					</button>
+					}
+					</div> *@
+						</td>
+					</tr>
+				}
+			}
+		</tbody>
+	</table>
+</div>
+
+<script>
+	$("#tblActivityData").DataTable({
+		language: {
+			search: "<i class='ri-search-line search-icon'></i>",
+			searchPlaceholder: "Search ..."
+		},
+		pageLength: 50,
+		// searching: true,
+		// info: false,
+		// dom: 'rtip',
+		// scrollX: true,
+		// bFilter: true,
+		bSort: false,
+		// bPaginate: true,
+		// destroy: true,
+		// orderCellsTop: true,
+		// fixedHeader: true
+	});
+	$('#tblActivityData').DataTable().on('draw.dt', function () {
+		var info = $('#tblActivityData').DataTable().page.info();
+		$('#tblActivityData').DataTable().column(0, { search: 'applied', order: 'applied' }).nodes().each(function (cell, i) {
+			cell.innerHTML = i + 1;// cell.innerHTML = i + 1 + info.start;
+		});
+	});
+	function Print(invoiceNo) {
+		var urlToCall = '@Url.Action("GetInvoicePdfPath", "InvoiceSetup")';
+		urlToCall = urlToCall + '?invoiceNo=' + invoiceNo;
+
+		$app.get(urlToCall).then(function (response) {
+			if (response.result == 0) {
+				// var file = new Blob([response.invoicePdfBytes], { type: 'application/pdf' });
+				// var pdfAsDataUri = URL.createObjectURL(file);
+
+				//var pdfAsDataUri = "data:application/pdf;base64," + response.invoicePdfBytes;
+				//window.open(pdfAsDataUri, "_blank");
+
+				let pdfWindow = window.open("")
+				pdfWindow.document.write(
+					"<iframe width='100%' height='100%' src='data:application/pdf;base64, " +
+					encodeURI(response.invoicePdfBytes) + "'></iframe>"
+				)
+
+			}
+			else {
+				$app.notify.error("Error in printing invoice!");
+			}
+		});
+	}
+
+</script>
