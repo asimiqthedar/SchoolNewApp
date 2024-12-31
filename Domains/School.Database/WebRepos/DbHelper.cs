@@ -51,6 +51,7 @@ namespace School.Database.WebRepos
 						command.Connection = connection;
 						command.CommandType = CommandType.StoredProcedure;
 						command.CommandText = proc_name;
+                        command.CommandTimeout  =1000;
 						foreach (var p in sql_params)
 						{
 							command.Parameters.Add(p);

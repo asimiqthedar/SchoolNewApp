@@ -112,4 +112,8 @@
     </None>
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\CertificateFolder\xmlFiles\PIH\" />
+  </ItemGroup>
+
 </Project>

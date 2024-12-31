@@ -38,6 +38,8 @@
 
   <ItemGroup>
     <PackageReference Include="BouncyCastle.Cryptography" Version="2.4.0" />
+    <PackageReference Include="iTextSharp" Version="5.5.13.4" />
+    <PackageReference Include="itextsharp.pdfa" Version="5.5.13.4" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="SaxonHE10Net31Api" Version="10.9.0.1" />
     <PackageReference Include="System.Security.Cryptography.Xml" Version="7.0.1" />
